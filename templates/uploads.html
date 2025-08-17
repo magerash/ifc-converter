@@ -126,6 +126,21 @@
             margin: 10px 0;
             font-weight: 500;
         }
+        .link-btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        .link-btn:hover {
+            background: #2980b9;
+            text-decoration: none;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -203,19 +218,21 @@
                 submitBtn.disabled = true;
                 spinner.style.display = 'block';
                 statusText.textContent = 'Обработка файла...';
+                progressBar.style.width = '20%';
 
                 try {
                     const formData = new FormData();
                     formData.append('file', selectedFile);
 
-                    const response = await fetch('/upload', {
+                    // ИСПРАВЛЕНО: используем правильный endpoint /uploads
+                    const response = await fetch('/uploads', {
                         method: 'POST',
                         body: formData
                     });
 
                     const result = await response.json();
 
-                    if (response.ok) {
+                    if (response.ok && result.status === 'success') {
                         // Обновить прогресс
                         progressBar.style.width = '100%';
                         statusText.textContent = 'Готово!';
@@ -224,10 +241,13 @@
                         resultArea.className = 'result-area success';
                         resultContent.innerHTML = `
                             <h2>✅ Файл успешно обработан!</h2>
-                            <p>Обработано квартир: ${result.sheet_url ? 'см. таблицу' : 'данные в CSV'}</p>
+                            <p>Данные извлечены и экспортированы</p>
                             ${result.sheet_url ?
-                                `<p><a href="${result.sheet_url}" target="_blank">Открыть Google Sheets</a></p>` :
-                                `<p><a href="/download/${result.csv_path}" download>Скачать CSV</a></p>`}
+                                `<a href="${result.sheet_url}" target="_blank" class="link-btn">Открыть Google Sheets</a>` :
+                                ''}
+                            ${result.csv_path ?
+                                `<a href="/downloads/${result.csv_path.split('/').pop()}" download class="link-btn">Скачать CSV</a>` :
+                                ''}
                         `;
                         resultArea.style.display = 'block';
                     } else {
@@ -239,9 +259,11 @@
                     resultContent.innerHTML = `
                         <h2>❌ Ошибка обработки</h2>
                         <p>${error.message}</p>
+                        <p>Проверьте корректность IFC-файла и попробуйте снова.</p>
                     `;
                     resultArea.style.display = 'block';
                     statusText.textContent = 'Ошибка!';
+                    progressBar.style.width = '0%';
                 } finally {
                     // Скрыть индикатор
                     setTimeout(() => {
@@ -260,9 +282,20 @@
                     return;
                 }
 
+                // Проверка размера файла (максимум 100MB)
+                if (file.size > 100 * 1024 * 1024) {
+                    alert('Размер файла не должен превышать 100MB');
+                    return;
+                }
+
                 selectedFile = file;
                 fileInfo.textContent = `Выбран файл: ${file.name} (${formatFileSize(file.size)})`;
                 submitBtn.disabled = false;
+
+                // Скрыть предыдущий результат
+                resultArea.style.display = 'none';
+                progressBar.style.width = '0%';
+                statusText.textContent = '';
             }
 
             // Форматирование размера файла
