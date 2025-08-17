@@ -113,10 +113,32 @@ def sort_rows_by_flat_number(rows):
     rows.sort(key=key)
 
 
+# Обработка площади
+def get_area_value(group):
+    """Получение площади с правильной обработкой единиц измерения"""
+    if not group:
+        return ""
+
+    psets = _get_psets(group)
+    if "Pset_ZoneCommon" not in psets:
+        return ""
+
+    props = psets["Pset_ZoneCommon"]
+    if "GrossPlannedArea" not in props:
+        return ""
+
+    area_value = props["GrossPlannedArea"]
+    if isinstance(area_value, (int, float)):
+        # Предполагаем, что площадь уже в м²
+        return round(float(area_value), 2)
+
+    return ""
+
+
 # ------------------------------------------------------------
 # основная обработка
 # ------------------------------------------------------------
-def export_flats(ifc_path, download_dir):
+def export_flats(ifc_path, download_dir, original_filename=None):
     """
     Обрабатывает IFC-файл и сохраняет CSV в папке для скачивания
 
@@ -142,8 +164,8 @@ def export_flats(ifc_path, download_dir):
         flat_number = zone.Name or ""
 
         # Получение площади
-        area = ""
         group = get_flat_main_group(zone)
+        area = get_area_value(group)
         if group:
             psets = _get_psets(group)
             if "Pset_ZoneCommon" in psets:
@@ -176,9 +198,19 @@ def export_flats(ifc_path, download_dir):
     # Создание папки для скачивания, если не существует
     os.makedirs(download_dir, exist_ok=True)
 
-    # Формирование пути для CSV
-    base_name = Path(ifc_path).stem
-    csv_filename = f"{base_name}.csv"
+    # Формирование пути для CSV - используем оригинальное имя файла
+    if original_filename:
+        # Убираем расширение из оригинального имени и добавляем .csv
+        base_name = os.path.splitext(original_filename)[0]
+        # Очищаем имя от недопустимых символов для файловой системы
+        import re
+        base_name = re.sub(r'[<>:"/\\|?*]', '_', base_name)
+        csv_filename = f"{base_name}.csv"
+    else:
+        # Fallback к старому способу
+        base_name = Path(ifc_path).stem
+        csv_filename = f"{base_name}.csv"
+
     csv_path = os.path.join(download_dir, csv_filename)
 
     # Запись CSV
