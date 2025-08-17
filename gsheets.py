@@ -7,6 +7,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 import os
 import csv
 import logging
+import re
+from datetime import datetime
 
 # Настройка логгера
 logger = logging.getLogger('ifc-exporter')
@@ -23,7 +25,7 @@ def validate_gs_credentials():
     """Проверка наличия всех необходимых переменных окружения"""
     required_vars = [
         'GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY',
-        'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI'
+        'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID'
     ]
 
     missing = [var for var in required_vars if not os.getenv(var)]
@@ -33,11 +35,41 @@ def validate_gs_credentials():
     # Проверка, что ключи не являются placeholder'ами
     if os.getenv('GS_PROJECT_ID', '').startswith('your-'):
         raise ValueError("Please replace placeholder values in .env file with actual Google API credentials")
+def sanitize_sheet_name(name):
+    """
+    Очищает имя листа от недопустимых символов для Google Sheets
+    """
+    # Удаляем расширение файла
+    name = os.path.splitext(name)[0]
+
+    # Google Sheets не разрешает некоторые символы в названиях листов
+    # Заменяем недопустимые символы на underscore
+    sanitized = re.sub(r'[^\w\-\.\s]', '_', name)
+
+    # Ограничиваем длину (максимум 100 символов в Google Sheets)
+    if len(sanitized) > 100:
+        sanitized = sanitized[:97] + "..."
+
+    return sanitized
 
 def upload_to_google_sheets(csv_path, original_filename):
-    """Загрузка CSV в Google Sheets с созданием новой таблицы"""
+    """
+    Загрузка CSV в существующую Google Sheets таблицу как новую вкладку
+
+    :param csv_path: путь к CSV файлу
+    :param original_filename: оригинальное имя IFC файла
+    :return: URL таблицы
+    """
+
     try:
-        validate_gs_credentials()  # Проверка перед началом
+        validate_gs_credentials()
+
+        # ID существующей таблицы (нужно указать в переменных окружения)
+        spreadsheet_id = os.getenv('GS_SPREADSHEET_ID')
+        if not spreadsheet_id:
+            raise ValueError(
+                "Missing GS_SPREADSHEET_ID environment variable. Please specify the ID of existing Google Sheets document.")
+
         # Авторизация через сервисный аккаунт
         scope = ['https://www.googleapis.com/auth/spreadsheets',
                  'https://www.googleapis.com/auth/drive']
@@ -59,18 +91,37 @@ def upload_to_google_sheets(csv_path, original_filename):
         client = gspread.authorize(creds)
         logger.info("Authenticated with Google Sheets API")
 
-        # Создание новой таблицы
-        spreadsheet_name = f"IFC Export: {os.path.splitext(original_filename)[0]}"
-        spreadsheet = client.create(spreadsheet_name)
-        logger.info(f"Created new spreadsheet: {spreadsheet_name}")
+        # Открываем существующую таблицу
+        try:
+            spreadsheet = client.open_by_key(spreadsheet_id)
+            logger.info(f"Opened existing spreadsheet: {spreadsheet.title}")
+        except gspread.exceptions.SpreadsheetNotFound:
+            raise ValueError(f"Spreadsheet with ID {spreadsheet_id} not found. Check GS_SPREADSHEET_ID.")
+        except gspread.exceptions.APIError as e:
+            if "PERMISSION_DENIED" in str(e):
+                raise ValueError(
+                    f"No access to spreadsheet {spreadsheet_id}. Check sharing permissions for service account email: {creds_dict['client_email']}")
+            raise
 
-        # Настройка доступа
-        spreadsheet.share(None, perm_type='anyone', role='writer')
+        # Создаем имя для новой вкладки
+        sheet_name = sanitize_sheet_name(original_filename)
 
-        # Получение первого листа
-        worksheet = spreadsheet.get_worksheet(0)
-        worksheet.update_title("Квартирография")
-        logger.info("Worksheet prepared")
+        # Проверяем, существует ли уже вкладка с таким именем
+        existing_sheets = [worksheet.title for worksheet in spreadsheet.worksheets()]
+
+        if sheet_name in existing_sheets:
+            # Если вкладка существует, добавляем временную метку
+            timestamp = datetime.now().strftime("_%H%M%S")
+            sheet_name = f"{sheet_name}{timestamp}"
+            logger.info(f"Sheet name already exists, using: {sheet_name}")
+
+        # Создаем новую вкладку
+        try:
+            worksheet = spreadsheet.add_worksheet(title=sheet_name, rows=1000, cols=10)
+            logger.info(f"Created new worksheet: {sheet_name}")
+        except Exception as e:
+            logger.error(f"Failed to create worksheet: {str(e)}")
+            raise
 
         # Чтение и загрузка данных из CSV
         with open(csv_path, 'r', encoding='utf-8') as f:
@@ -81,9 +132,18 @@ def upload_to_google_sheets(csv_path, original_filename):
             # Batch операция для всех данных сразу
             range_name = f'A1:{chr(65 + len(data[0]) - 1)}{len(data)}'
             worksheet.update(range_name, data)
+            logger.info(f"Data uploaded to worksheet '{sheet_name}': {len(data) - 1} rows")
 
-        logger.info(f"Data uploaded: {len(data) - 1} rows")
-        return spreadsheet.url
+        # Форматируем заголовки (делаем их жирными)
+        try:
+            worksheet.format('A1:F1', {'textFormat': {'bold': True}})
+            logger.info("Header formatting applied")
+        except Exception as e:
+            logger.warning(f"Failed to format headers: {str(e)}")
+
+        # Возвращаем URL конкретной вкладки
+        worksheet_url = f"{spreadsheet.url}#gid={worksheet.id}"
+        return worksheet_url
 
     except Exception as e:
         logger.error(f"Google Sheets upload error: {str(e)}", exc_info=True)

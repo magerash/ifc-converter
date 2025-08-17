@@ -130,10 +130,15 @@ def get_area_value(group):
     area_value = props["GrossPlannedArea"]
     if isinstance(area_value, (int, float)):
         # Предполагаем, что площадь уже в м²
-        return round(float(area_value), 2)
+        return str(round(float(area_value), 2)).replace('.', ',')
 
     return ""
 
+def format_area_with_comma(area_value):
+    """Вспомогательная функция для форматирования площади с запятой"""
+    if isinstance(area_value, (int, float)):
+        return str(round(float(area_value), 2)).replace('.', ',')
+    return str(area_value)
 
 # ------------------------------------------------------------
 # основная обработка
@@ -166,12 +171,13 @@ def export_flats(ifc_path, download_dir, original_filename=None):
         # Получение площади
         group = get_flat_main_group(zone)
         area = get_area_value(group)
-        if group:
+        if group and not area:  # если get_area_value не вернула результат, пробуем альтернативный способ
             psets = _get_psets(group)
             if "Pset_ZoneCommon" in psets:
                 props = psets["Pset_ZoneCommon"]
                 if "GrossPlannedArea" in props:
-                    area = float(props["GrossPlannedArea"]) * MILLI_METRE_FACTOR
+                    area_num = float(props["GrossPlannedArea"]) * MILLI_METRE_FACTOR
+                    area = format_area_with_comma(area_num)
 
         # Получение информации об этаже
         storey = get_parent_of_type(zone, "IfcBuildingStorey")

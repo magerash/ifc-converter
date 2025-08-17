@@ -67,16 +67,25 @@ def upload_file():
         if not allowed_file(file.filename):
             return jsonify({"error": "Invalid file type. Please use .ifc or .ifczip files"}), 400
 
-        # Генерация уникального имени файла
-        file_id = uuid.uuid4().hex
+        # Сохраняем файл с оригинальным именем
         original_name = file.filename
-        file_ext = original_name.rsplit('.', 1)[1].lower()
-        filename = f"{file_id}.{file_ext}"
-        ifc_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        # Очищаем имя файла от недопустимых символов для файловой системы
+        import re
+        safe_filename = re.sub(r'[<>:"/\\|?*]', '_', original_name)
+
+        # Если файл с таким именем уже существует, добавляем timestamp
+        ifc_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+        if os.path.exists(ifc_path):
+            name_part = os.path.splitext(safe_filename)[0]
+            ext_part = os.path.splitext(safe_filename)[1]
+            timestamp = uuid.uuid4().hex[:8]  # Короткий уникальный суффикс
+            safe_filename = f"{name_part}_{timestamp}{ext_part}"
+            ifc_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
 
         # Сохранение файла
         file.save(ifc_path)
-        logger.info(f"File uploaded: {original_name} -> {filename}")
+        logger.info(f"File uploaded: {original_name} -> {safe_filename}")
 
         # Обработка IFC
         csv_path = export_flats(ifc_path, app.config['DOWNLOAD_FOLDER'], original_name)
