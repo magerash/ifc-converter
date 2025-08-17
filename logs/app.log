@@ -233,3 +233,44 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 01:01:07 [WARNING]  * Debugger is active!
 2025-08-18 01:01:07 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 01:22:32 [INFO] 127.0.0.1 - - [18/Aug/2025 01:22:32] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-08-18 01:40:13 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 01:40:13 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 01:40:13 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-18 01:40:13 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-18 01:40:13 [INFO]  * Restarting with stat
+2025-08-18 01:40:15 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 01:40:15 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 01:40:15 [WARNING]  * Debugger is active!
+2025-08-18 01:40:15 [INFO]  * Debugger PIN: 158-620-407
+2025-08-18 01:40:19 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:19] "GET / HTTP/1.1" 200 -
+2025-08-18 01:40:35 [INFO] File uploaded: ДЕП01 - ЦТЗ 1.ifczip -> bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
+2025-08-18 01:40:35 [INFO] File uploaded: ДЕП01 - ЦТЗ 1.ifczip -> bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
+2025-08-18 01:40:35 [INFO] Processing IFC file: uploads\bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
+2025-08-18 01:40:35 [INFO] Processing IFC file: uploads\bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
+2025-08-18 01:40:37 [INFO] Exported 370 flats to downloads\ДЕП01 - ЦТЗ 1.csv
+2025-08-18 01:40:37 [INFO] Exported 370 flats to downloads\ДЕП01 - ЦТЗ 1.csv
+2025-08-18 01:40:37 [INFO] CSV generated: downloads\ДЕП01 - ЦТЗ 1.csv
+2025-08-18 01:40:37 [INFO] CSV generated: downloads\ДЕП01 - ЦТЗ 1.csv
+2025-08-18 01:40:37 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 40, in upload_to_google_sheets
+    validate_gs_credentials()  # Проверка перед началом
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\appartment mix\gsheets.py", line 31, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
+2025-08-18 01:40:37 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 40, in upload_to_google_sheets
+    validate_gs_credentials()  # Проверка перед началом
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\appartment mix\gsheets.py", line 31, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
+2025-08-18 01:40:37 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
+2025-08-18 01:40:37 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
+2025-08-18 01:40:37 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:37] "POST /uploads HTTP/1.1" 200 -
+2025-08-18 01:40:48 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:48] "GET /downloads/ДЕП01%20-%20ЦТЗ%201.csv HTTP/1.1" 200 -
