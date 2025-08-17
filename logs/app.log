@@ -274,3 +274,51 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 01:40:37 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 2025-08-18 01:40:37 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:37] "POST /uploads HTTP/1.1" 200 -
 2025-08-18 01:40:48 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:48] "GET /downloads/део01%20-%20жрг%201.csv HTTP/1.1" 200 -
+2025-08-18 02:08:06 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 02:08:06 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 02:08:06 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-18 02:08:06 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-18 02:08:06 [INFO]  * Restarting with stat
+2025-08-18 02:08:07 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 02:08:07 [INFO] Starting IFC to Google Sheets converter...
+2025-08-18 02:08:08 [WARNING]  * Debugger is active!
+2025-08-18 02:08:08 [INFO]  * Debugger PIN: 158-620-407
+2025-08-18 02:08:15 [INFO] 127.0.0.1 - - [18/Aug/2025 02:08:15] "GET / HTTP/1.1" 200 -
+2025-08-18 02:08:19 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_a21636e3.ifczip
+2025-08-18 02:08:19 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_a21636e3.ifczip
+2025-08-18 02:08:19 [INFO] Processing IFC file: uploads\олю01 - жрг 9_a21636e3.ifczip
+2025-08-18 02:08:19 [INFO] Processing IFC file: uploads\олю01 - жрг 9_a21636e3.ifczip
+2025-08-18 02:08:22 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-18 02:08:22 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-18 02:08:22 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-18 02:08:22 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-18 02:08:22 [INFO] Authenticated with Google Sheets API
+2025-08-18 02:08:22 [INFO] Authenticated with Google Sheets API
+2025-08-18 02:08:24 [ERROR] Google Sheets upload error: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 64, in upload_to_google_sheets
+    spreadsheet = client.create(spreadsheet_name)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\grash88\AppData\Local\JetBrains\PyCharmCE2024.1\demo\PyCharmLearningProject\venv\Lib\site-packages\gspread\client.py", line 247, in create
+    r = self.request("post", DRIVE_FILES_API_V3_URL, json=payload, params=params)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\grash88\AppData\Local\JetBrains\PyCharmCE2024.1\demo\PyCharmLearningProject\venv\Lib\site-packages\gspread\client.py", line 93, in request
+    raise APIError(response)
+gspread.exceptions.APIError: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
+2025-08-18 02:08:24 [ERROR] Google Sheets upload error: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 64, in upload_to_google_sheets
+    spreadsheet = client.create(spreadsheet_name)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\grash88\AppData\Local\JetBrains\PyCharmCE2024.1\demo\PyCharmLearningProject\venv\Lib\site-packages\gspread\client.py", line 247, in create
+    r = self.request("post", DRIVE_FILES_API_V3_URL, json=payload, params=params)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\grash88\AppData\Local\JetBrains\PyCharmCE2024.1\demo\PyCharmLearningProject\venv\Lib\site-packages\gspread\client.py", line 93, in request
+    raise APIError(response)
+gspread.exceptions.APIError: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
+2025-08-18 02:08:24 [WARNING] Google Sheets upload failed: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
+2025-08-18 02:08:24 [WARNING] Google Sheets upload failed: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
+2025-08-18 02:08:24 [INFO] 127.0.0.1 - - [18/Aug/2025 02:08:24] "POST /uploads HTTP/1.1" 200 -
