@@ -1,7 +1,22 @@
+# Flask и веб-сервер
 Flask==2.3.3
-ifcopenshell==0.8.3.post2
-gspread==5.10.0
-oauth2client==4.1.3
-pathlib
 gunicorn==21.2.0
+
+# Работа с IFC файлами
+ifcopenshell==0.7.0
+
+# Google Sheets API
+gspread==5.12.0
+oauth2client==4.1.3
+
+# Утилиты
 python-dotenv==1.0.0
+
+# Безопасность и валидация
+Werkzeug==2.3.7
+
+# Дополнительные зависимости для ifcopenshell
+numpy==1.24.3
+
+# Логирование
+colorlog==6.7.0
