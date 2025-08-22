@@ -90,6 +90,11 @@
             border: 1px solid #c3e6cb;
             color: #155724;
         }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
         .error {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
@@ -140,6 +145,29 @@
             background: #2980b9;
             text-decoration: none;
             color: white;
+        }
+        .link-btn.disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .diagnostic-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #17a2b8;
+            font-size: 14px;
+        }
+        .diagnostic-info h4 {
+            margin: 0 0 10px 0;
+            color: #17a2b8;
+        }
+        .diagnostic-info pre {
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -224,42 +252,95 @@
                     const formData = new FormData();
                     formData.append('file', selectedFile);
 
-                    // ИСПРАВЛЕНО: используем правильный endpoint /uploads
+                    // Отправка запроса
                     const response = await fetch('/uploads', {
                         method: 'POST',
                         body: formData
                     });
 
                     const result = await response.json();
+                    console.log('Server response:', result); // Для отладки
 
                     if (response.ok && result.status === 'success') {
                         // Обновить прогресс
                         progressBar.style.width = '100%';
                         statusText.textContent = 'Готово!';
 
+                        // Определить класс для результата
+                        let resultClass = 'success';
+                        let statusIcon = '✅';
+                        let statusMessage = 'Файл успешно обработан!';
+
+                        // Проверить статус Google Sheets
+                        if (result.google_sheets_status === 'failed') {
+                            resultClass = 'warning';
+                            statusIcon = '⚠️';
+                            statusMessage = 'Файл обработан, но возникла проблема с Google Sheets';
+                        }
+
                         // Показать результат
-                        resultArea.className = 'result-area success';
-                        resultContent.innerHTML = `
-                            <h2> Файл успешно обработан!</h2>
-                            <p>Данные извлечены и экспортированы</p>
-                            ${result.sheet_url ?
-                                `<a href="${result.sheet_url}" target="_blank" class="link-btn">Открыть Google Sheets</a>` :
-                                ''}
-                            ${result.csv_path ?
-                                `<a href="/downloads/${result.csv_path.split('/').pop()}" download class="link-btn">Скачать CSV</a>` :
-                                ''}
+                        resultArea.className = `result-area ${resultClass}`;
+
+                        let contentHtml = `
+                            <h2>${statusIcon} ${statusMessage}</h2>
+                            <p>Данные извлечены и экспортированы в CSV</p>
                         `;
+
+                        // Кнопки действий
+                        let buttonsHtml = '';
+
+                        // Кнопка Google Sheets
+                        if (result.sheet_url && result.google_sheets_status === 'success') {
+                            buttonsHtml += `<a href="${result.sheet_url}" target="_blank" class="link-btn">📊 Открыть Google Sheets</a>`;
+                        } else {
+                            buttonsHtml += `<span class="link-btn disabled" title="Google Sheets недоступен">📊 Google Sheets (недоступен)</span>`;
+                        }
+
+                        // Кнопка скачивания CSV
+                        if (result.csv_path) {
+                            buttonsHtml += `<a href="/downloads/${result.csv_path}" download class="link-btn">💾 Скачать CSV</a>`;
+                        }
+
+                        contentHtml += buttonsHtml;
+
+                        // Диагностическая информация
+                        if (result.google_sheets_status === 'failed') {
+                            contentHtml += `
+                                <div class="diagnostic-info">
+                                    <h4>🔍 Диагностическая информация:</h4>
+                                    <p><strong>Google Sheets статус:</strong> ${result.google_sheets_status}</p>
+                                    <p><strong>Ошибка:</strong> ${result.google_sheets_error || 'Неизвестная ошибка'}</p>
+                                    <p><strong>Возможные причины:</strong></p>
+                                    <ul>
+                                        <li>Не настроены переменные окружения Google API</li>
+                                        <li>Проблемы с правами сервисного аккаунта</li>
+                                        <li>Недоступен идентификатор таблицы (GS_SPREADSHEET_ID)</li>
+                                        <li>Ограничения API Google Sheets</li>
+                                    </ul>
+                                    <pre>Полный ответ сервера: ${JSON.stringify(result, null, 2)}</pre>
+                                </div>
+                            `;
+                        }
+
+                        resultContent.innerHTML = contentHtml;
                         resultArea.style.display = 'block';
+
                     } else {
                         throw new Error(result.error || 'Неизвестная ошибка');
                     }
                 } catch (error) {
+                    console.error('Client error:', error); // Для отладки
+
                     // Показать ошибку
                     resultArea.className = 'result-area error';
                     resultContent.innerHTML = `
                         <h2>❌ Ошибка обработки</h2>
-                        <p>${error.message}</p>
+                        <p><strong>Сообщение:</strong> ${error.message}</p>
                         <p>Проверьте корректность IFC-файла и попробуйте снова.</p>
+                        <div class="diagnostic-info">
+                            <h4>🔍 Техническая информация:</h4>
+                            <pre>Error: ${error.stack || error.message}</pre>
+                        </div>
                     `;
                     resultArea.style.display = 'block';
                     statusText.textContent = 'Ошибка!';

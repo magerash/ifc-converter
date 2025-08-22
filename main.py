@@ -38,10 +38,12 @@ file_handler.setFormatter(logging.Formatter(
 ))
 logger.addHandler(file_handler)
 
+
 def allowed_file(filename):
     """Проверка разрешенных расширений файлов"""
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
 
 @app.route('/')
 def index():
@@ -91,13 +93,16 @@ def upload_file():
         csv_path = export_flats(ifc_path, app.config['DOWNLOAD_FOLDER'], original_name)
         logger.info(f"CSV generated: {csv_path}")
 
-        # Попытка загрузки в Google Sheets (опционально)
+        # Попытка загрузки в Google Sheets
         sheet_url = None
+        gs_error_message = None
+
         try:
             sheet_url = upload_to_google_sheets(csv_path, original_name)
             logger.info(f"Uploaded to Google Sheets: {sheet_url}")
         except Exception as gs_error:
-            logger.warning(f"Google Sheets upload failed: {str(gs_error)}")
+            gs_error_message = str(gs_error)
+            logger.warning(f"Google Sheets upload failed: {gs_error_message}")
             # Не прерываем выполнение, просто логируем ошибку
 
         # Очистка - удаление загруженного IFC файла (опционально)
@@ -107,12 +112,23 @@ def upload_file():
         # except Exception:
         #     pass
 
-        return jsonify({
+        # Формируем ответ с дополнительной информацией
+        response_data = {
             "status": "success",
-            "sheet_url": sheet_url,
-            "csv_path": os.path.basename(csv_path),  # Возвращаем только имя файла
-            "original_filename": original_name  # Добавляем оригинальное имя для отладки
-        })
+            "csv_path": os.path.basename(csv_path),
+            "original_filename": original_name
+        }
+
+        # Добавляем информацию о Google Sheets
+        if sheet_url:
+            response_data["sheet_url"] = sheet_url
+            response_data["google_sheets_status"] = "success"
+        else:
+            response_data["sheet_url"] = None
+            response_data["google_sheets_status"] = "failed"
+            response_data["google_sheets_error"] = gs_error_message
+
+        return jsonify(response_data)
 
     except Exception as e:
         logger.error(f"Processing error: {str(e)}", exc_info=True)

@@ -40,8 +40,8 @@
 2025-08-18 00:24:09 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 00:24:15 [INFO] 127.0.0.1 - - [18/Aug/2025 00:24:15] "GET / HTTP/1.1" 200 -
 2025-08-18 00:24:15 [INFO] 127.0.0.1 - - [18/Aug/2025 00:24:15] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-2025-08-18 00:25:33 [INFO] File uploaded: део01 - жрг 1.ifczip -> 87c22d7674d84c478121dc38aeabf40b.ifczip
-2025-08-18 00:25:33 [INFO] File uploaded: део01 - жрг 1.ifczip -> 87c22d7674d84c478121dc38aeabf40b.ifczip
+2025-08-18 00:25:33 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> 87c22d7674d84c478121dc38aeabf40b.ifczip
+2025-08-18 00:25:33 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> 87c22d7674d84c478121dc38aeabf40b.ifczip
 2025-08-18 00:25:33 [INFO] Processing IFC file: uploads\87c22d7674d84c478121dc38aeabf40b.ifczip
 2025-08-18 00:25:33 [INFO] Processing IFC file: uploads\87c22d7674d84c478121dc38aeabf40b.ifczip
 2025-08-18 00:25:35 [INFO] Exported 370 flats to downloads\87c22d7674d84c478121dc38aeabf40b.csv
@@ -51,7 +51,7 @@
 2025-08-18 00:25:35 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -59,7 +59,7 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 00:25:35 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -91,8 +91,8 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 00:47:17 [WARNING]  * Debugger is active!
 2025-08-18 00:47:17 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 00:47:21 [INFO] 127.0.0.1 - - [18/Aug/2025 00:47:21] "GET / HTTP/1.1" 200 -
-2025-08-18 00:47:32 [INFO] File uploaded: део01 - жрг 2.ifczip -> 9aa5a2154f4b47098e0824332ba01d3d.ifczip
-2025-08-18 00:47:32 [INFO] File uploaded: део01 - жрг 2.ifczip -> 9aa5a2154f4b47098e0824332ba01d3d.ifczip
+2025-08-18 00:47:32 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> 9aa5a2154f4b47098e0824332ba01d3d.ifczip
+2025-08-18 00:47:32 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> 9aa5a2154f4b47098e0824332ba01d3d.ifczip
 2025-08-18 00:47:32 [ERROR] Processing error: export_flats() takes 2 positional arguments but 3 were given
 Traceback (most recent call last):
   File "D:\appartment mix\main.py", line 82, in upload_file
@@ -119,18 +119,18 @@ TypeError: export_flats() takes 2 positional arguments but 3 were given
 2025-08-18 00:55:30 [WARNING]  * Debugger is active!
 2025-08-18 00:55:30 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 00:55:45 [INFO] 127.0.0.1 - - [18/Aug/2025 00:55:45] "GET / HTTP/1.1" 200 -
-2025-08-18 00:55:52 [INFO] File uploaded: део01 - жрг 2.ifczip -> c1c9c37cc0414d36a61be09b8b04415f.ifczip
-2025-08-18 00:55:52 [INFO] File uploaded: део01 - жрг 2.ifczip -> c1c9c37cc0414d36a61be09b8b04415f.ifczip
+2025-08-18 00:55:52 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> c1c9c37cc0414d36a61be09b8b04415f.ifczip
+2025-08-18 00:55:52 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> c1c9c37cc0414d36a61be09b8b04415f.ifczip
 2025-08-18 00:55:52 [INFO] Processing IFC file: uploads\c1c9c37cc0414d36a61be09b8b04415f.ifczip
 2025-08-18 00:55:52 [INFO] Processing IFC file: uploads\c1c9c37cc0414d36a61be09b8b04415f.ifczip
-2025-08-18 00:55:54 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 00:55:54 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 00:55:54 [INFO] CSV generated: downloads\део01 - жрг 2.csv
-2025-08-18 00:55:54 [INFO] CSV generated: downloads\део01 - жрг 2.csv
+2025-08-18 00:55:54 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 00:55:54 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 00:55:54 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 00:55:54 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
 2025-08-18 00:55:54 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -138,7 +138,7 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 00:55:54 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -146,19 +146,19 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 00:55:54 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 2025-08-18 00:55:54 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 2025-08-18 00:55:54 [INFO] 127.0.0.1 - - [18/Aug/2025 00:55:54] "POST /uploads HTTP/1.1" 200 -
-2025-08-18 00:56:13 [INFO] 127.0.0.1 - - [18/Aug/2025 00:56:13] "GET /downloads/део01%20-%20жрг%202.csv HTTP/1.1" 200 -
-2025-08-18 00:56:41 [INFO] File uploaded: део01 - жрг 2.ifczip -> 7097911aca8d49c7b319ff8950db44b9.ifczip
-2025-08-18 00:56:41 [INFO] File uploaded: део01 - жрг 2.ifczip -> 7097911aca8d49c7b319ff8950db44b9.ifczip
+2025-08-18 00:56:13 [INFO] 127.0.0.1 - - [18/Aug/2025 00:56:13] "GET /downloads/О©╫О©╫О©╫01%20-%20О©╫О©╫О©╫%202.csv HTTP/1.1" 200 -
+2025-08-18 00:56:41 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> 7097911aca8d49c7b319ff8950db44b9.ifczip
+2025-08-18 00:56:41 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> 7097911aca8d49c7b319ff8950db44b9.ifczip
 2025-08-18 00:56:41 [INFO] Processing IFC file: uploads\7097911aca8d49c7b319ff8950db44b9.ifczip
 2025-08-18 00:56:41 [INFO] Processing IFC file: uploads\7097911aca8d49c7b319ff8950db44b9.ifczip
-2025-08-18 00:56:43 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 00:56:43 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 00:56:43 [INFO] CSV generated: downloads\део01 - жрг 2.csv
-2025-08-18 00:56:43 [INFO] CSV generated: downloads\део01 - жрг 2.csv
+2025-08-18 00:56:43 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 00:56:43 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 00:56:43 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 00:56:43 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
 2025-08-18 00:56:43 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -166,7 +166,7 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 00:56:43 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -174,19 +174,19 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 00:56:43 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 2025-08-18 00:56:43 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 2025-08-18 00:56:43 [INFO] 127.0.0.1 - - [18/Aug/2025 00:56:43] "POST /uploads HTTP/1.1" 200 -
-2025-08-18 00:57:00 [INFO] 127.0.0.1 - - [18/Aug/2025 00:57:00] "GET /downloads/део01%20-%20жрг%202.csv HTTP/1.1" 200 -
-2025-08-18 00:57:28 [INFO] File uploaded: део01 - жрг 1.ifczip -> 4a5aadb15f754147a75f7d08ecf0cbee.ifczip
-2025-08-18 00:57:28 [INFO] File uploaded: део01 - жрг 1.ifczip -> 4a5aadb15f754147a75f7d08ecf0cbee.ifczip
+2025-08-18 00:57:00 [INFO] 127.0.0.1 - - [18/Aug/2025 00:57:00] "GET /downloads/О©╫О©╫О©╫01%20-%20О©╫О©╫О©╫%202.csv HTTP/1.1" 200 -
+2025-08-18 00:57:28 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> 4a5aadb15f754147a75f7d08ecf0cbee.ifczip
+2025-08-18 00:57:28 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> 4a5aadb15f754147a75f7d08ecf0cbee.ifczip
 2025-08-18 00:57:28 [INFO] Processing IFC file: uploads\4a5aadb15f754147a75f7d08ecf0cbee.ifczip
 2025-08-18 00:57:28 [INFO] Processing IFC file: uploads\4a5aadb15f754147a75f7d08ecf0cbee.ifczip
-2025-08-18 00:57:30 [INFO] Exported 370 flats to downloads\део01 - жрг 1.csv
-2025-08-18 00:57:30 [INFO] Exported 370 flats to downloads\део01 - жрг 1.csv
-2025-08-18 00:57:30 [INFO] CSV generated: downloads\део01 - жрг 1.csv
-2025-08-18 00:57:30 [INFO] CSV generated: downloads\део01 - жрг 1.csv
+2025-08-18 00:57:30 [INFO] Exported 370 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
+2025-08-18 00:57:30 [INFO] Exported 370 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
+2025-08-18 00:57:30 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
+2025-08-18 00:57:30 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
 2025-08-18 00:57:30 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -194,7 +194,7 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 00:57:30 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 29, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 24, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -246,18 +246,18 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 01:40:15 [WARNING]  * Debugger is active!
 2025-08-18 01:40:15 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 01:40:19 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:19] "GET / HTTP/1.1" 200 -
-2025-08-18 01:40:35 [INFO] File uploaded: део01 - жрг 1.ifczip -> bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
-2025-08-18 01:40:35 [INFO] File uploaded: део01 - жрг 1.ifczip -> bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
+2025-08-18 01:40:35 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
+2025-08-18 01:40:35 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
 2025-08-18 01:40:35 [INFO] Processing IFC file: uploads\bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
 2025-08-18 01:40:35 [INFO] Processing IFC file: uploads\bf886855a6c84a9ebfb3aaf4eeb1dd3b.ifczip
-2025-08-18 01:40:37 [INFO] Exported 370 flats to downloads\део01 - жрг 1.csv
-2025-08-18 01:40:37 [INFO] Exported 370 flats to downloads\део01 - жрг 1.csv
-2025-08-18 01:40:37 [INFO] CSV generated: downloads\део01 - жрг 1.csv
-2025-08-18 01:40:37 [INFO] CSV generated: downloads\део01 - жрг 1.csv
+2025-08-18 01:40:37 [INFO] Exported 370 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
+2025-08-18 01:40:37 [INFO] Exported 370 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
+2025-08-18 01:40:37 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
+2025-08-18 01:40:37 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.csv
 2025-08-18 01:40:37 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 40, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 31, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -265,7 +265,7 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 01:40:37 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 40, in upload_to_google_sheets
-    validate_gs_credentials()  # оПНБЕПЙЮ ОЕПЕД МЮВЮКНЛ
+    validate_gs_credentials()  # О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "D:\appartment mix\gsheets.py", line 31, in validate_gs_credentials
     raise ValueError(f"Missing environment variables: {missing}")
@@ -273,7 +273,7 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 01:40:37 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 2025-08-18 01:40:37 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI']
 2025-08-18 01:40:37 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:37] "POST /uploads HTTP/1.1" 200 -
-2025-08-18 01:40:48 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:48] "GET /downloads/део01%20-%20жрг%201.csv HTTP/1.1" 200 -
+2025-08-18 01:40:48 [INFO] 127.0.0.1 - - [18/Aug/2025 01:40:48] "GET /downloads/О©╫О©╫О©╫01%20-%20О©╫О©╫О©╫%201.csv HTTP/1.1" 200 -
 2025-08-18 02:08:06 [INFO] Starting IFC to Google Sheets converter...
 2025-08-18 02:08:06 [INFO] Starting IFC to Google Sheets converter...
 2025-08-18 02:08:06 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
@@ -287,14 +287,14 @@ ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIV
 2025-08-18 02:08:08 [WARNING]  * Debugger is active!
 2025-08-18 02:08:08 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 02:08:15 [INFO] 127.0.0.1 - - [18/Aug/2025 02:08:15] "GET / HTTP/1.1" 200 -
-2025-08-18 02:08:19 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_a21636e3.ifczip
-2025-08-18 02:08:19 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_a21636e3.ifczip
-2025-08-18 02:08:19 [INFO] Processing IFC file: uploads\олю01 - жрг 9_a21636e3.ifczip
-2025-08-18 02:08:19 [INFO] Processing IFC file: uploads\олю01 - жрг 9_a21636e3.ifczip
-2025-08-18 02:08:22 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
-2025-08-18 02:08:22 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
-2025-08-18 02:08:22 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
-2025-08-18 02:08:22 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-18 02:08:19 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9_a21636e3.ifczip
+2025-08-18 02:08:19 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9_a21636e3.ifczip
+2025-08-18 02:08:19 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9_a21636e3.ifczip
+2025-08-18 02:08:19 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9_a21636e3.ifczip
+2025-08-18 02:08:22 [INFO] Exported 504 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9.csv
+2025-08-18 02:08:22 [INFO] Exported 504 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9.csv
+2025-08-18 02:08:22 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9.csv
+2025-08-18 02:08:22 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 9.csv
 2025-08-18 02:08:22 [INFO] Authenticated with Google Sheets API
 2025-08-18 02:08:22 [INFO] Authenticated with Google Sheets API
 2025-08-18 02:08:24 [ERROR] Google Sheets upload error: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
@@ -335,10 +335,10 @@ gspread.exceptions.APIError: {'code': 403, 'message': "The user's Drive storage 
 2025-08-18 02:22:37 [WARNING]  * Debugger is active!
 2025-08-18 02:22:37 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 02:22:41 [INFO] 127.0.0.1 - - [18/Aug/2025 02:22:41] "GET / HTTP/1.1" 200 -
-2025-08-18 02:23:08 [INFO] File uploaded: део01 - жрг 1.ifczip -> део01 - жрг 1.ifczip
-2025-08-18 02:23:08 [INFO] File uploaded: део01 - жрг 1.ifczip -> део01 - жрг 1.ifczip
-2025-08-18 02:23:08 [INFO] Processing IFC file: uploads\део01 - жрг 1.ifczip
-2025-08-18 02:23:08 [INFO] Processing IFC file: uploads\део01 - жрг 1.ifczip
+2025-08-18 02:23:08 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip
+2025-08-18 02:23:08 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip
+2025-08-18 02:23:08 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip
+2025-08-18 02:23:08 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 1.ifczip
 2025-08-18 02:23:09 [ERROR] Processing error: 'float' object has no attribute 'replace'
 Traceback (most recent call last):
   File "D:\appartment mix\main.py", line 91, in upload_file
@@ -379,14 +379,14 @@ AttributeError: 'float' object has no attribute 'replace'
 2025-08-18 02:27:38 [WARNING]  * Debugger is active!
 2025-08-18 02:27:38 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 02:27:38 [INFO] 127.0.0.1 - - [18/Aug/2025 02:27:38] "GET / HTTP/1.1" 200 -
-2025-08-18 02:27:47 [INFO] File uploaded: део01 - жрг 2.ifczip -> део01 - жрг 2.ifczip
-2025-08-18 02:27:47 [INFO] File uploaded: део01 - жрг 2.ifczip -> део01 - жрг 2.ifczip
-2025-08-18 02:27:47 [INFO] Processing IFC file: uploads\део01 - жрг 2.ifczip
-2025-08-18 02:27:47 [INFO] Processing IFC file: uploads\део01 - жрг 2.ifczip
-2025-08-18 02:27:49 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 02:27:49 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 02:27:49 [INFO] CSV generated: downloads\део01 - жрг 2.csv
-2025-08-18 02:27:49 [INFO] CSV generated: downloads\део01 - жрг 2.csv
+2025-08-18 02:27:47 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:27:47 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:27:47 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:27:47 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:27:49 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:27:49 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:27:49 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:27:49 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
 2025-08-18 02:27:49 [INFO] Authenticated with Google Sheets API
 2025-08-18 02:27:49 [INFO] Authenticated with Google Sheets API
 2025-08-18 02:27:51 [ERROR] Google Sheets upload error: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
@@ -414,16 +414,16 @@ gspread.exceptions.APIError: {'code': 403, 'message': "The user's Drive storage 
 2025-08-18 02:27:51 [WARNING] Google Sheets upload failed: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
 2025-08-18 02:27:51 [WARNING] Google Sheets upload failed: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
 2025-08-18 02:27:51 [INFO] 127.0.0.1 - - [18/Aug/2025 02:27:51] "POST /uploads HTTP/1.1" 200 -
-2025-08-18 02:28:09 [INFO] 127.0.0.1 - - [18/Aug/2025 02:28:09] "GET /downloads/део01%20-%20жрг%202.csv HTTP/1.1" 200 -
+2025-08-18 02:28:09 [INFO] 127.0.0.1 - - [18/Aug/2025 02:28:09] "GET /downloads/О©╫О©╫О©╫01%20-%20О©╫О©╫О©╫%202.csv HTTP/1.1" 200 -
 2025-08-18 02:29:04 [INFO] 127.0.0.1 - - [18/Aug/2025 02:29:04] "GET / HTTP/1.1" 200 -
-2025-08-18 02:29:41 [INFO] File uploaded: део01 - жрг 2.ifczip -> део01 - жрг 2_e4751ae2.ifczip
-2025-08-18 02:29:41 [INFO] File uploaded: део01 - жрг 2.ifczip -> део01 - жрг 2_e4751ae2.ifczip
-2025-08-18 02:29:41 [INFO] Processing IFC file: uploads\део01 - жрг 2_e4751ae2.ifczip
-2025-08-18 02:29:41 [INFO] Processing IFC file: uploads\део01 - жрг 2_e4751ae2.ifczip
-2025-08-18 02:29:42 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 02:29:42 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 02:29:42 [INFO] CSV generated: downloads\део01 - жрг 2.csv
-2025-08-18 02:29:42 [INFO] CSV generated: downloads\део01 - жрг 2.csv
+2025-08-18 02:29:41 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2_e4751ae2.ifczip
+2025-08-18 02:29:41 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2_e4751ae2.ifczip
+2025-08-18 02:29:41 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2_e4751ae2.ifczip
+2025-08-18 02:29:41 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2_e4751ae2.ifczip
+2025-08-18 02:29:42 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:29:42 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:29:42 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:29:42 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
 2025-08-18 02:29:42 [INFO] Authenticated with Google Sheets API
 2025-08-18 02:29:42 [INFO] Authenticated with Google Sheets API
 2025-08-18 02:29:43 [ERROR] Google Sheets upload error: {'code': 403, 'message': "The user's Drive storage quota has been exceeded.", 'errors': [{'message': "The user's Drive storage quota has been exceeded.", 'domain': 'usageLimits', 'reason': 'storageQuotaExceeded'}]}
@@ -464,18 +464,18 @@ gspread.exceptions.APIError: {'code': 403, 'message': "The user's Drive storage 
 2025-08-18 02:46:32 [WARNING]  * Debugger is active!
 2025-08-18 02:46:32 [INFO]  * Debugger PIN: 158-620-407
 2025-08-18 02:46:32 [INFO] 127.0.0.1 - - [18/Aug/2025 02:46:32] "GET / HTTP/1.1" 200 -
-2025-08-18 02:47:41 [INFO] File uploaded: део01 - жрг 2.ifczip -> део01 - жрг 2.ifczip
-2025-08-18 02:47:41 [INFO] File uploaded: део01 - жрг 2.ifczip -> део01 - жрг 2.ifczip
-2025-08-18 02:47:41 [INFO] Processing IFC file: uploads\део01 - жрг 2.ifczip
-2025-08-18 02:47:41 [INFO] Processing IFC file: uploads\део01 - жрг 2.ifczip
-2025-08-18 02:47:42 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 02:47:42 [INFO] Exported 367 flats to downloads\део01 - жрг 2.csv
-2025-08-18 02:47:43 [INFO] CSV generated: downloads\део01 - жрг 2.csv
-2025-08-18 02:47:43 [INFO] CSV generated: downloads\део01 - жрг 2.csv
+2025-08-18 02:47:41 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:47:41 [INFO] File uploaded: О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip -> О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:47:41 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:47:41 [INFO] Processing IFC file: uploads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.ifczip
+2025-08-18 02:47:42 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:47:42 [INFO] Exported 367 flats to downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:47:43 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
+2025-08-18 02:47:43 [INFO] CSV generated: downloads\О©╫О©╫О©╫01 - О©╫О©╫О©╫ 2.csv
 2025-08-18 02:47:43 [INFO] Authenticated with Google Sheets API
 2025-08-18 02:47:43 [INFO] Authenticated with Google Sheets API
-2025-08-18 02:47:44 [INFO] Opened existing spreadsheet: йБЮПРХПНЦПЮТХЪ_йСКЭЛЮМ_test
-2025-08-18 02:47:44 [INFO] Opened existing spreadsheet: йБЮПРХПНЦПЮТХЪ_йСКЭЛЮМ_test
+2025-08-18 02:47:44 [INFO] Opened existing spreadsheet: О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫_О©╫О©╫О©╫О©╫О©╫О©╫О©╫_test
+2025-08-18 02:47:44 [INFO] Opened existing spreadsheet: О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫_О©╫О©╫О©╫О©╫О©╫О©╫О©╫_test
 2025-08-18 02:47:44 [ERROR] Google Sheets upload error: name 're' is not defined
 Traceback (most recent call last):
   File "D:\appartment mix\gsheets.py", line 105, in upload_to_google_sheets
