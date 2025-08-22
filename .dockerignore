@@ -1,0 +1,41 @@
+# Исключаем из Docker образа
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Временные файлы
+uploads/*
+downloads/*
+logs/*
+
+# Переменные окружения
+.env*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# README и документация
+README.md
+*.md

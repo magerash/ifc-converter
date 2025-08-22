@@ -503,3 +503,448 @@ NameError: name 're' is not defined
 2025-08-18 02:49:43 [INFO] Starting IFC to Google Sheets converter...
 2025-08-18 02:49:44 [WARNING]  * Debugger is active!
 2025-08-18 02:49:44 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:47:29 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:47:29 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:47:29 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-22 23:47:29 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-22 23:47:29 [INFO]  * Restarting with stat
+2025-08-22 23:47:30 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:47:30 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:47:30 [WARNING]  * Debugger is active!
+2025-08-22 23:47:30 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:47:34 [INFO] 127.0.0.1 - - [22/Aug/2025 23:47:34] "GET / HTTP/1.1" 200 -
+2025-08-22 23:47:39 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_942f9f09.ifczip
+2025-08-22 23:47:39 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_942f9f09.ifczip
+2025-08-22 23:47:39 [INFO] Processing IFC file: uploads\олю01 - жрг 9_942f9f09.ifczip
+2025-08-22 23:47:39 [INFO] Processing IFC file: uploads\олю01 - жрг 9_942f9f09.ifczip
+2025-08-22 23:47:41 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:47:41 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:47:41 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:47:41 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:47:41 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:47:41 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:47:41 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:47:41 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:47:41 [INFO] 127.0.0.1 - - [22/Aug/2025 23:47:41] "POST /uploads HTTP/1.1" 200 -
+2025-08-22 23:49:25 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:49:25 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 2
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 4
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 5
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 6
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 7
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 8
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 9
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 10
+2025-08-22 23:49:25 [WARNING] Python-dotenv could not parse statement starting at line 11
+2025-08-22 23:49:25 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-22 23:49:25 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-22 23:49:25 [INFO]  * Restarting with stat
+2025-08-22 23:49:26 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:49:26 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 2
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 4
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 5
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 6
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 7
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 8
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 9
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 10
+2025-08-22 23:49:26 [WARNING] Python-dotenv could not parse statement starting at line 11
+2025-08-22 23:49:26 [WARNING]  * Debugger is active!
+2025-08-22 23:49:26 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:49:26 [INFO] 127.0.0.1 - - [22/Aug/2025 23:49:26] "GET / HTTP/1.1" 200 -
+2025-08-22 23:49:51 [INFO] File uploaded: олю01 - жрг 9_942f9f09.ifczip -> олю01 - жрг 9_942f9f09_5f31c14f.ifczip
+2025-08-22 23:49:51 [INFO] File uploaded: олю01 - жрг 9_942f9f09.ifczip -> олю01 - жрг 9_942f9f09_5f31c14f.ifczip
+2025-08-22 23:49:51 [INFO] Processing IFC file: uploads\олю01 - жрг 9_942f9f09_5f31c14f.ifczip
+2025-08-22 23:49:51 [INFO] Processing IFC file: uploads\олю01 - жрг 9_942f9f09_5f31c14f.ifczip
+2025-08-22 23:49:53 [INFO] Exported 504 flats to downloads\олю01 - жрг 9_942f9f09.csv
+2025-08-22 23:49:53 [INFO] Exported 504 flats to downloads\олю01 - жрг 9_942f9f09.csv
+2025-08-22 23:49:53 [INFO] CSV generated: downloads\олю01 - жрг 9_942f9f09.csv
+2025-08-22 23:49:53 [INFO] CSV generated: downloads\олю01 - жрг 9_942f9f09.csv
+2025-08-22 23:49:53 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:49:53 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:49:53 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:49:53 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:49:53 [INFO] 127.0.0.1 - - [22/Aug/2025 23:49:53] "POST /uploads HTTP/1.1" 200 -
+2025-08-22 23:51:03 [INFO]  * Detected change in 'D:\\appartment mix\\gsheets.py', reloading
+2025-08-22 23:51:03 [INFO]  * Restarting with stat
+2025-08-22 23:51:04 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:04 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 2
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 4
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 5
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 6
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 7
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 8
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 9
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 10
+2025-08-22 23:51:04 [WARNING] Python-dotenv could not parse statement starting at line 11
+2025-08-22 23:51:04 [WARNING]  * Debugger is active!
+2025-08-22 23:51:04 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:51:14 [INFO]  * Detected change in 'D:\\appartment mix\\gsheets.py', reloading
+2025-08-22 23:51:15 [INFO]  * Restarting with stat
+2025-08-22 23:51:17 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:17 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 2
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 4
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 5
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 6
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 7
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 8
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 9
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 10
+2025-08-22 23:51:17 [WARNING] Python-dotenv could not parse statement starting at line 11
+2025-08-22 23:51:17 [WARNING]  * Debugger is active!
+2025-08-22 23:51:17 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:51:39 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:39 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 2
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 4
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 5
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 6
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 7
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 8
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 9
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 10
+2025-08-22 23:51:39 [WARNING] Python-dotenv could not parse statement starting at line 11
+2025-08-22 23:51:39 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-22 23:51:39 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-22 23:51:39 [INFO]  * Restarting with stat
+2025-08-22 23:51:40 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:40 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 2
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 4
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 5
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 6
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 7
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 8
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 9
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 10
+2025-08-22 23:51:40 [WARNING] Python-dotenv could not parse statement starting at line 11
+2025-08-22 23:51:40 [WARNING]  * Debugger is active!
+2025-08-22 23:51:40 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:51:48 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_9f34a77d.ifczip
+2025-08-22 23:51:48 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_9f34a77d.ifczip
+2025-08-22 23:51:48 [INFO] Processing IFC file: uploads\олю01 - жрг 9_9f34a77d.ifczip
+2025-08-22 23:51:48 [INFO] Processing IFC file: uploads\олю01 - жрг 9_9f34a77d.ifczip
+2025-08-22 23:51:49 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:51:49 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:51:50 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:51:50 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:51:50 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:51:50 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:51:50 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:51:50 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_TYPE', 'GS_PROJECT_ID', 'GS_PRIVATE_KEY_ID', 'GS_PRIVATE_KEY', 'GS_CLIENT_EMAIL', 'GS_CLIENT_ID', 'GS_AUTH_URI', 'GS_TOKEN_URI', 'GS_SPREADSHEET_ID']
+2025-08-22 23:51:50 [INFO] 127.0.0.1 - - [22/Aug/2025 23:51:50] "POST /uploads HTTP/1.1" 200 -
+2025-08-22 23:52:03 [INFO] 127.0.0.1 - - [22/Aug/2025 23:52:03] "GET /downloads/олю01%20-%20жрг%209.csv HTTP/1.1" 200 -
+2025-08-22 23:55:46 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:55:46 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:55:46 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-22 23:55:46 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-22 23:55:46 [INFO]  * Restarting with stat
+2025-08-22 23:55:47 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:55:47 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:55:47 [WARNING]  * Debugger is active!
+2025-08-22 23:55:47 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:55:58 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_03787c31.ifczip
+2025-08-22 23:55:58 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_03787c31.ifczip
+2025-08-22 23:55:58 [INFO] Processing IFC file: uploads\олю01 - жрг 9_03787c31.ifczip
+2025-08-22 23:55:58 [INFO] Processing IFC file: uploads\олю01 - жрг 9_03787c31.ifczip
+2025-08-22 23:56:00 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:00 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:00 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:00 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:00 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:00 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:00 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:00 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:00 [INFO] 127.0.0.1 - - [22/Aug/2025 23:56:00] "POST /uploads HTTP/1.1" 200 -
+2025-08-22 23:56:03 [INFO] 127.0.0.1 - - [22/Aug/2025 23:56:03] "GET / HTTP/1.1" 200 -
+2025-08-22 23:56:09 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_4b9e9818.ifczip
+2025-08-22 23:56:09 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_4b9e9818.ifczip
+2025-08-22 23:56:09 [INFO] Processing IFC file: uploads\олю01 - жрг 9_4b9e9818.ifczip
+2025-08-22 23:56:09 [INFO] Processing IFC file: uploads\олю01 - жрг 9_4b9e9818.ifczip
+2025-08-22 23:56:11 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:11 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:11 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:11 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:56:11 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:11 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:11 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:11 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:56:11 [INFO] 127.0.0.1 - - [22/Aug/2025 23:56:11] "POST /uploads HTTP/1.1" 200 -
+2025-08-22 23:57:12 [INFO]  * Detected change in 'D:\\appartment mix\\main.py', reloading
+2025-08-22 23:57:12 [INFO]  * Restarting with stat
+2025-08-22 23:58:58 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:58:58 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:58:58 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-22 23:58:58 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-22 23:58:58 [INFO]  * Restarting with stat
+2025-08-22 23:58:59 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:58:59 [INFO] Starting IFC to Google Sheets converter...
+2025-08-22 23:58:59 [WARNING]  * Debugger is active!
+2025-08-22 23:58:59 [INFO]  * Debugger PIN: 158-620-407
+2025-08-22 23:59:07 [INFO] 127.0.0.1 - - [22/Aug/2025 23:59:07] "GET / HTTP/1.1" 200 -
+2025-08-22 23:59:11 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_07fdfd65.ifczip
+2025-08-22 23:59:11 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_07fdfd65.ifczip
+2025-08-22 23:59:11 [INFO] Processing IFC file: uploads\олю01 - жрг 9_07fdfd65.ifczip
+2025-08-22 23:59:11 [INFO] Processing IFC file: uploads\олю01 - жрг 9_07fdfd65.ifczip
+2025-08-22 23:59:13 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:59:13 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-22 23:59:13 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:59:13 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-22 23:59:13 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:59:13 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:59:13 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:59:13 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-22 23:59:13 [INFO] 127.0.0.1 - - [22/Aug/2025 23:59:13] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 00:00:21 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:00:21 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:00:21 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 00:00:21 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-23 00:00:21 [INFO]  * Restarting with stat
+2025-08-23 00:00:22 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:00:22 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:00:22 [WARNING]  * Debugger is active!
+2025-08-23 00:00:22 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 00:00:30 [INFO] 127.0.0.1 - - [23/Aug/2025 00:00:30] "GET / HTTP/1.1" 200 -
+2025-08-23 00:00:34 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_5fd5080a.ifczip
+2025-08-23 00:00:34 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_5fd5080a.ifczip
+2025-08-23 00:00:34 [INFO] Processing IFC file: uploads\олю01 - жрг 9_5fd5080a.ifczip
+2025-08-23 00:00:34 [INFO] Processing IFC file: uploads\олю01 - жрг 9_5fd5080a.ifczip
+2025-08-23 00:00:36 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:00:36 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:00:36 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:00:36 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:00:36 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:00:36 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 69, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 34, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:00:36 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:00:36 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:00:36 [INFO] 127.0.0.1 - - [23/Aug/2025 00:00:36] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 00:03:10 [INFO]  * Detected change in 'D:\\appartment mix\\gsheets.py', reloading
+2025-08-23 00:03:10 [INFO]  * Restarting with stat
+2025-08-23 00:03:11 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:03:11 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:03:12 [WARNING]  * Debugger is active!
+2025-08-23 00:03:12 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 00:04:03 [INFO]  * Detected change in 'D:\\appartment mix\\main.py', reloading
+2025-08-23 00:04:03 [INFO]  * Restarting with stat
+2025-08-23 00:06:31 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:06:31 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:06:31 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 00:06:31 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-23 00:06:31 [INFO]  * Restarting with stat
+2025-08-23 00:06:32 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:06:32 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:06:32 [WARNING]  * Debugger is active!
+2025-08-23 00:06:32 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 00:06:35 [INFO] 127.0.0.1 - - [23/Aug/2025 00:06:35] "GET / HTTP/1.1" 200 -
+2025-08-23 00:06:41 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_afe3bf4d.ifczip
+2025-08-23 00:06:41 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_afe3bf4d.ifczip
+2025-08-23 00:06:41 [INFO] Processing IFC file: uploads\олю01 - жрг 9_afe3bf4d.ifczip
+2025-08-23 00:06:41 [INFO] Processing IFC file: uploads\олю01 - жрг 9_afe3bf4d.ifczip
+2025-08-23 00:06:43 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:06:43 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:06:43 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:06:43 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:06:43 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:06:43 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:06:43 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:06:43 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:06:43 [INFO] 127.0.0.1 - - [23/Aug/2025 00:06:43] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 00:13:59 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:13:59 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:13:59 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 00:13:59 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-23 00:13:59 [INFO]  * Restarting with stat
+2025-08-23 00:14:00 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:14:00 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:14:00 [WARNING]  * Debugger is active!
+2025-08-23 00:14:00 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 00:14:03 [INFO] 127.0.0.1 - - [23/Aug/2025 00:14:03] "GET / HTTP/1.1" 200 -
+2025-08-23 00:14:08 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_0d4fa2a6.ifczip
+2025-08-23 00:14:08 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_0d4fa2a6.ifczip
+2025-08-23 00:14:08 [INFO] Processing IFC file: uploads\олю01 - жрг 9_0d4fa2a6.ifczip
+2025-08-23 00:14:08 [INFO] Processing IFC file: uploads\олю01 - жрг 9_0d4fa2a6.ifczip
+2025-08-23 00:14:10 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:14:10 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:14:10 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:14:10 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:14:10 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:14:10 [ERROR] Google Sheets upload error: Missing environment variables: ['GS_SPREADSHEET_ID']
+Traceback (most recent call last):
+  File "D:\appartment mix\gsheets.py", line 65, in upload_to_google_sheets
+    validate_gs_credentials()
+  File "D:\appartment mix\gsheets.py", line 33, in validate_gs_credentials
+    raise ValueError(f"Missing environment variables: {missing}")
+ValueError: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:14:10 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:14:10 [WARNING] Google Sheets upload failed: Missing environment variables: ['GS_SPREADSHEET_ID']
+2025-08-23 00:14:10 [INFO] 127.0.0.1 - - [23/Aug/2025 00:14:10] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 00:16:01 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:16:01 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:16:01 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 00:16:01 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-23 00:16:01 [INFO]  * Restarting with stat
+2025-08-23 00:16:02 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:16:02 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:16:02 [WARNING]  * Debugger is active!
+2025-08-23 00:16:02 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 00:16:04 [INFO] 127.0.0.1 - - [23/Aug/2025 00:16:04] "GET / HTTP/1.1" 200 -
+2025-08-23 00:16:10 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_0c77c6a2.ifczip
+2025-08-23 00:16:10 [INFO] File uploaded: олю01 - жрг 9.ifczip -> олю01 - жрг 9_0c77c6a2.ifczip
+2025-08-23 00:16:10 [INFO] Processing IFC file: uploads\олю01 - жрг 9_0c77c6a2.ifczip
+2025-08-23 00:16:10 [INFO] Processing IFC file: uploads\олю01 - жрг 9_0c77c6a2.ifczip
+2025-08-23 00:16:12 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:16:12 [INFO] Exported 504 flats to downloads\олю01 - жрг 9.csv
+2025-08-23 00:16:12 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:16:12 [INFO] CSV generated: downloads\олю01 - жрг 9.csv
+2025-08-23 00:16:12 [INFO] Authenticated with Google Sheets API
+2025-08-23 00:16:12 [INFO] Authenticated with Google Sheets API
+2025-08-23 00:16:19 [INFO] Opened existing spreadsheet: йБЮПРХПНЦПЮТХЪ_йСКЭЛЮМ_test
+2025-08-23 00:16:19 [INFO] Opened existing spreadsheet: йБЮПРХПНЦПЮТХЪ_йСКЭЛЮМ_test
+2025-08-23 00:16:22 [INFO] Created new worksheet: олю01 - жрг 9
+2025-08-23 00:16:22 [INFO] Created new worksheet: олю01 - жрг 9
+2025-08-23 00:16:23 [INFO] Data uploaded to worksheet 'олю01 - жрг 9': 504 rows
+2025-08-23 00:16:23 [INFO] Data uploaded to worksheet 'олю01 - жрг 9': 504 rows
+2025-08-23 00:16:24 [INFO] Header formatting applied
+2025-08-23 00:16:24 [INFO] Header formatting applied
+2025-08-23 00:16:24 [INFO] Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=915283678
+2025-08-23 00:16:24 [INFO] Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=915283678
+2025-08-23 00:16:24 [INFO] 127.0.0.1 - - [23/Aug/2025 00:16:24] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 00:18:24 [INFO]  * Detected change in 'D:\\appartment mix\\google API check.py', reloading
+2025-08-23 00:18:24 [INFO]  * Restarting with stat
+2025-08-23 00:18:25 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:18:25 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:18:25 [WARNING]  * Debugger is active!
+2025-08-23 00:18:25 [INFO]  * Debugger PIN: 158-620-407
