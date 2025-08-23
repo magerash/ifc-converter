@@ -304,28 +304,29 @@ echo "0 12 * * * /usr/bin/certbot renew --quiet && cd /home/user/ifc-converter &
 
 ## Проблема с портами Nginx
 
-# Сначала проверьте, что занимает порты:
-bashsudo lsof -i :80
-sudo lsof -i :443
-# Остановите все контейнеры и очистите:
-bashdocker-compose down
-docker system prune -f
-
-# Остановить системные веб-серверы
-sudo systemctl stop apache2 || true
-sudo systemctl stop nginx || true
-
-# Остановить все Docker контейнеры
-docker stop $(docker ps -q) || true
+### 1. Сначала проверьте, что занимает порты:
+`bash
+sudo lsof -i :80
+sudo lsof -i :443`
+### 2. Остановите все контейнеры и очистите:
+`bash
 docker-compose down
+docker system prune -f`
 
-# Рекомендуется начать без nginx:
+### 3. Остановить системные веб-серверы
+`sudo systemctl stop nginx || true`
+
+### 4. Остановить все Docker контейнеры
+`docker stop $(docker ps -q) || true
+docker-compose down`
+
+### 5. Рекомендуется начать без nginx:
 
 Замените docker-compose.yml версией без nginx (первый артефакт)
 Запустите: docker-compose up -d
-Приложение будет доступно на http://your-server-ip:5000
+Приложение будет доступно на` http://your-server-ip:5000
 
-# После успешного запуска основного приложения можете добавить nginx:
+### 6. После успешного запуска основного приложения можете добавить nginx:
 
 Если нужен nginx, используйте версию с альтернативными портами (второй артефакт)
 Доступ будет: http://your-server-ip:8080 и https://your-server-ip:8443
