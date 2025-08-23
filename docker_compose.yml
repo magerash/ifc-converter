@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  ifc-converter:
+  appartment-mix:
     build: .
     container_name: ifc-to-sheets
     ports:

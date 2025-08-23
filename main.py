@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Flask приложение для обработки IFC-файлов и экспорта в Google Sheets
+Продакшн версия с поддержкой Gunicorn
 """
 
 import os
@@ -19,24 +20,23 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
 app.config['ALLOWED_EXTENSIONS'] = {'ifc', 'ifczip'}
 
 # Настройка логирования
+log_level = logging.DEBUG if os.getenv('FLASK_DEBUG', '0') == '1' else logging.INFO
+
+# Создание директории для логов
+os.makedirs('logs', exist_ok=True)
+
+# Настройка логгера
 logging.basicConfig(
-    filename='logs/app.log',
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    level=log_level,
+    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.FileHandler('logs/app.log', encoding='utf-8'),
+        logging.StreamHandler()  # Для вывода в консоль Docker
+    ]
 )
+
 logger = logging.getLogger('ifc-exporter')
-
-if not os.path.exists('logs'):
-    os.makedirs('logs')
-
-file_handler = logging.FileHandler('logs/app.log')
-file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(logging.Formatter(
-    '%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-))
-logger.addHandler(file_handler)
 
 
 def allowed_file(filename):
@@ -49,6 +49,16 @@ def allowed_file(filename):
 def index():
     """Главная страница с формой загрузки"""
     return render_template('uploads.html')
+
+
+@app.route('/health')
+def health_check():
+    """Проверка состояния приложения для Docker health check"""
+    return jsonify({
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0"
+    })
 
 
 @app.route('/uploads', methods=['POST'])
@@ -105,12 +115,12 @@ def upload_file():
             logger.warning(f"Google Sheets upload failed: {gs_error_message}")
             # Не прерываем выполнение, просто логируем ошибку
 
-        # Очистка - удаление загруженного IFC файла (опционально)
-        # try:
-        #     os.remove(ifc_path)
-        #     logger.info(f"Temporary file removed: {ifc_path}")
-        # except Exception:
-        #     pass
+        # Очистка загруженного IFC файла для экономии места
+        try:
+            os.remove(ifc_path)
+            logger.info(f"Temporary IFC file removed: {ifc_path}")
+        except Exception as cleanup_error:
+            logger.warning(f"Failed to remove temporary file: {cleanup_error}")
 
         # Формируем ответ с дополнительной информацией
         response_data = {
@@ -165,11 +175,24 @@ def internal_error(e):
     return jsonify({"error": "Internal server error"}), 500
 
 
+def create_app():
+    """Фабрика приложений для Gunicorn"""
+    # Создание необходимых директорий
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
+    os.makedirs('logs', exist_ok=True)
+
+    logger.info("IFC to Google Sheets converter initialized")
+    return app
+
+
 if __name__ == '__main__':
     # Создание необходимых директорий
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
     os.makedirs('logs', exist_ok=True)
 
-    logger.info("Starting IFC to Google Sheets converter...")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Запуск в режиме разработки
+    debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
+    logger.info("Starting IFC to Google Sheets converter in development mode...")
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)

@@ -503,3 +503,124 @@ NameError: name 're' is not defined
 2025-08-18 02:49:43 [INFO] Starting IFC to Google Sheets converter...
 2025-08-18 02:49:44 [WARNING]  * Debugger is active!
 2025-08-18 02:49:44 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 00:29:52 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:29:52 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:29:52 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 00:29:52 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-23 00:29:52 [INFO]  * Restarting with stat
+2025-08-23 00:29:53 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:29:53 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 00:29:53 [WARNING]  * Debugger is active!
+2025-08-23 00:29:53 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 00:29:58 [INFO] 127.0.0.1 - - [23/Aug/2025 00:29:58] "GET / HTTP/1.1" 200 -
+2025-08-23 00:30:02 [INFO] File uploaded: œÃ¿01 - ÷“« 9.ifczip -> œÃ¿01 - ÷“« 9_ab4eb06e.ifczip
+2025-08-23 00:30:02 [INFO] File uploaded: œÃ¿01 - ÷“« 9.ifczip -> œÃ¿01 - ÷“« 9_ab4eb06e.ifczip
+2025-08-23 00:30:02 [INFO] Processing IFC file: uploads\œÃ¿01 - ÷“« 9_ab4eb06e.ifczip
+2025-08-23 00:30:02 [INFO] Processing IFC file: uploads\œÃ¿01 - ÷“« 9_ab4eb06e.ifczip
+2025-08-23 00:30:04 [INFO] Exported 504 flats to downloads\œÃ¿01 - ÷“« 9.csv
+2025-08-23 00:30:04 [INFO] Exported 504 flats to downloads\œÃ¿01 - ÷“« 9.csv
+2025-08-23 00:30:04 [INFO] CSV generated: downloads\œÃ¿01 - ÷“« 9.csv
+2025-08-23 00:30:04 [INFO] CSV generated: downloads\œÃ¿01 - ÷“« 9.csv
+2025-08-23 00:30:04 [INFO] Authenticated with Google Sheets API
+2025-08-23 00:30:04 [INFO] Authenticated with Google Sheets API
+2025-08-23 00:30:06 [INFO] Opened existing spreadsheet:  ‚‡ÚËÓ„‡ÙËˇ_ ÛÎ¸Ï‡Ì_test
+2025-08-23 00:30:06 [INFO] Opened existing spreadsheet:  ‚‡ÚËÓ„‡ÙËˇ_ ÛÎ¸Ï‡Ì_test
+2025-08-23 00:30:07 [INFO] Sheet name already exists, using: œÃ¿01 - ÷“« 9_003007
+2025-08-23 00:30:07 [INFO] Sheet name already exists, using: œÃ¿01 - ÷“« 9_003007
+2025-08-23 00:30:09 [INFO] Created new worksheet: œÃ¿01 - ÷“« 9_003007
+2025-08-23 00:30:09 [INFO] Created new worksheet: œÃ¿01 - ÷“« 9_003007
+2025-08-23 00:30:11 [INFO] Data uploaded to worksheet 'œÃ¿01 - ÷“« 9_003007': 504 rows
+2025-08-23 00:30:11 [INFO] Data uploaded to worksheet 'œÃ¿01 - ÷“« 9_003007': 504 rows
+2025-08-23 00:30:12 [INFO] Header formatting applied
+2025-08-23 00:30:12 [INFO] Header formatting applied
+2025-08-23 00:30:12 [INFO] Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=1155833806
+2025-08-23 00:30:12 [INFO] Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=1155833806
+2025-08-23 00:30:12 [INFO] 127.0.0.1 - - [23/Aug/2025 00:30:12] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 00:30:28 [INFO] 127.0.0.1 - - [23/Aug/2025 00:30:28] "GET /downloads/œÃ¿01%20-%20÷“«%209.csv HTTP/1.1" 200 -
+2025-08-23 13:55:18 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 13:55:18 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 13:55:18 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 13:55:18 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-23 13:55:18 [INFO]  * Restarting with stat
+2025-08-23 13:55:23 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 13:55:23 [INFO] Starting IFC to Google Sheets converter...
+2025-08-23 13:55:23 [WARNING]  * Debugger is active!
+2025-08-23 13:55:23 [INFO]  * Debugger PIN: 158-620-407
+2025-08-23 13:55:30 [INFO] File uploaded: ƒ≈œ01 - ÷“« 2.ifczip -> ƒ≈œ01 - ÷“« 2_8ddef936.ifczip
+2025-08-23 13:55:30 [INFO] File uploaded: ƒ≈œ01 - ÷“« 2.ifczip -> ƒ≈œ01 - ÷“« 2_8ddef936.ifczip
+2025-08-23 13:55:30 [INFO] Processing IFC file: uploads\ƒ≈œ01 - ÷“« 2_8ddef936.ifczip
+2025-08-23 13:55:30 [INFO] Processing IFC file: uploads\ƒ≈œ01 - ÷“« 2_8ddef936.ifczip
+2025-08-23 13:55:34 [INFO] Exported 367 flats to downloads\ƒ≈œ01 - ÷“« 2.csv
+2025-08-23 13:55:34 [INFO] Exported 367 flats to downloads\ƒ≈œ01 - ÷“« 2.csv
+2025-08-23 13:55:34 [INFO] CSV generated: downloads\ƒ≈œ01 - ÷“« 2.csv
+2025-08-23 13:55:34 [INFO] CSV generated: downloads\ƒ≈œ01 - ÷“« 2.csv
+2025-08-23 13:55:34 [INFO] Authenticated with Google Sheets API
+2025-08-23 13:55:34 [INFO] Authenticated with Google Sheets API
+2025-08-23 13:55:36 [INFO] Opened existing spreadsheet:  ‚‡ÚËÓ„‡ÙËˇ_ ÛÎ¸Ï‡Ì_test
+2025-08-23 13:55:36 [INFO] Opened existing spreadsheet:  ‚‡ÚËÓ„‡ÙËˇ_ ÛÎ¸Ï‡Ì_test
+2025-08-23 13:55:37 [INFO] Sheet name already exists, using: ƒ≈œ01 - ÷“« 2_135537
+2025-08-23 13:55:37 [INFO] Sheet name already exists, using: ƒ≈œ01 - ÷“« 2_135537
+2025-08-23 13:55:38 [INFO] Created new worksheet: ƒ≈œ01 - ÷“« 2_135537
+2025-08-23 13:55:38 [INFO] Created new worksheet: ƒ≈œ01 - ÷“« 2_135537
+2025-08-23 13:55:38 [INFO] Data uploaded to worksheet 'ƒ≈œ01 - ÷“« 2_135537': 367 rows
+2025-08-23 13:55:38 [INFO] Data uploaded to worksheet 'ƒ≈œ01 - ÷“« 2_135537': 367 rows
+2025-08-23 13:55:39 [INFO] Header formatting applied
+2025-08-23 13:55:39 [INFO] Header formatting applied
+2025-08-23 13:55:39 [INFO] Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=2085694107
+2025-08-23 13:55:39 [INFO] Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=2085694107
+2025-08-23 13:55:39 [INFO] 127.0.0.1 - - [23/Aug/2025 13:55:39] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 13:58:13 [INFO]  * Detected change in 'D:\\appartment mix\\main.py', reloading
+2025-08-23 13:58:13 [INFO]  * Restarting with stat
+2025-08-23 13:58:14 [INFO] ifc-exporter: Starting IFC to Google Sheets converter in development mode...
+2025-08-23 13:58:29 [INFO] ifc-exporter: Starting IFC to Google Sheets converter in development mode...
+2025-08-23 13:58:29 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 13:58:29 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-23 14:00:48 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 14:00:48] "GET / HTTP/1.1" 200 -
+2025-08-23 14:00:56 [INFO] ifc-exporter: File uploaded: –î–ï–ü01 - –¶–¢–ó 2.ifczip -> –î–ï–ü01 - –¶–¢–ó 2_61e1547e.ifczip
+2025-08-23 14:00:56 [INFO] ifc-exporter: Processing IFC file: uploads\–î–ï–ü01 - –¶–¢–ó 2_61e1547e.ifczip
+2025-08-23 14:00:58 [INFO] ifc-exporter: Exported 367 flats to downloads\–î–ï–ü01 - –¶–¢–ó 2.csv
+2025-08-23 14:00:58 [INFO] ifc-exporter: CSV generated: downloads\–î–ï–ü01 - –¶–¢–ó 2.csv
+2025-08-23 14:00:58 [INFO] ifc-exporter: Authenticated with Google Sheets API
+2025-08-23 14:00:59 [INFO] ifc-exporter: Opened existing spreadsheet: –ö–≤–∞—Ä—Ç–∏—Ä–æ–≥—Ä–∞—Ñ–∏—è_–ö—É–ª—å–º–∞–Ω_test
+2025-08-23 14:01:00 [INFO] ifc-exporter: Sheet name already exists, using: –î–ï–ü01 - –¶–¢–ó 2_140100
+2025-08-23 14:01:01 [INFO] ifc-exporter: Created new worksheet: –î–ï–ü01 - –¶–¢–ó 2_140100
+2025-08-23 14:01:01 [INFO] ifc-exporter: Data uploaded to worksheet '–î–ï–ü01 - –¶–¢–ó 2_140100': 367 rows
+2025-08-23 14:01:02 [INFO] ifc-exporter: Header formatting applied
+2025-08-23 14:01:02 [INFO] ifc-exporter: Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=678213547
+2025-08-23 14:01:02 [INFO] ifc-exporter: Temporary IFC file removed: uploads\–î–ï–ü01 - –¶–¢–ó 2_61e1547e.ifczip
+2025-08-23 14:01:02 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 14:01:02] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 14:02:48 [INFO] ifc-exporter: Starting IFC to Google Sheets converter in development mode...
+2025-08-23 14:02:48 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 14:02:48 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-23 14:16:19 [INFO] ifc-exporter: Starting IFC to Google Sheets converter in development mode...
+2025-08-23 14:16:19 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 14:16:19 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-23 14:16:22 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 14:16:22] "GET / HTTP/1.1" 200 -
+2025-08-23 14:16:28 [INFO] ifc-exporter: File uploaded: –î–ï–ü01 - –¶–¢–ó 1.ifczip -> –î–ï–ü01 - –¶–¢–ó 1.ifczip
+2025-08-23 14:16:28 [INFO] ifc-exporter: Processing IFC file: uploads\–î–ï–ü01 - –¶–¢–ó 1.ifczip
+2025-08-23 14:16:29 [INFO] ifc-exporter: Exported 370 flats to downloads\–î–ï–ü01 - –¶–¢–ó 1.csv
+2025-08-23 14:16:29 [INFO] ifc-exporter: CSV generated: downloads\–î–ï–ü01 - –¶–¢–ó 1.csv
+2025-08-23 14:16:29 [INFO] ifc-exporter: Authenticated with Google Sheets API
+2025-08-23 14:16:31 [INFO] ifc-exporter: Opened existing spreadsheet: –ö–≤–∞—Ä—Ç–∏—Ä–æ–≥—Ä–∞—Ñ–∏—è_–ö—É–ª—å–º–∞–Ω_test
+2025-08-23 14:16:31 [INFO] ifc-exporter: Sheet name already exists, using: –î–ï–ü01 - –¶–¢–ó 1_141631
+2025-08-23 14:16:32 [INFO] ifc-exporter: Created new worksheet: –î–ï–ü01 - –¶–¢–ó 1_141631
+2025-08-23 14:16:33 [INFO] ifc-exporter: Data uploaded to worksheet '–î–ï–ü01 - –¶–¢–ó 1_141631': 370 rows
+2025-08-23 14:16:33 [INFO] ifc-exporter: Header formatting applied
+2025-08-23 14:16:33 [INFO] ifc-exporter: Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=2026133163
+2025-08-23 14:16:33 [INFO] ifc-exporter: Temporary IFC file removed: uploads\–î–ï–ü01 - –¶–¢–ó 1.ifczip
+2025-08-23 14:16:33 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 14:16:33] "POST /uploads HTTP/1.1" 200 -
