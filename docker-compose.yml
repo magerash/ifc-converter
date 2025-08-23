@@ -25,13 +25,15 @@ services:
       start_period: 10s
     networks:
       - ifc-network
+    deploy:
+      replicas: 3
 
   # Nginx reverse proxy (опционально)
   nginx:
     image: nginx:alpine
     ports:
       - "8080:80"      # Используем порт 8080 вместо 80
-      - "8443:443"     # Используем порт 8443 вместо 443
+#      - "8443:443"     # Используем порт 8443 вместо 443
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro  # Для SSL сертификатов

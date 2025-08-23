@@ -18,8 +18,8 @@
 
 3. **Запустите развертывание:**
    ```bash
-   chmod +x deployment.sh
-   ./deployment.sh
+   chmod +x deploy.sh
+   ./deploy.sh
    ```
 
 ## 📋 Настройка Google API
