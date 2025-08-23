@@ -4,7 +4,7 @@
 
 set -e
 
-DOMAIN=${1:-"your-domain.com"}
+DOMAIN=${1:-"kulman-ifc-converter.com"}
 EMAIL=${2:-"admin@$DOMAIN"}
 
 echo "🔒 Настройка SSL сертификатов для домена: $DOMAIN"
