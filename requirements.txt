@@ -3,7 +3,7 @@ Flask==2.3.3
 gunicorn==21.2.0
 
 # Работа с IFC файлами
-ifcopenshell==0.7.0
+ifcopenshell==0.8.3.post2
 
 # Google Sheets API
 gspread==5.12.0
