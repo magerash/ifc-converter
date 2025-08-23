@@ -302,6 +302,15 @@ echo "0 12 * * * /usr/bin/certbot renew --quiet && cd /home/user/ifc-converter &
 4. Права доступа к Google Sheets
 5. Корректность .env файла
 
+## Проблема с портами Nginx
+
+# Сначала проверьте, что занимает порты:
+bashsudo lsof -i :80
+sudo lsof -i :443
+# Остановите все контейнеры и очистите:
+bashdocker-compose down
+docker system prune -f
+
 # Остановить системные веб-серверы
 sudo systemctl stop apache2 || true
 sudo systemctl stop nginx || true
