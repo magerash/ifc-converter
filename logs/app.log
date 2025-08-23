@@ -643,3 +643,24 @@ NameError: name 're' is not defined
 2025-08-23 16:35:40 [INFO] ifc-exporter: Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=411333874
 2025-08-23 16:35:40 [INFO] ifc-exporter: Temporary IFC file removed: uploads\ПМА01 - ЦТЗ 9.ifczip
 2025-08-23 16:35:40 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 16:35:40] "POST /uploads HTTP/1.1" 200 -
+2025-08-23 17:04:55 [INFO] ifc-exporter: Starting IFC to Google Sheets converter in development mode...
+2025-08-23 17:04:55 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-23 17:04:55 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-23 17:05:00 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 17:05:00] "GET /health HTTP/1.1" 200 -
+2025-08-23 17:05:05 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 17:05:05] "GET /health HTTP/1.1" 200 -
+2025-08-23 17:05:17 [INFO] ifc-exporter: File uploaded: ДЕП01 - ЦТЗ 1.ifczip -> ДЕП01 - ЦТЗ 1.ifczip
+2025-08-23 17:05:17 [INFO] ifc-exporter: Processing IFC file: uploads\ДЕП01 - ЦТЗ 1.ifczip
+2025-08-23 17:05:19 [INFO] ifc-exporter: Exported 370 flats to downloads\ДЕП01 - ЦТЗ 1.csv
+2025-08-23 17:05:19 [INFO] ifc-exporter: CSV generated: downloads\ДЕП01 - ЦТЗ 1.csv
+2025-08-23 17:05:19 [INFO] ifc-exporter: Authenticated with Google Sheets API
+2025-08-23 17:05:21 [INFO] ifc-exporter: Opened existing spreadsheet: Квартирография_Кульман_test
+2025-08-23 17:05:21 [INFO] ifc-exporter: Sheet name already exists, using: ДЕП01 - ЦТЗ 1_170521
+2025-08-23 17:05:22 [INFO] ifc-exporter: Created new worksheet: ДЕП01 - ЦТЗ 1_170521
+2025-08-23 17:05:23 [INFO] ifc-exporter: Data uploaded to worksheet 'ДЕП01 - ЦТЗ 1_170521': 370 rows
+2025-08-23 17:05:24 [INFO] ifc-exporter: Header formatting applied
+2025-08-23 17:05:24 [INFO] ifc-exporter: Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=157800640
+2025-08-23 17:05:24 [INFO] ifc-exporter: Temporary IFC file removed: uploads\ДЕП01 - ЦТЗ 1.ifczip
+2025-08-23 17:05:24 [INFO] werkzeug: 127.0.0.1 - - [23/Aug/2025 17:05:24] "POST /uploads HTTP/1.1" 200 -

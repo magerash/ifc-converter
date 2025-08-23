@@ -18,9 +18,10 @@ cd ~
 # Клонируйте проект
 git clone https://github.com/magerash/ifc-converter.git ifc-converter
 cd ifc-converter
+# sudo rm -f -R ifc-converter - удаление папки
 
 # Дайте права на выполнение
-chmod +x /deployment/deploy.sh
+chmod +x deploy.sh
 
 # Запустите развертывание
-./deployment/deploy.sh
+./deploy.sh
