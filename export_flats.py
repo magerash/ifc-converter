@@ -233,6 +233,7 @@ def export_flats(ifc_path, download_dir, original_filename=None):
     return csv_path
 
 
+
 # Функция main для автономного использования (если нужно)
 def main():
     """Автономный режим работы (для тестирования)"""

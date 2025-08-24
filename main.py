@@ -116,11 +116,11 @@ def upload_file():
             # Не прерываем выполнение, просто логируем ошибку
 
         # Очистка загруженного IFC файла для экономии места
-        try:
-            os.remove(ifc_path)
-            logger.info(f"Temporary IFC file removed: {ifc_path}")
-        except Exception as cleanup_error:
-            logger.warning(f"Failed to remove temporary file: {cleanup_error}")
+        # try:
+        #     os.remove(ifc_path)
+        #     logger.info(f"Temporary IFC file removed: {ifc_path}")
+        # except Exception as cleanup_error:
+        #     logger.warning(f"Failed to remove temporary file: {cleanup_error}")
 
         # Формируем ответ с дополнительной информацией
         response_data = {
