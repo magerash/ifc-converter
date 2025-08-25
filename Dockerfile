@@ -49,19 +49,22 @@ ENV FLASK_APP=main.py \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app
 
+# Используем переменную окружения для порта, по умолчанию 5000
+ENV PORT=5000
+
 # Health check для Docker
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/health?format=json || exit 1
+    CMD curl -f http://localhost:${PORT}/health?format=json || exit 1
 
 # Открытие порта
-EXPOSE 5000
+EXPOSE ${PORT}
 
 # Создание volume для постоянного хранения данных
 VOLUME ["/app/uploads", "/app/downloads", "/app/logs"]
 
 # Запуск приложения через Gunicorn для production
 CMD ["gunicorn", \
-     "--bind", "0.0.0.0:5000", \
+     "--bind", "0.0.0.0:${PORT}", \
      "--workers", "2", \
      "--worker-class", "sync", \
      "--timeout", "300", \

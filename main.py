@@ -347,4 +347,7 @@ if __name__ == '__main__':
     # Запуск в режиме разработки
     debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
     logger.info("Starting IFC to Google Sheets converter with OAuth2 in development mode...")
-    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
+    # app.run(host='0.0.0.0', port=5000, debug=debug_mode)
+    # Определяем порт через переменную окружения
+    port = int(os.getenv('PORT', 5000))                   # ======================= ВТОРОЙ СЕРВЕР ======================= #
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)  # ======================= ВТОРОЙ СЕРВЕР ======================= #

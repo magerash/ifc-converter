@@ -965,3 +965,98 @@ NameError: name 're' is not defined
 2025-08-25 02:17:09 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 02:17:09] "GET / HTTP/1.1" 200 -
 2025-08-25 02:17:14 [INFO] werkzeug: 10.33.0.2 - - [25/Aug/2025 02:17:14] "GET / HTTP/1.1" 200 -
 2025-08-25 02:18:18 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 02:18:18] "GET / HTTP/1.1" 200 -
+2025-08-25 21:32:01 [INFO] ifc-exporter: Database initialized successfully
+2025-08-25 21:32:01 [INFO] ifc-exporter: Starting IFC to Google Sheets converter with OAuth2 in development mode...
+2025-08-25 21:32:01 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-25 21:32:01 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-25 22:00:11 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:00:11] "GET /health HTTP/1.1" 200 -
+2025-08-25 22:12:20 [INFO] ifc-exporter: Database initialized successfully
+2025-08-25 22:12:20 [INFO] ifc-exporter: Starting IFC to Google Sheets converter with OAuth2 in development mode...
+2025-08-25 22:12:20 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-25 22:12:20 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-25 22:12:22 [INFO] ifc-exporter: File uploaded: ДЕП01 - ЦТЗ 2.ifczip -> ДЕП01 - ЦТЗ 2.ifczip (929580 bytes)
+2025-08-25 22:12:22 [INFO] ifc-exporter: Processing IFC file: uploads\ДЕП01 - ЦТЗ 2.ifczip
+2025-08-25 22:12:23 [INFO] ifc-exporter: IFC model loaded successfully. Schema: IFC4X3
+2025-08-25 22:12:23 [INFO] ifc-exporter: Starting zone processing...
+2025-08-25 22:12:23 [INFO] ifc-exporter: Processed 367 zones, generated 367 flat records
+2025-08-25 22:12:23 [INFO] ifc-exporter: Successfully exported 367 flats to downloads\ДЕП01 - ЦТЗ 2_1.csv
+2025-08-25 22:12:23 [INFO] ifc-exporter: CSV file created: ДЕП01 - ЦТЗ 2_1.csv (14484 bytes)
+2025-08-25 22:12:23 [INFO] ifc-exporter: CSV generated: downloads\ДЕП01 - ЦТЗ 2_1.csv
+2025-08-25 22:12:23 [INFO] ifc-exporter: Authenticated with Google Sheets API
+2025-08-25 22:12:33 [INFO] ifc-exporter: Opened existing spreadsheet: Квартирография_Кульман_test
+2025-08-25 22:12:33 [INFO] ifc-exporter: Generated unique sheet name: ДЕП01 - ЦТЗ 2
+2025-08-25 22:12:34 [INFO] ifc-exporter: Created new worksheet: ДЕП01 - ЦТЗ 2
+2025-08-25 22:12:35 [INFO] ifc-exporter: Data uploaded to worksheet 'ДЕП01 - ЦТЗ 2': 367 data rows, 6 columns
+2025-08-25 22:12:35 [INFO] ifc-exporter: Header formatting applied
+2025-08-25 22:12:36 [INFO] ifc-exporter: Auto-resized columns
+2025-08-25 22:12:37 [INFO] ifc-exporter: Added creation timestamp
+2025-08-25 22:12:37 [INFO] ifc-exporter: Successfully created worksheet with URL: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=1678008168
+2025-08-25 22:12:37 [INFO] ifc-exporter: Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=1678008168
+2025-08-25 22:12:37 [INFO] werkzeug: 10.33.0.2 - - [25/Aug/2025 22:12:37] "POST /uploads HTTP/1.1" 200 -
+2025-08-25 22:15:57 [INFO] ifc-exporter: Database initialized successfully
+2025-08-25 22:15:57 [INFO] ifc-exporter: Starting IFC to Google Sheets converter with OAuth2 in development mode...
+2025-08-25 22:15:57 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-25 22:15:57 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-25 22:16:07 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:16:07] "GET /health HTTP/1.1" 200 -
+2025-08-25 22:16:09 [INFO] werkzeug: 10.33.0.2 - - [25/Aug/2025 22:16:09] "GET / HTTP/1.1" 200 -
+2025-08-25 22:16:51 [INFO] werkzeug: 10.33.0.2 - - [25/Aug/2025 22:16:51] "GET / HTTP/1.1" 200 -
+2025-08-25 22:21:35 [INFO] ifc-exporter: Database initialized successfully
+2025-08-25 22:21:35 [INFO] ifc-exporter: Starting IFC to Google Sheets converter with OAuth2 in development mode...
+2025-08-25 22:21:35 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-25 22:21:35 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-25 22:30:12 [INFO] ifc-exporter: Database initialized successfully
+2025-08-25 22:30:12 [INFO] ifc-exporter: Starting IFC to Google Sheets converter with OAuth2 in development mode...
+2025-08-25 22:30:12 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-25 22:30:12 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-25 22:30:20 [INFO] werkzeug: 10.33.0.2 - - [25/Aug/2025 22:30:20] "GET / HTTP/1.1" 200 -
+2025-08-25 22:30:34 [INFO] ifc-exporter: File uploaded: ДЕП01 - ЦТЗ 2.ifczip -> ДЕП01 - ЦТЗ 2_1.ifczip (929580 bytes)
+2025-08-25 22:30:34 [INFO] ifc-exporter: Processing IFC file: uploads\ДЕП01 - ЦТЗ 2_1.ifczip
+2025-08-25 22:30:35 [INFO] ifc-exporter: IFC model loaded successfully. Schema: IFC4X3
+2025-08-25 22:30:35 [INFO] ifc-exporter: Starting zone processing...
+2025-08-25 22:30:35 [INFO] ifc-exporter: Processed 367 zones, generated 367 flat records
+2025-08-25 22:30:35 [INFO] ifc-exporter: Successfully exported 367 flats to downloads\ДЕП01 - ЦТЗ 2_2.csv
+2025-08-25 22:30:35 [INFO] ifc-exporter: CSV file created: ДЕП01 - ЦТЗ 2_2.csv (14484 bytes)
+2025-08-25 22:30:35 [INFO] ifc-exporter: CSV generated: downloads\ДЕП01 - ЦТЗ 2_2.csv
+2025-08-25 22:30:35 [INFO] ifc-exporter: Authenticated with Google Sheets API
+2025-08-25 22:30:37 [INFO] ifc-exporter: Opened existing spreadsheet: Квартирография_Кульман_test
+2025-08-25 22:30:38 [INFO] ifc-exporter: Generated unique sheet name: ДЕП01 - ЦТЗ 2_1
+2025-08-25 22:30:39 [INFO] ifc-exporter: Created new worksheet: ДЕП01 - ЦТЗ 2_1
+2025-08-25 22:30:39 [INFO] ifc-exporter: Data uploaded to worksheet 'ДЕП01 - ЦТЗ 2_1': 367 data rows, 6 columns
+2025-08-25 22:30:39 [INFO] ifc-exporter: Header formatting applied
+2025-08-25 22:30:40 [INFO] ifc-exporter: Auto-resized columns
+2025-08-25 22:30:41 [INFO] ifc-exporter: Added creation timestamp
+2025-08-25 22:30:41 [INFO] ifc-exporter: Successfully created worksheet with URL: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=1899732793
+2025-08-25 22:30:41 [INFO] ifc-exporter: Uploaded to Google Sheets: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=1899732793
+2025-08-25 22:30:41 [INFO] werkzeug: 10.33.0.2 - - [25/Aug/2025 22:30:41] "POST /uploads HTTP/1.1" 200 -
+2025-08-25 22:31:32 [INFO] werkzeug: 10.33.0.2 - - [25/Aug/2025 22:31:32] "GET /downloads/ДЕП01%20-%20ЦТЗ%202_2.csv HTTP/1.1" 200 -
+2025-08-25 22:38:40 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:38:40] "GET /health?format=json HTTP/1.1" 200 -
+2025-08-25 22:38:42 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:38:42] "GET /health HTTP/1.1" 200 -
+2025-08-25 22:38:44 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:38:44] "GET / HTTP/1.1" 200 -
+2025-08-25 22:38:46 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:38:46] "GET /health HTTP/1.1" 200 -
+2025-08-25 22:38:48 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:38:48] "GET /health?format=json HTTP/1.1" 200 -
+2025-08-25 22:38:53 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:38:53] "[32mGET /login HTTP/1.1[0m" 302 -
+2025-08-25 22:39:58 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:39:58] "GET /health?format=json HTTP/1.1" 200 -
+2025-08-25 22:40:00 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:40:00] "GET /health HTTP/1.1" 200 -
+2025-08-25 22:40:02 [INFO] werkzeug: 127.0.0.1 - - [25/Aug/2025 22:40:02] "GET / HTTP/1.1" 200 -
+2025-08-25 22:40:12 [INFO] ifc-exporter: Database initialized successfully
+2025-08-25 22:40:12 [INFO] ifc-exporter: Starting IFC to Google Sheets converter with OAuth2 in development mode...
+2025-08-25 22:40:12 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-08-25 22:40:12 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
