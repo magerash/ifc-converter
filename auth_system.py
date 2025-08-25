@@ -210,7 +210,15 @@ def setup_auth_routes(app, auth_manager):
         if 'user' in session:
             return redirect(url_for('dashboard'))
 
-        google_redirect_uri = url_for('auth_callback', _external=True)
+        # Проверяем, используем ли мы ngrok
+        ngrok_url = os.getenv('NGROK_URL')
+        if ngrok_url:
+            # Используем ngrok URL для redirect_uri
+            google_redirect_uri = f"{ngrok_url}/auth/callback"
+        else:
+            # Стандартный подход
+            google_redirect_uri = url_for('auth_callback', _external=True)
+
         return auth_manager.google.authorize_redirect(google_redirect_uri)
 
     @app.route('/auth/callback')

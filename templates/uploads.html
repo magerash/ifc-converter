@@ -145,13 +145,13 @@
             box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
         }
 
+        /* Обновленные стили для информации о файле - размещаем под кнопкой */
         .file-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff;
-            border-radius: 6px;
-            border-left: 4px solid #17a2b8;
+            margin-top: 15px;
+            padding: 0;
+            text-align: center;
             display: none;
+            animation: fadeIn 0.3s ease-in;
         }
 
         .file-info.show {
@@ -160,13 +160,19 @@
 
         .file-info .file-name {
             font-weight: 600;
-            color: #495057;
-            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 1em;
+            margin-bottom: 3px;
         }
 
         .file-info .file-details {
-            font-size: 14px;
-            color: #6c757d;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .submit-btn {
@@ -271,6 +277,15 @@
             color: #721c24;
         }
 
+        /* Обновленные стили для кнопок - размещаем в ряд */
+        .result-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .link-btn {
             display: inline-block;
             background: linear-gradient(45deg, #2196F3, #21CBF3);
@@ -278,9 +293,11 @@
             text-decoration: none;
             padding: 12px 20px;
             border-radius: 6px;
-            margin: 10px 5px;
             transition: all 0.2s ease;
             font-weight: 500;
+            font-size: 0.95em;
+            min-width: 160px;
+            text-align: center;
         }
 
         .link-btn:hover {
@@ -288,6 +305,14 @@
             text-decoration: none;
             color: white;
             box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .link-btn.secondary {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .link-btn.secondary:hover {
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
         }
 
         .features {
@@ -298,24 +323,28 @@
 
         .features h3 {
             color: #495057;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .feature-list {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         .feature-list li {
-            padding: 10px 0;
+            padding: 6px 0;
             display: flex;
             align-items: center;
-            color: #6c757d;
+            color: #555;
+            font-size: 0.95em;
         }
 
         .feature-list li::before {
-            content: "✅";
+            content: "•";
             margin-right: 12px;
+            color: #2196F3;
+            font-weight: bold;
             font-size: 1.2em;
         }
 
@@ -336,6 +365,15 @@
             .upload-area {
                 padding: 30px 15px;
             }
+
+            .result-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .link-btn {
+                min-width: 200px;
+            }
         }
     </style>
 </head>
@@ -351,7 +389,7 @@
                 <h3>Войдите для сохранения истории</h3>
                 <p>Авторизуйтесь через Google, чтобы отслеживать историю конвертаций</p>
                 <a href="{{ url_for('login') }}" class="login-btn">
-                    🔐 Войти через Google
+                    Войти через Google
                 </a>
             </div>
 
@@ -364,11 +402,12 @@
                         Выберите файл
                         <input type="file" id="fileInput" class="file-input" accept=".ifc,.ifczip" required>
                     </label>
-                </div>
 
-                <div class="file-info" id="file-info">
-                    <div class="file-name" id="file-name"></div>
-                    <div class="file-details" id="file-details"></div>
+                    <!-- Информация о файле размещена прямо под кнопкой -->
+                    <div class="file-info" id="file-info">
+                        <div class="file-name" id="file-name"></div>
+                        <div class="file-details" id="file-details"></div>
+                    </div>
                 </div>
 
                 <button type="button" id="submit-btn" class="submit-btn" disabled>
@@ -418,7 +457,11 @@
             let selectedFile = null;
 
             // Обработка клика по области загрузки
-            uploadArea.addEventListener('click', () => {
+            uploadArea.addEventListener('click', (e) => {
+                // Предотвращаем клик если кликнули по кнопке или информации о файле
+                if (e.target.closest('.browse-btn') || e.target.closest('.file-info')) {
+                    return;
+                }
                 fileInput.click();
             });
 
@@ -546,42 +589,45 @@
                     if (response.ok && result.status === 'success') {
                         // Успешная обработка
                         spinner.classList.remove('show');
-                        statusText.textContent = '✅ Файл успешно обработан!';
+                        statusText.textContent = 'Файл успешно обработан!';
 
                         // Формирование результата
                         let resultHTML = `
-                            <h4>✅ Конвертация завершена успешно!</h4>
                             <p><strong>📊 Обработано квартир:</strong> ${result.processed_flats || 0}</p>
                             <p><strong>⏱️ Время обработки:</strong> ${result.processing_time || 0}с</p>
                         `;
 
+                        // Кнопки для результатов - размещаем в ряд
+                        let buttonsHTML = '<div class="result-buttons">';
+
                         // Ссылка на Google Sheets (если доступна)
                         if (result.sheet_url) {
-                            resultHTML += `
-                                <div style="margin-top: 20px;">
-                                    <p><strong>Google Sheets:</strong></p>
-                                    <a href="${result.sheet_url}" target="_blank" class="link-btn">
-                                        📊 Открыть в Google Sheets
-                                    </a>
-                                </div>
-                            `;
-                        } else if (result.google_sheets_error) {
-                            resultHTML += `
-                                <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 4px;">
-                                    <p style="margin: 0; color: #856404;">
-                                        ⚠️ Google Sheets недоступен: ${result.google_sheets_error}
-                                    </p>
-                                </div>
+                            buttonsHTML += `
+                                <a href="${result.sheet_url}" target="_blank" class="link-btn">
+                                    Открыть в Google Sheets
+                                </a>
                             `;
                         }
 
                         // Ссылка на скачивание CSV
                         if (result.csv_path) {
+                            buttonsHTML += `
+                                <a href="/downloads/${result.csv_path}" class="link-btn secondary" download>
+                                    Скачать CSV файл
+                                </a>
+                            `;
+                        }
+
+                        buttonsHTML += '</div>';
+                        resultHTML += buttonsHTML;
+
+                        // Предупреждение о Google Sheets (если есть)
+                        if (result.google_sheets_error) {
                             resultHTML += `
-                                <div style="margin-top: 15px;">
-                                    <a href="/downloads/${result.csv_path}" class="link-btn" download>
-                                        📥 Скачать CSV файл
-                                    </a>
+                                <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 4px;">
+                                    <p style="margin: 0; color: #856404; font-size: 0.9em;">
+                                        ⚠️ Google Sheets недоступен: ${result.google_sheets_error}
+                                    </p>
                                 </div>
                             `;
                         }
