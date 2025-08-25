@@ -2,12 +2,19 @@
 Flask==2.3.3
 gunicorn==21.2.0
 
+# OAuth2 авторизация
+Authlib==1.2.1
+requests==2.31.0
+
 # Работа с IFC файлами
 ifcopenshell==0.8.3.post2
 
 # Google Sheets API
 gspread==5.12.0
 oauth2client==4.1.3
+
+# База данных для истории пользователей
+# SQLite встроен в Python, дополнительных зависимостей не требуется
 
 # Утилиты
 python-dotenv==1.0.0
@@ -20,3 +27,12 @@ numpy==1.24.3
 
 # Логирование
 colorlog==6.7.0
+
+# Работа с датами и временем (для истории)
+python-dateutil==2.8.2
+
+# JSON обработка (встроено в Python 3.11)
+# json - built-in
+
+# Криптография для безопасности сессий
+cryptography==41.0.7

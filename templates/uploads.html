@@ -3,389 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFC в Google Sheets | Конвертер</title>
+    <title>IFC Converter - Конвертация BIM файлов</title>
     <style>
-        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
             margin: 0;
             padding: 20px;
-            background: #f5f7fa;
-            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
+        
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 600px;
+            margin: 50px auto;
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .upload-area {
-            border: 2px dashed #3498db;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 20px;
-            background: #f8fafc;
-            transition: all 0.3s;
-        }
-        .upload-area:hover {
-            background: #e3f2fd;
-            border-color: #2980b9;
-        }
-        .upload-area.highlight {
-            background: #d1ecff;
-            border-color: #1e88e5;
-        }
-        .file-input { display: none; }
-        .browse-btn {
-            display: inline-block;
-            background: #3498db;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 500;
-        }
-        .browse-btn:hover { background: #2980b9; }
-        .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background 0.3s;
-        }
-        .submit-btn:hover { background: #27ae60; }
-        .submit-btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-        }
-        .file-info {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-        .result-area {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 8px;
-            display: none;
-        }
-        .success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-        }
-        .error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-        .progress-bar {
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
-            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             overflow: hidden;
         }
-        .progress {
-            height: 100%;
-            background: #3498db;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-            display: none;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .status-text {
+        
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 40px;
             text-align: center;
-            margin: 10px 0;
-            font-weight: 500;
         }
-        .link-btn {
-            display: inline-block;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            margin: 10px 5px;
-            transition: background 0.3s;
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
         }
-        .link-btn:hover {
-            background: #2980b9;
-            text-decoration: none;
-            color: white;
+        
+        .content {
+            padding: 40px;
         }
-        .link-btn.disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        .diagnostic-info {
-            margin-top: 15px;
-            padding: 10px;
+        
+        .auth-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
             background: #f8f9fa;
-            border-left: 4px solid #17a2b8;
-            font-size: 14px;
+            border-radius: 8px;
         }
-        .diagnostic-info h4 {
-            margin: 0 0 10px 0;
-            color: #17a2b8;
+        
+        .login-btn {
+            display: inline-block;
+            background: #4285f4;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 10px;
+            transition: background 0.3s ease;
         }
-        .diagnostic-info pre {
-            background: #fff;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-            font-size: 12px;
+        
+        .login-btn:hover {
+            background: #3367d6;
+        }
+        
+        .upload-form {
+            text-align: center;
+        }
+        
+        .file-input {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            margin-top: 30px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li::before {
+            content: "✅";
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Конвертер IFC в Google Sheets</h1>
-
-        <div class="upload-area" id="upload-area">
-            <p>Перетащите IFC-файл сюда или</p>
-            <label class="browse-btn">
-                Выберите файл
-                <input type="file" id="file-input" class="file-input" accept=".ifc,.ifczip">
-            </label>
-            <div class="file-info" id="file-info">Файл не выбран</div>
+        <div class="header">
+            <h1>🏗️ IFC Converter</h1>
+            <p>Конвертация IFC файлов в CSV и Google Sheets</p>
         </div>
-
-        <button id="submit-btn" class="submit-btn" disabled>Обработать и отправить в Google Sheets</button>
-
-        <div class="progress-bar">
-            <div class="progress" id="progress"></div>
-        </div>
-
-        <div class="spinner" id="spinner"></div>
-        <div class="status-text" id="status-text"></div>
-
-        <div class="result-area" id="result-area">
-            <div id="result-content"></div>
+        
+        <div class="content">
+            <div class="auth-section">
+                <h3>Войдите для сохранения истории</h3>
+                <p>Авторизуйтесь через Google, чтобы отслеживать историю конвертаций</p>
+                <a href="{{ url_for('login') }}" class="login-btn">
+                    📧 Войти через Google
+                </a>
+            </div>
+            
+            <div class="upload-form">
+                <h3>Или конвертируйте без авторизации</h3>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-input">
+                        <input type="file" id="fileInput" name="file" accept=".ifc,.ifczip" required>
+                        <p>Выберите IFC или IFCZIP файл (до 100MB)</p>
+                    </div>
+                    <button type="submit" class="btn">Конвертировать</button>
+                </form>
+                <div id="uploadStatus" style="margin-top: 20px;"></div>
+            </div>
+            
+            <div class="features">
+                <h3>Возможности конвертера:</h3>
+                <ul class="feature-list">
+                    <li>Извлечение данных о квартирах из IFC моделей</li>
+                    <li>Автоматическая загрузка в Google Sheets</li>
+                    <li>Поддержка больших файлов до 100MB</li>
+                    <li>История конвертаций для авторизованных пользователей</li>
+                    <li>Скачивание CSV файлов</li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const uploadArea = document.getElementById('upload-area');
-            const fileInput = document.getElementById('file-input');
-            const fileInfo = document.getElementById('file-info');
-            const submitBtn = document.getElementById('submit-btn');
-            const resultArea = document.getElementById('result-area');
-            const resultContent = document.getElementById('result-content');
-            const progressBar = document.getElementById('progress');
-            const spinner = document.getElementById('spinner');
-            const statusText = document.getElementById('status-text');
-
-            let selectedFile = null;
-
-            // Обработка выбора файла через кнопку
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    handleFileSelect(e.target.files[0]);
-                }
-            });
-
-            // Обработка перетаскивания файла
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('highlight');
-            });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('highlight');
-            });
-
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('highlight');
-
-                if (e.dataTransfer.files.length > 0) {
-                    handleFileSelect(e.dataTransfer.files[0]);
-                }
-            });
-
-            // Обработка отправки формы
-            submitBtn.addEventListener('click', async () => {
-                if (!selectedFile) return;
-
-                // Показать индикатор загрузки
-                submitBtn.disabled = true;
-                spinner.style.display = 'block';
-                statusText.textContent = 'Обработка файла...';
-                progressBar.style.width = '20%';
-
-                try {
-                    const formData = new FormData();
-                    formData.append('file', selectedFile);
-
-                    // Отправка запроса
-                    const response = await fetch('/uploads', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-                    console.log('Server response:', result); // Для отладки
-
-                    if (response.ok && result.status === 'success') {
-                        // Обновить прогресс
-                        progressBar.style.width = '100%';
-                        statusText.textContent = 'Готово!';
-
-                        // Определить класс для результата
-                        let resultClass = 'success';
-                        let statusIcon = '✅';
-                        let statusMessage = 'Файл успешно обработан!';
-
-                        // Проверить статус Google Sheets
-                        if (result.google_sheets_status === 'failed') {
-                            resultClass = 'warning';
-                            statusIcon = '⚠️';
-                            statusMessage = 'Файл обработан, но возникла проблема с Google Sheets';
-                        }
-
-                        // Показать результат
-                        resultArea.className = `result-area ${resultClass}`;
-
-                        let contentHtml = `
-                            <h2>${statusIcon} ${statusMessage}</h2>
-                            <p>Данные извлечены и экспортированы в CSV</p>
-                        `;
-
-                        // Кнопки действий
-                        let buttonsHtml = '';
-
-                        // Кнопка Google Sheets
-                        if (result.sheet_url && result.google_sheets_status === 'success') {
-                            buttonsHtml += `<a href="${result.sheet_url}" target="_blank" class="link-btn">📊 Открыть Google Sheets</a>`;
-                        } else {
-                            buttonsHtml += `<span class="link-btn disabled" title="Google Sheets недоступен">📊 Google Sheets (недоступен)</span>`;
-                        }
-
-                        // Кнопка скачивания CSV
-                        if (result.csv_path) {
-                            buttonsHtml += `<a href="/downloads/${result.csv_path}" download class="link-btn">💾 Скачать CSV</a>`;
-                        }
-
-                        contentHtml += buttonsHtml;
-
-                        // Диагностическая информация
-                        if (result.google_sheets_status === 'failed') {
-                            contentHtml += `
-                                <div class="diagnostic-info">
-                                    <h4>🔍 Диагностическая информация:</h4>
-                                    <p><strong>Google Sheets статус:</strong> ${result.google_sheets_status}</p>
-                                    <p><strong>Ошибка:</strong> ${result.google_sheets_error || 'Неизвестная ошибка'}</p>
-                                    <p><strong>Возможные причины:</strong></p>
-                                    <ul>
-                                        <li>Не настроены переменные окружения Google API</li>
-                                        <li>Проблемы с правами сервисного аккаунта</li>
-                                        <li>Недоступен идентификатор таблицы (GS_SPREADSHEET_ID)</li>
-                                        <li>Ограничения API Google Sheets</li>
-                                    </ul>
-                                    <pre>Полный ответ сервера: ${JSON.stringify(result, null, 2)}</pre>
-                                </div>
-                            `;
-                        }
-
-                        resultContent.innerHTML = contentHtml;
-                        resultArea.style.display = 'block';
-
-                    } else {
-                        throw new Error(result.error || 'Неизвестная ошибка');
-                    }
-                } catch (error) {
-                    console.error('Client error:', error); // Для отладки
-
-                    // Показать ошибку
-                    resultArea.className = 'result-area error';
-                    resultContent.innerHTML = `
-                        <h2>❌ Ошибка обработки</h2>
-                        <p><strong>Сообщение:</strong> ${error.message}</p>
-                        <p>Проверьте корректность IFC-файла и попробуйте снова.</p>
-                        <div class="diagnostic-info">
-                            <h4>🔍 Техническая информация:</h4>
-                            <pre>Error: ${error.stack || error.message}</pre>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('fileInput');
+            const statusDiv = document.getElementById('uploadStatus');
+            const submitBtn = this.querySelector('button[type="submit"]');
+            
+            if (!fileInput.files.length) {
+                statusDiv.innerHTML = '<div style="color: red;">Выберите файл</div>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Обработка...';
+            statusDiv.innerHTML = '<div style="color: blue;">⏳ Загружаем и обрабатываем файл...</div>';
+            
+            try {
+                const response = await fetch('/uploads', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    statusDiv.innerHTML = `
+                        <div style="color: green;">
+                            ✅ Файл успешно обработан!<br>
+                            📊 Обработано квартир: ${result.processed_flats}<br>
+                            ⏱️ Время обработки: ${result.processing_time}с<br>
+                            ${result.sheet_url ? '<a href="' + result.sheet_url + '" target="_blank">🔗 Открыть в Google Sheets</a><br>' : ''}
+                            <a href="/downloads/${result.csv_path}" target="_blank">📥 Скачать CSV</a>
                         </div>
                     `;
-                    resultArea.style.display = 'block';
-                    statusText.textContent = 'Ошибка!';
-                    progressBar.style.width = '0%';
-                } finally {
-                    // Скрыть индикатор
-                    setTimeout(() => {
-                        spinner.style.display = 'none';
-                        submitBtn.disabled = false;
-                    }, 1000);
+                } else {
+                    statusDiv.innerHTML = '<div style="color: red;">❌ ' + (result.error || 'Ошибка обработки') + '</div>';
                 }
-            });
-
-            // Функция обработки выбора файла
-            function handleFileSelect(file) {
-                // Проверка расширения файла
-                const ext = file.name.split('.').pop().toLowerCase();
-                if (ext !== 'ifc' && ext !== 'ifczip') {
-                    alert('Пожалуйста, выберите файл с расширением .ifc или .ifczip');
-                    return;
-                }
-
-                // Проверка размера файла (максимум 100MB)
-                if (file.size > 100 * 1024 * 1024) {
-                    alert('Размер файла не должен превышать 100MB');
-                    return;
-                }
-
-                selectedFile = file;
-                fileInfo.textContent = `Выбран файл: ${file.name} (${formatFileSize(file.size)})`;
+            } catch (error) {
+                statusDiv.innerHTML = '<div style="color: red;">❌ Ошибка сети: ' + error.message + '</div>';
+            } finally {
                 submitBtn.disabled = false;
-
-                // Скрыть предыдущий результат
-                resultArea.style.display = 'none';
-                progressBar.style.width = '0%';
-                statusText.textContent = '';
-            }
-
-            // Форматирование размера файла
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                submitBtn.textContent = 'Конвертировать';
             }
         });
     </script>
