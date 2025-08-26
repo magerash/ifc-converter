@@ -121,6 +121,12 @@ NGROK_URL=
 GS_SPREADSHEET_ID=
 GS_PROJECT_ID=
 GS_CLIENT_EMAIL=
+
+# Database path for OAuth2 server
+DB_PATH=users_history.db
+
+# Port for development server
+PORT=5001
 EOF
 
     print_success "Создан .env файл"
@@ -203,9 +209,9 @@ try:
 except: pass
 ")
 else
-    # Запускаем ngrok
+    # Запускаем ngrok в фоне
     print_info "Запускаем ngrok на порту 5001..."
-    ngrok http 5001 > /dev/null 2>&1 &
+    nohup ngrok http 5001 > ngrok.log 2>&1 &
     NGROK_PID=$!
 
     # Ждем запуска
@@ -294,6 +300,7 @@ print_header "🚀 Запуск Flask приложения"
 export NGROK_URL=$NGROK_URL
 export FLASK_ENV=development
 export FLASK_DEBUG=1
+export PORT=5001
 
 echo
 echo -e "${GREEN}============================================================${NC}"
@@ -329,6 +336,7 @@ cleanup() {
     # Останавливаем ngrok (если был запущен этим скриптом)
     if [ ! -z "$NGROK_PID" ] && [ "$NGROK_RUNNING" = false ]; then
         kill $NGROK_PID 2>/dev/null
+        pkill -f "ngrok http 5001" 2>/dev/null || true
     fi
 
     print_success "Остановлено"
@@ -338,9 +346,35 @@ cleanup() {
 # Устанавливаем обработчик сигналов
 trap cleanup INT TERM
 
-# Запускаем Flask
+# Запускаем Flask на порту 5001
+print_info "Запускаем Flask на порту 5001..."
 python3 main.py &
 FLASK_PID=$!
 
-# Ждем завершения
+# Небольшая пауза для запуска Flask
+sleep 3
+
+# Проверяем, что Flask запустился
+if curl -s http://localhost:5001/health > /dev/null 2>&1; then
+    print_success "Flask успешно запущен на порту 5001"
+else
+    print_error "Flask не смог запуститься на порту 5001"
+    print_info "Проверьте логи выше для диагностики"
+    print_info "Возможные причины:"
+    print_info "  - Порт 5001 занят другим процессом"
+    print_info "  - Ошибка в main.py"
+    print_info "  - Отсутствуют зависимости"
+
+    # Показываем процессы на порту 5001
+    if lsof -i :5001 &> /dev/null; then
+        print_info "Процессы на порту 5001:"
+        lsof -i :5001 | head -5
+    fi
+
+    cleanup
+    exit 1
+fi
+
+# Ждем завершения или сигнала
+print_info "Flask работает... (Ctrl+C для остановки)"
 wait $FLASK_PID
