@@ -242,7 +242,6 @@ check_port() {
 
 # Проверяем основные порты
 ports_to_check=(
-    "5000:Основной сервер"
     "5001:OAuth2 сервер"
     "8080:Nginx proxy"
 )
@@ -296,12 +295,12 @@ else
     exit 1
 fi
 
-# Проверяем наличие обоих сервисов
-if grep -q "ifc-converter:" docker-compose.yml && grep -q "ifc-converter2:" docker-compose.yml; then
-    print_success "Найдены оба сервера (ifc-converter и ifc-converter2)"
+# Проверяем наличие второго сервера
+if grep -q "ifc-converter2:" docker-compose.yml; then
+    print_success "Найден OAuth2 сервер (ifc-converter2)"
 else
-    print_error "Не найден один из серверов в docker-compose.yml"
-    print_info "Требуются сервисы: ifc-converter (5000) и ifc-converter2 (5001)"
+    print_error "Не найден сервер ifc-converter2 в docker-compose.yml"
+    print_info "Требуется сервис: ifc-converter2 (5001)"
     exit 1
 fi
 
@@ -377,7 +376,7 @@ print_info "Статус контейнеров:"
 docker-compose ps
 
 # Проверяем каждый сервис отдельно
-services=("ifc-converter" "ifc-converter2" "nginx")
+services=("ifc-converter2" "nginx")
 all_healthy=true
 
 for service in "${services[@]}"; do
@@ -416,10 +415,8 @@ check_endpoint() {
 
 # Проверяем основные endpoints
 endpoints=(
-    "http://localhost:5000/:Основной сервер (без OAuth2)"
     "http://localhost:5001/:OAuth2 сервер (с авторизацией)"
     "http://localhost:8080/:Nginx proxy (рекомендуемый доступ)"
-    "http://localhost:5000/health:Health check - основной"
     "http://localhost:5001/health:Health check - OAuth2"
     "http://localhost:8080/health:Health check - через Nginx"
 )
@@ -533,12 +530,10 @@ echo -e "${GREEN}✅ IFC Converter v2.0 успешно развернут!${NC}"
 echo -e "${GREEN}============================================================${NC}"
 echo
 echo -e "${CYAN}📍 Доступ к приложению:${NC}"
-echo -e "${WHITE}  Основной сервер (без авторизации): ${GREEN}http://localhost:5000/${NC}"
 echo -e "${WHITE}  OAuth2 сервер (с историей):        ${GREEN}http://localhost:5001/${NC}"
 echo -e "${WHITE}  Nginx proxy (рекомендуется):       ${GREEN}http://localhost:8080/${NC}"
 echo
 echo -e "${CYAN}🔍 Мониторинг и диагностика:${NC}"
-echo -e "${WHITE}  Health Check основной:     ${GREEN}http://localhost:5000/health${NC}"
 echo -e "${WHITE}  Health Check OAuth2:       ${GREEN}http://localhost:5001/health${NC}"
 echo -e "${WHITE}  Health Check Nginx:        ${GREEN}http://localhost:8080/health${NC}"
 echo
