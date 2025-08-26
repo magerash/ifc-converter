@@ -155,7 +155,7 @@ def check_dotenv_file():
     print("ПРОВЕРКА .ENV ФАЙЛА")
     print("=" * 50)
 
-    env_path = '../.env'
+    env_path = '.env'
     if os.path.exists(env_path):
         print(f"✅ Файл .env найден: {os.path.abspath(env_path)}")
 
@@ -185,7 +185,7 @@ def check_dotenv_file():
             print(f"❌ Ошибка чтения .env файла: {str(e)}")
             return False
     else:
-        print(f"❌ Файл .env не найден в: {os.path.abspath('..')}")
+        print(f"❌ Файл .env не найден в: {os.path.abspath('')}")
         print("\n💡 Создайте файл .env с переменными Google Sheets API")
         return False
 
