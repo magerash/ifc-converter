@@ -1,10 +1,5 @@
 FROM python:3.11-slim
 
-# Метаданные образа
-LABEL maintainer="IFC Converter Team"
-LABEL version="2.0.0"
-LABEL description="IFC to CSV converter with OAuth2 authentication and user history"
-
 # Установка системных зависимостей
 RUN apt-get update && apt-get install -y \
     gcc \
@@ -16,62 +11,48 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     libssl-dev \
     sqlite3 \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    && rm -rf /var/lib/apt/lists/*
 
-# Создание пользователя приложения (безопасность)
+# Создание пользователя приложения
 RUN useradd --create-home --shell /bin/bash app
 
-# Создание рабочей директории
+# Рабочая директория
 WORKDIR /app
 
-# Копирование файлов зависимостей
-COPY requirements.txt .
-
 # Установка Python зависимостей
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Копирование исходного кода приложения
+# Копирование кода
 COPY --chown=app:app . .
 
-# Создание необходимых директорий с правильными правами
-RUN mkdir -p uploads downloads logs templates \
-    && chown -R app:app /app \
-    && chmod -R 755 /app
+# Создание необходимых директорий
+RUN mkdir -p uploads downloads logs templates && \
+    chown -R app:app /app && \
+    chmod -R 755 /app
 
-# Переключение на пользователя приложения
+# Пользователь приложения
 USER app
 
-# Установка переменных окружения
+# Переменные окружения
 ENV FLASK_APP=main.py \
     FLASK_ENV=production \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app
+    PORT=5000
 
-# Используем переменную окружения для порта, по умолчанию 5000
-ENV PORT=5000
-
-# Health check для Docker
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT}/health?format=json || exit 1
+    CMD curl -f http://localhost:5000/health?format=json || exit 1
 
-# Открытие порта
-EXPOSE ${PORT}
+# Порт
+EXPOSE 5000
 
-# Создание volume для постоянного хранения данных
-VOLUME ["/app/uploads", "/app/downloads", "/app/logs"]
-
-# Запуск приложения через Gunicorn для production
+# Запуск
 CMD ["gunicorn", \
-     "--bind", "0.0.0.0:${PORT}", \
+     "--bind", "0.0.0.0:5000", \
      "--workers", "2", \
-     "--worker-class", "sync", \
      "--timeout", "300", \
-     "--keep-alive", "2", \
-     "--max-requests", "1000", \
-     "--max-requests-jitter", "100", \
-     "--preload", \
      "--log-level", "info", \
      "--access-logfile", "-", \
      "--error-logfile", "-", \
