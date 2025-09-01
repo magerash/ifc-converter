@@ -51,10 +51,11 @@
 
         .auth-section {
             text-align: center;
-            margin-bottom: 30px;
+            margin-top: 40px;
             padding: 20px;
             background: #f8f9fa;
             border-radius: 8px;
+            border-top: 1px solid #e9ecef;
         }
 
         .auth-section h3 {
@@ -87,7 +88,7 @@
         }
 
         .upload-section {
-            margin-top: 30px;
+            margin-top: 0;
         }
 
         .upload-section h3 {
@@ -380,21 +381,13 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏗️ IFC Converter</h1>
+            <h1>IFC Converter</h1>
             <p>Конвертация IFC файлов в CSV и Google Sheets</p>
         </div>
 
         <div class="content">
-            <div class="auth-section">
-                <h3>Войдите для сохранения истории</h3>
-                <p>Авторизуйтесь через Google, чтобы отслеживать историю конвертаций</p>
-                <a href="{{ url_for('login') }}" class="login-btn">
-                    Войти через Google
-                </a>
-            </div>
-
             <div class="upload-section">
-                <h3>Или конвертируйте без авторизации</h3>
+                <h3>Загрузите IFC файл для конвертации</h3>
 
                 <div class="upload-area" id="upload-area">
                     <p>Перетащите IFC или IFCZIP файл сюда или</p>
@@ -435,6 +428,15 @@
                     <li>История конвертаций для авторизованных пользователей</li>
                     <li>Скачивание CSV файлов</li>
                 </ul>
+            </div>
+
+
+            <div class="auth-section">
+                <h3>Войдите для сохранения истории</h3>
+                <p>Авторизуйтесь через Google, чтобы отслеживать историю конвертаций</p>
+                <a href="{{ url_for('login') }}" class="login-btn">
+                    Войти через Google
+                </a>
             </div>
         </div>
     </div>
