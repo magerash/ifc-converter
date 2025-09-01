@@ -10,10 +10,6 @@ import logging
 import time
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for
-from export_flats import export_flats
-from gsheets import upload_to_google_sheets
-from file_naming_utils import get_next_indexed_filename
-from auth_system import AuthManager, setup_auth_routes
 
 # Инициализация приложения
 app = Flask(__name__)
@@ -24,10 +20,6 @@ app.config['ALLOWED_EXTENSIONS'] = {'ifc', 'ifczip'}
 
 # Секретный ключ для сессий
 app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-change-in-production')
-
-# OAuth2 конфигурация
-app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
-app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
 
 # Время запуска для uptime
 START_TIME = datetime.now()
@@ -44,11 +36,41 @@ logging.basicConfig(
 )
 logger = logging.getLogger('ifc-exporter')
 
-# Инициализация менеджера авторизации
-auth_manager = AuthManager(app)
+# Импорт модулей с обработкой ошибок
+try:
+    from export_flats import export_flats
 
-# Настройка маршрутов авторизации
-setup_auth_routes(app, auth_manager)
+    logger.info("✅ export_flats module loaded")
+except ImportError as e:
+    logger.error(f"❌ Failed to import export_flats: {e}")
+    export_flats = None
+
+try:
+    from gsheets import upload_to_google_sheets
+
+    logger.info("✅ gsheets module loaded")
+except ImportError as e:
+    logger.error(f"❌ Failed to import gsheets: {e}")
+    upload_to_google_sheets = None
+
+try:
+    from file_naming_utils import get_next_indexed_filename
+
+    logger.info("✅ file_naming_utils module loaded")
+except ImportError as e:
+    logger.error(f"❌ Failed to import file_naming_utils: {e}")
+    get_next_indexed_filename = None
+
+try:
+    from auth_system import AuthManager, setup_auth_routes
+
+    # Инициализация менеджера авторизации
+    auth_manager = AuthManager(app)
+    setup_auth_routes(app, auth_manager)
+    logger.info("✅ OAuth2 system loaded")
+except ImportError as e:
+    logger.error(f"❌ Failed to import auth_system: {e}")
+    auth_manager = None
 
 
 def allowed_file(filename):
@@ -103,13 +125,19 @@ def upload_file():
 
         # Сохранение файла с уникальным именем
         original_name = file.filename
-        safe_filename = get_next_indexed_filename(app.config['UPLOAD_FOLDER'], original_name)
-        ifc_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+        if get_next_indexed_filename:
+            safe_filename = get_next_indexed_filename(app.config['UPLOAD_FOLDER'], original_name)
+        else:
+            safe_filename = original_name
 
+        ifc_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
         file.save(ifc_path)
         file_size = os.path.getsize(ifc_path)
 
         # Обработка IFC
+        if not export_flats:
+            return jsonify({"error": "IFC processing module not available"}), 500
+
         csv_path = export_flats(ifc_path, app.config['DOWNLOAD_FOLDER'], original_name)
         csv_filename = os.path.basename(csv_path)
 
@@ -123,15 +151,16 @@ def upload_file():
 
         # Загрузка в Google Sheets
         sheet_url = None
-        try:
-            sheet_url = upload_to_google_sheets(csv_path, original_name)
-        except Exception as e:
-            logger.warning(f"Google Sheets upload failed: {str(e)}")
+        if upload_to_google_sheets:
+            try:
+                sheet_url = upload_to_google_sheets(csv_path, original_name)
+            except Exception as e:
+                logger.warning(f"Google Sheets upload failed: {str(e)}")
 
         processing_time = time.time() - start_time
 
         # Сохранение в историю (если пользователь авторизован)
-        if 'user' in session:
+        if 'user' in session and auth_manager:
             conversion_data = {
                 'original_filename': original_name,
                 'csv_filename': csv_filename,
@@ -178,6 +207,19 @@ def download_file(filename):
         return jsonify({"error": str(e)}), 500
 
 
+# Простые fallback маршруты если OAuth2 не загружен
+@app.route('/login')
+def login_fallback():
+    """Fallback для входа"""
+    return jsonify({"error": "OAuth2 system not available"}), 503
+
+
+@app.route('/dashboard')
+def dashboard_fallback():
+    """Fallback для dashboard"""
+    return render_template('dashboard.html', user={'name': 'Guest'})
+
+
 @app.errorhandler(413)
 def too_large(e):
     """Обработка превышения размера файла"""
@@ -189,6 +231,17 @@ def internal_error(e):
     """Обработка внутренних ошибок сервера"""
     logger.error(f"Internal server error: {str(e)}")
     return jsonify({"error": "Internal server error"}), 500
+
+
+def create_app():
+    """Фабрика приложений для Gunicorn"""
+    # Создание необходимых директорий
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
+    os.makedirs('logs', exist_ok=True)
+
+    logger.info("IFC Converter v2.0 initialized")
+    return app
 
 
 if __name__ == '__main__':

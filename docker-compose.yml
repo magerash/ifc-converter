@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  ifc-converter:
+  ifc-converter2:
     build: .
-    container_name: ifc-converter
+    container_name: ifc-converter2
     ports:
       - "5000:5000"
     volumes:

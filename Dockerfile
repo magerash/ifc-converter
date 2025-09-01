@@ -48,12 +48,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Порт
 EXPOSE 5000
 
-# Запуск
-CMD ["gunicorn", \
-     "--bind", "0.0.0.0:5000", \
-     "--workers", "2", \
-     "--timeout", "300", \
-     "--log-level", "info", \
-     "--access-logfile", "-", \
-     "--error-logfile", "-", \
-     "main:app"]
+# Запуск через Flask development server для лучшей диагностики
+CMD ["python3", "main.py"]

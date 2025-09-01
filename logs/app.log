@@ -1823,3 +1823,41 @@ NameError: name 're' is not defined
 2025-09-01 23:00:58 [INFO] werkzeug: 10.33.0.2 - - [01/Sep/2025 23:00:58] "GET / HTTP/1.1" 200 -
 2025-09-01 23:00:58 [INFO] werkzeug: 10.33.0.2 - - [01/Sep/2025 23:00:58] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
 2025-09-01 23:01:01 [INFO] werkzeug: 127.0.0.1 - - [01/Sep/2025 23:01:01] "GET / HTTP/1.1" 200 -
+2025-09-01 23:26:16,716 [INFO] ifc-exporter: Database initialized successfully
+2025-09-01 23:26:16,718 [INFO] ifc-exporter: Starting IFC Converter v2.0 in development mode
+2025-09-01 23:26:16,718 [INFO] ifc-exporter: Ngrok URL: https://61e094b3d036.ngrok-free.app
+2025-09-01 23:26:16,751 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.33.0.2:5000
+2025-09-01 23:26:16,751 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-09-01 23:26:16,751 [INFO] werkzeug:  * Restarting with stat
+2025-09-01 23:26:17,134 [INFO] ifc-exporter: Database initialized successfully
+2025-09-01 23:26:17,136 [INFO] ifc-exporter: Starting IFC Converter v2.0 in development mode
+2025-09-01 23:26:17,136 [INFO] ifc-exporter: Ngrok URL: https://61e094b3d036.ngrok-free.app
+2025-09-01 23:26:17,142 [WARNING] werkzeug:  * Debugger is active!
+2025-09-01 23:26:17,143 [INFO] werkzeug:  * Debugger PIN: 106-641-335
+2025-09-01 23:26:26,092 [INFO] werkzeug: 127.0.0.1 - - [01/Sep/2025 23:26:26] "GET / HTTP/1.1" 200 -
+2025-09-01 23:26:30,174 [INFO] werkzeug: 127.0.0.1 - - [01/Sep/2025 23:26:30] "[32mGET /login HTTP/1.1[0m" 302 -
+2025-09-01 23:29:46,048 [INFO] ifc-exporter: Processing IFC file: uploads\ПМА01 - ЦТЗ 9.ifczip
+2025-09-01 23:29:46,663 [INFO] ifc-exporter: IFC model loaded successfully. Schema: IFC4X3
+2025-09-01 23:29:46,663 [INFO] ifc-exporter: Starting zone processing...
+2025-09-01 23:29:46,714 [INFO] ifc-exporter: Processed 504 zones, generated 504 flat records
+2025-09-01 23:29:46,715 [INFO] ifc-exporter: Successfully exported 504 flats to downloads\ПМА01 - ЦТЗ 9.csv
+2025-09-01 23:29:46,715 [INFO] ifc-exporter: CSV file created: ПМА01 - ЦТЗ 9.csv (20154 bytes)
+2025-09-01 23:29:46,798 [INFO] ifc-exporter: Authenticated with Google Sheets API
+2025-09-01 23:29:51,170 [INFO] ifc-exporter: Opened existing spreadsheet: Квартирография_Кульман_test
+2025-09-01 23:29:51,671 [INFO] ifc-exporter: Generated unique sheet name: ПМА01 - ЦТЗ 9_9
+2025-09-01 23:29:52,848 [INFO] ifc-exporter: Created new worksheet: ПМА01 - ЦТЗ 9_9
+2025-09-01 23:29:53,382 [INFO] ifc-exporter: Data uploaded to worksheet 'ПМА01 - ЦТЗ 9_9': 504 data rows, 6 columns
+2025-09-01 23:29:55,175 [INFO] ifc-exporter: Header formatting applied
+2025-09-01 23:29:55,826 [INFO] ifc-exporter: Auto-resized columns
+2025-09-01 23:29:56,568 [WARNING] ifc-exporter: Failed to add timestamp: APIError: [400]: Invalid value at 'data.values' (type.googleapis.com/google.protobuf.ListValue), "A507"
+2025-09-01 23:29:56,568 [INFO] ifc-exporter: Successfully created worksheet with URL: https://docs.google.com/spreadsheets/d/1-ET59ayv1dYL_31BYmC1yR47aEnB9DMFc2HOXwiOAJ0#gid=72993279
+2025-09-01 23:29:56,571 [INFO] werkzeug: 127.0.0.1 - - [01/Sep/2025 23:29:56] "POST /uploads HTTP/1.1" 200 -
+2025-09-02 00:32:43,776 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Magerash\\PycharmProjects\\ifc-converter\\auth_system.py', reloading
+2025-09-02 00:32:43,849 [INFO] werkzeug:  * Restarting with stat
+2025-09-02 00:32:44,258 [INFO] ifc-exporter: ✅ export_flats module loaded
+2025-09-02 00:32:44,258 [INFO] ifc-exporter: ✅ gsheets module loaded
+2025-09-02 00:32:44,258 [INFO] ifc-exporter: ✅ file_naming_utils module loaded
+2025-09-02 00:32:44,258 [ERROR] ifc-exporter: ❌ Failed to import auth_system: cannot import name 'AuthManager' from 'auth_system' (consider renaming 'C:\\Users\\Magerash\\PycharmProjects\\ifc-converter\\auth_system.py' if it has the same name as a library you intended to import)
