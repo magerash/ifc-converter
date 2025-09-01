@@ -1,261 +1,298 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Flask приложение для обработки IFC-файлов с OAuth2 авторизацией
-Упрощенная версия на стандартном порту 5000
+OAuth2 Google авторизация и система истории конвертаций
 """
 
 import os
+import json
+import sqlite3
+from datetime import datetime, timedelta
+from functools import wraps
+
+from flask import session, redirect, url_for, request, jsonify, render_template
+from authlib.integrations.flask_client import OAuth
 import logging
-import time
-from datetime import datetime
-from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for
 
-# Инициализация приложения
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['DOWNLOAD_FOLDER'] = 'downloads'
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
-app.config['ALLOWED_EXTENSIONS'] = {'ifc', 'ifczip'}
-
-# Секретный ключ для сессий
-app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-change-in-production')
-
-# Время запуска для uptime
-START_TIME = datetime.now()
-
-# Настройка логирования
-os.makedirs('logs', exist_ok=True)
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
-    handlers=[
-        logging.FileHandler('logs/app.log', encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
 logger = logging.getLogger('ifc-exporter')
 
-# Импорт модулей с обработкой ошибок
-try:
-    from export_flats import export_flats
 
-    logger.info("✅ export_flats module loaded")
-except ImportError as e:
-    logger.error(f"❌ Failed to import export_flats: {e}")
-    export_flats = None
+class AuthManager:
+    """Менеджер авторизации и истории пользователей"""
 
-try:
-    from gsheets import upload_to_google_sheets
+    def __init__(self, app):
+        self.app = app
+        self.oauth = OAuth(app)
+        self.setup_database()
+        self.setup_google_oauth()
 
-    logger.info("✅ gsheets module loaded")
-except ImportError as e:
-    logger.error(f"❌ Failed to import gsheets: {e}")
-    upload_to_google_sheets = None
+    def setup_database(self):
+        """Создание базы данных для хранения истории"""
+        # db_path = 'users_history.db'
+        db_path = db_path = os.getenv('DB_PATH', 'users_history.db') # ======================= ВТОРОЙ СЕРВЕР ======================= #
 
-try:
-    from file_naming_utils import get_next_indexed_filename
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
 
-    logger.info("✅ file_naming_utils module loaded")
-except ImportError as e:
-    logger.error(f"❌ Failed to import file_naming_utils: {e}")
-    get_next_indexed_filename = None
+        # Таблица пользователей
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id TEXT PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT,
+                picture TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
 
-try:
-    from auth_system import AuthManager, setup_auth_routes
+        # Таблица истории конвертаций
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS conversions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT,
+                original_filename TEXT,
+                csv_filename TEXT,
+                sheet_url TEXT,
+                file_size INTEGER,
+                processed_flats INTEGER,
+                upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                processing_time_seconds REAL,
+                status TEXT DEFAULT 'success',
+                error_message TEXT,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+        ''')
 
-    # Инициализация менеджера авторизации
-    auth_manager = AuthManager(app)
-    setup_auth_routes(app, auth_manager)
-    logger.info("✅ OAuth2 system loaded")
-except ImportError as e:
-    logger.error(f"❌ Failed to import auth_system: {e}")
-    auth_manager = None
+        conn.commit()
+        conn.close()
+        logger.info("Database initialized successfully")
 
-
-def allowed_file(filename):
-    """Проверка разрешенных расширений файлов"""
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
-
-@app.route('/')
-def index():
-    """Главная страница"""
-    if 'user' in session:
-        return redirect(url_for('dashboard'))
-    return render_template('uploads.html')
-
-
-@app.route('/health')
-def health_check():
-    """Проверка состояния приложения"""
-    uptime = datetime.now() - START_TIME
-
-    if request.args.get('format') == 'json':
-        return jsonify({
-            "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "version": "2.0.0",
-            "uptime": str(uptime)
-        })
-
-    return render_template('health.html',
-                           status='healthy',
-                           version='2.0.0',
-                           uptime=str(uptime))
-
-
-@app.route('/uploads', methods=['POST'])
-def upload_file():
-    """API для загрузки и обработки IFC-файла"""
-    start_time = time.time()
-
-    try:
-        if 'file' not in request.files:
-            return jsonify({"error": "No file part"}), 400
-
-        file = request.files['file']
-
-        if file.filename == '':
-            return jsonify({"error": "No selected file"}), 400
-
-        if not allowed_file(file.filename):
-            return jsonify({"error": "Invalid file type. Please use .ifc or .ifczip files"}), 400
-
-        # Сохранение файла с уникальным именем
-        original_name = file.filename
-        if get_next_indexed_filename:
-            safe_filename = get_next_indexed_filename(app.config['UPLOAD_FOLDER'], original_name)
-        else:
-            safe_filename = original_name
-
-        ifc_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
-        file.save(ifc_path)
-        file_size = os.path.getsize(ifc_path)
-
-        # Обработка IFC
-        if not export_flats:
-            return jsonify({"error": "IFC processing module not available"}), 500
-
-        csv_path = export_flats(ifc_path, app.config['DOWNLOAD_FOLDER'], original_name)
-        csv_filename = os.path.basename(csv_path)
-
-        # Подсчет обработанных квартир
-        processed_flats = 0
-        try:
-            with open(csv_path, 'r', encoding='utf-8') as f:
-                processed_flats = sum(1 for line in f) - 1
-        except Exception:
-            pass
-
-        # Загрузка в Google Sheets
-        sheet_url = None
-        if upload_to_google_sheets:
-            try:
-                sheet_url = upload_to_google_sheets(csv_path, original_name)
-            except Exception as e:
-                logger.warning(f"Google Sheets upload failed: {str(e)}")
-
-        processing_time = time.time() - start_time
-
-        # Сохранение в историю (если пользователь авторизован)
-        if 'user' in session and auth_manager:
-            conversion_data = {
-                'original_filename': original_name,
-                'csv_filename': csv_filename,
-                'sheet_url': sheet_url,
-                'file_size': file_size,
-                'processed_flats': processed_flats,
-                'processing_time': processing_time,
-                'status': 'success'
+    def setup_google_oauth(self):
+        """Настройка Google OAuth2"""
+        # Регистрация Google OAuth провайдера
+        self.google = self.oauth.register(
+            name='google',
+            client_id=os.getenv('GOOGLE_CLIENT_ID'),
+            client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+            server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+            client_kwargs={
+                'scope': 'openid email profile'
             }
-            try:
-                auth_manager.save_conversion(session['user']['id'], conversion_data)
-            except Exception as e:
-                logger.error(f"Failed to save conversion to history: {str(e)}")
+        )
 
-        # Ответ
-        response_data = {
-            "status": "success",
-            "csv_path": csv_filename,
-            "original_filename": original_name,
-            "processed_flats": processed_flats,
-            "processing_time": round(processing_time, 2),
-            "sheet_url": sheet_url
+    def login_required(self, f):
+        """Декоратор для проверки авторизации"""
+
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'user' not in session:
+                # Для API запросов возвращаем JSON
+                if request.path.startswith('/api/') or request.is_json:
+                    return jsonify({'error': 'Authentication required'}), 401
+                # Для веб-интерфейса перенаправляем на логин
+                return redirect(url_for('login'))
+            return f(*args, **kwargs)
+
+        return decorated_function
+
+    def save_user(self, user_info):
+        """Сохранение информации о пользователе"""
+        conn = sqlite3.connect('users_history.db')
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            INSERT OR REPLACE INTO users (id, email, name, picture, last_login)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (
+            user_info['sub'],
+            user_info['email'],
+            user_info.get('name', ''),
+            user_info.get('picture', ''),
+            datetime.now()
+        ))
+
+        conn.commit()
+        conn.close()
+
+    def save_conversion(self, user_id, conversion_data):
+        """Сохранение записи о конвертации"""
+        conn = sqlite3.connect('users_history.db')
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            INSERT INTO conversions 
+            (user_id, original_filename, csv_filename, sheet_url, file_size, 
+             processed_flats, processing_time_seconds, status, error_message)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            user_id,
+            conversion_data.get('original_filename'),
+            conversion_data.get('csv_filename'),
+            conversion_data.get('sheet_url'),
+            conversion_data.get('file_size', 0),
+            conversion_data.get('processed_flats', 0),
+            conversion_data.get('processing_time', 0.0),
+            conversion_data.get('status', 'success'),
+            conversion_data.get('error_message')
+        ))
+
+        conn.commit()
+        conn.close()
+
+    def get_user_history(self, user_id, limit=50):
+        """Получение истории конвертаций пользователя"""
+        conn = sqlite3.connect('users_history.db')
+        conn.row_factory = sqlite3.Row  # Для доступа по именам колонок
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT * FROM conversions 
+            WHERE user_id = ? 
+            ORDER BY upload_time DESC 
+            LIMIT ?
+        ''', (user_id, limit))
+
+        history = cursor.fetchall()
+        conn.close()
+
+        # Конвертируем в список словарей
+        return [dict(row) for row in history]
+
+    def get_user_stats(self, user_id):
+        """Получение статистики пользователя"""
+        conn = sqlite3.connect('users_history.db')
+        cursor = conn.cursor()
+
+        # Общее количество конвертаций
+        cursor.execute('SELECT COUNT(*) FROM conversions WHERE user_id = ?', (user_id,))
+        total_conversions = cursor.fetchone()[0]
+
+        # Успешные конвертации
+        cursor.execute(
+            'SELECT COUNT(*) FROM conversions WHERE user_id = ? AND status = "success"',
+            (user_id,)
+        )
+        successful_conversions = cursor.fetchone()[0]
+
+        # Общее количество обработанных квартир
+        cursor.execute(
+            'SELECT SUM(processed_flats) FROM conversions WHERE user_id = ? AND status = "success"',
+            (user_id,)
+        )
+        total_flats = cursor.fetchone()[0] or 0
+
+        # Конвертации за последний месяц
+        last_month = datetime.now() - timedelta(days=30)
+        cursor.execute(
+            'SELECT COUNT(*) FROM conversions WHERE user_id = ? AND upload_time > ?',
+            (user_id, last_month)
+        )
+        recent_conversions = cursor.fetchone()[0]
+
+        conn.close()
+
+        return {
+            'total_conversions': total_conversions,
+            'successful_conversions': successful_conversions,
+            'total_flats_processed': total_flats,
+            'recent_conversions': recent_conversions,
+            'success_rate': (successful_conversions / total_conversions * 100) if total_conversions > 0 else 0
         }
 
-        return jsonify(response_data)
 
-    except Exception as e:
-        logger.error(f"Processing error: {str(e)}")
-        return jsonify({"error": f"Processing failed: {str(e)}"}), 500
+def setup_auth_routes(app, auth_manager):
+    """Настройка маршрутов авторизации"""
 
+    @app.route('/login')
+    def login():
+        """Страница входа"""
+        if 'user' in session:
+            return redirect(url_for('dashboard'))
 
-@app.route('/downloads/<path:filename>', methods=['GET'])
-def download_file(filename):
-    """Скачивание CSV-файла"""
-    try:
-        safe_path = os.path.join(app.config['DOWNLOAD_FOLDER'], os.path.basename(filename))
+        # Проверяем, используем ли мы ngrok
+        ngrok_url = os.getenv('NGROK_URL')
+        if ngrok_url:
+            # Используем ngrok URL для redirect_uri
+            google_redirect_uri = f"{ngrok_url}/auth/callback"
+        else:
+            # Стандартный подход
+            google_redirect_uri = url_for('auth_callback', _external=True)
 
-        if not os.path.exists(safe_path):
-            return jsonify({"error": "File not found"}), 404
+        return auth_manager.google.authorize_redirect(google_redirect_uri)
 
-        return send_file(safe_path, as_attachment=True)
-    except Exception as e:
-        logger.error(f"Download error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+    @app.route('/auth/callback')
+    def auth_callback():
+        """Обработка callback от Google OAuth"""
+        try:
+            token = auth_manager.google.authorize_access_token()
+            user_info = token.get('userinfo')
 
+            if user_info:
+                # Сохраняем информацию о пользователе
+                auth_manager.save_user(user_info)
 
-# Простые fallback маршруты если OAuth2 не загружен
-@app.route('/login')
-def login_fallback():
-    """Fallback для входа"""
-    return jsonify({"error": "OAuth2 system not available"}), 503
+                # Сохраняем в сессию
+                session['user'] = {
+                    'id': user_info['sub'],
+                    'email': user_info['email'],
+                    'name': user_info.get('name', ''),
+                    'picture': user_info.get('picture', '')
+                }
 
+                logger.info(f"User logged in: {user_info['email']}")
+                return redirect(url_for('dashboard'))
+            else:
+                logger.error("Failed to get user info from Google")
+                return redirect(url_for('index'))
 
-@app.route('/dashboard')
-def dashboard_fallback():
-    """Fallback для dashboard"""
-    return render_template('dashboard.html', user={'name': 'Guest'})
+        except Exception as e:
+            logger.error(f"OAuth callback error: {str(e)}")
+            return redirect(url_for('index'))
 
+    @app.route('/logout')
+    def logout():
+        """Выход из системы"""
+        session.pop('user', None)
+        return redirect(url_for('index'))
 
-@app.errorhandler(413)
-def too_large(e):
-    """Обработка превышения размера файла"""
-    return jsonify({"error": "File too large. Maximum size is 100MB"}), 413
+    @app.route('/dashboard')
+    @auth_manager.login_required
+    def dashboard():
+        """Личный кабинет пользователя"""
+        user_id = session['user']['id']
 
+        # Получаем статистику и историю
+        stats = auth_manager.get_user_stats(user_id)
+        history = auth_manager.get_user_history(user_id, limit=20)
 
-@app.errorhandler(500)
-def internal_error(e):
-    """Обработка внутренних ошибок сервера"""
-    logger.error(f"Internal server error: {str(e)}")
-    return jsonify({"error": "Internal server error"}), 500
+        return render_template('dashboard.html',
+                               user=session['user'],
+                               stats=stats,
+                               history=history)
 
+    @app.route('/api/history')
+    @auth_manager.login_required
+    def api_history():
+        """API для получения истории конвертаций"""
+        user_id = session['user']['id']
+        limit = request.args.get('limit', 50, type=int)
 
-def create_app():
-    """Фабрика приложений для Gunicorn"""
-    # Создание необходимых директорий
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
-    os.makedirs('logs', exist_ok=True)
+        history = auth_manager.get_user_history(user_id, limit)
+        return jsonify({
+            'status': 'success',
+            'history': history
+        })
 
-    logger.info("IFC Converter v2.0 initialized")
-    return app
+    @app.route('/api/stats')
+    @auth_manager.login_required
+    def api_stats():
+        """API для получения статистики пользователя"""
+        user_id = session['user']['id']
+        stats = auth_manager.get_user_stats(user_id)
 
+        return jsonify({
+            'status': 'success',
+            'stats': stats
+        })
 
-if __name__ == '__main__':
-    # Создание необходимых директорий
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
-    os.makedirs('logs', exist_ok=True)
-
-    # Проверяем development режим с ngrok
-    ngrok_url = os.getenv('NGROK_URL')
-    if ngrok_url:
-        logger.info(f"Starting IFC Converter v2.0 in development mode")
-        logger.info(f"Ngrok URL: {ngrok_url}")
-        app.run(host='0.0.0.0', port=5000, debug=True)
-    else:
-        logger.info("Starting IFC Converter v2.0 on port 5000...")
-        app.run(host='0.0.0.0', port=5000, debug=False)
