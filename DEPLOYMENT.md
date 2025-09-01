@@ -89,6 +89,7 @@ GS_SPREADSHEET_ID=your-spreadsheet-id-here
 
 ## 5. Развертывание
 
+### Продакшен (Docker)
 ```bash
 # Дать права на выполнение
 chmod +x deploy.sh
@@ -96,6 +97,26 @@ chmod +x deploy.sh
 # Запустить развертывание
 ./deploy.sh
 ```
+
+### Development (с ngrok)
+```bash
+# Установить ngrok
+wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
+tar -xzf ngrok-v3-stable-linux-amd64.tgz
+sudo mv ngrok /usr/local/bin/
+
+# Добавить в .env ваш ngrok token
+echo "NGROK_AUTH_TOKEN=your-token" >> .env
+
+# Запустить development с ngrok
+chmod +x start_dev.sh
+./start_dev.sh
+```
+
+При использовании ngrok:
+- Автоматически получает публичный URL
+- Обновляет .env файл
+- Показывает URL для настройки в Google Console
 
 Если нужно перелогиниться после установки Docker, выполните:
 ```bash
@@ -107,8 +128,13 @@ cd ~/ifc-converter
 
 ## 6. Проверка
 
+### Продакшен
 После развертывания приложение доступно по адресу:
 - http://your-server-ip:5000/
+
+### Development (ngrok)
+Приложение доступно по ngrok URL, который показывается при запуске:
+- https://abc123.ngrok.io/
 
 Проверить состояние:
 ```bash
