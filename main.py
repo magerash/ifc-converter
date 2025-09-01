@@ -24,14 +24,12 @@ app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-change-in-production')
 # Время запуска для uptime
 START_TIME = datetime.now()
 
-# Настройка логирования
-os.makedirs('logs', exist_ok=True)
+# Настройка логирования - только в консоль для избежания проблем с правами
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
     handlers=[
-        logging.FileHandler('logs/app.log', encoding='utf-8'),
-        logging.StreamHandler()
+        logging.StreamHandler()  # Только консольный вывод
     ]
 )
 logger = logging.getLogger('ifc-exporter')
