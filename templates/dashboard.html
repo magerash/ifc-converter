@@ -45,19 +45,33 @@
         }
 
         .user-header {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.95); /* Белый фон вместо прозрачного */
             backdrop-filter: blur(10px);
             padding: 15px 20px;
-            color: white;
+            color: #2c3e50; /* Темный текст вместо белого */
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 12px;
+            color: #2c3e50;
+        }
+
+        .user-info div {
+            color: #2c3e50;
+        }
+
+        .user-info div div:first-child {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .user-info div div:last-child {
+            color: #6c757d; /* Серый текст для email */
         }
 
         .user-avatar {
@@ -370,12 +384,13 @@
             margin-top: 40px;
             padding-top: 30px;
             border-top: 1px solid #e9ecef;
+            text-align: left; /* Выравнивание по левому краю */
         }
 
         .features h3 {
             color: #495057;
             margin-bottom: 20px;
-            text-align: center;
+            text-align: left; /* Заголовок остается по центру */
             font-size: 1.4em;
         }
 
@@ -383,14 +398,17 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            text-align: left; /* Выравнивание по левому краю */
         }
 
         .feature-list li {
-            padding: 10px 0;
+            padding: 0px 0;
             display: flex;
             align-items: center;
             color: #555;
             font-size: 1.05em;
+            text-align: left; /* Выравнивание по левому краю */
+            justify-content: flex-start; /* Выравнивание по левому краю */
         }
 
         .feature-list li::before {
@@ -399,6 +417,7 @@
             color: #2196F3;
             font-weight: bold;
             font-size: 1.4em;
+            flex-shrink: 0; /* Предотвращает сжатие маркера */
         }
 
         /* Адаптивность */
