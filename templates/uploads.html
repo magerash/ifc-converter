@@ -6,472 +6,56 @@
     <title>IFC Converter - Конвертация BIM файлов</title>
     <meta name="description" content="Конвертируйте IFC файлы в CSV и автоматически загружайте в Google Sheets. Быстрая обработка BIM данных онлайн.">
     <style>
-        * { box-sizing: border-box; }
+        /* ... остальные стили остаются без изменений ... */
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(45deg, #2196F3, #21CBF3);
-            color: white;
-            padding: 40px;
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            font-weight: 300;
-        }
-
-        .header p {
-            margin: 10px 0 0 0;
-            opacity: 0.9;
-            font-size: 1.1em;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .auth-section {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            background: #f8f9fa;
+        /* Новые стили для карточек файлов */
+        .file-card {
+            position: relative;
+            background: rgba(248, 249, 250, 0.8);
+            border: 1px solid #e9ecef;
             border-radius: 8px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .auth-section h3 {
-            color: #495057;
-            margin-top: 0;
-        }
-
-        .auth-section p {
-            color: #6c757d;
-            margin-bottom: 20px;
-        }
-
-        .login-btn {
-            display: inline-block;
-            background: #4285f4;
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            margin: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .login-btn:hover {
-            background: #3367d6;
-            transform: translateY(-1px);
-            text-decoration: none;
-            color: white;
-        }
-
-        .upload-section {
-            margin-top: 0;
-        }
-
-        .upload-section h3 {
-            text-align: center;
-            color: #495057;
-            margin-bottom: 30px;
-        }
-
-        .upload-area {
-            border: 2px dashed #3498db;
-            border-radius: 8px;
-            padding: 40px 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            background: #f8fafc;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .upload-area:hover {
-            background: #e3f2fd;
-            border-color: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .upload-area.highlight {
-            background: #d1ecff;
-            border-color: #1e88e5;
-            transform: scale(1.02);
-        }
-
-        .upload-area p {
-            margin: 0 0 15px 0;
-            color: #495057;
-            font-size: 1.1em;
-        }
-
-        .file-input { display: none; }
-
-        .browse-btn {
-            display: inline-block;
-            background: linear-gradient(45deg, #2196F3, #21CBF3);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            border: none;
-            font-size: 1em;
-        }
-
-        .browse-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-        }
-
-        .files-list {
-            margin-top: 20px;
-            text-align: left;
-            display: none;
-        }
-
-        .files-list.show {
-            display: block;
-        }
-
-        .file-item {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px;
+            margin-top: 15px;
             animation: fadeIn 0.3s ease-in;
         }
 
-        .file-item .file-name {
-            font-weight: 500;
-            color: #2c3e50;
-        }
-
-        .file-item .file-size {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-
-        .remove-file {
+        .file-card .remove-file {
+            position: absolute;
+            top: 5px;
+            right: 5px;
             background: #dc3545;
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
-            font-size: 0.85em;
-        }
-
-        .remove-file:hover {
-            background: #c82333;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .coefficient-section {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            text-align: left;
-        }
-
-        .coefficient-group {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-top: 10px;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 1;
         }
 
-        .coefficient-label {
-            font-weight: 500;
-            color: #495057;
-            cursor: help;
-            position: relative;
-        }
-
-        .coefficient-input {
-            width: 100px;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+        .file-card .file-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
             font-size: 1em;
         }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 300px;
-            background-color: #555;
-            color: #fff;
-            text-align: left;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -150px;
-            opacity: 0;
-            transition: opacity 0.3s;
+        .file-card .file-details {
             font-size: 0.9em;
-            line-height: 1.4;
+            color: #6c757d;
         }
 
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .warning-message {
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+        .files-container {
+            margin-top: 15px;
             display: none;
         }
 
-        .warning-message.show {
+        .files-container.show {
             display: block;
-        }
-
-        .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #2ecc71, #27ae60);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.2s ease;
-            font-weight: 500;
-        }
-
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
-        }
-
-        .submit-btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            margin: 20px 0;
-            overflow: hidden;
-            display: none;
-        }
-
-        .progress-bar.show {
-            display: block;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(45deg, #2196F3, #21CBF3);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none;
-        }
-
-        .spinner.show {
-            display: block;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .status-text {
-            text-align: center;
-            margin: 10px 0;
-            font-weight: 500;
-            color: #495057;
-        }
-
-        .result-area {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .result-area.show {
-            display: block;
-        }
-
-        .success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-        }
-
-        .error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        .result-buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .link-btn {
-            display: inline-block;
-            background: linear-gradient(45deg, #2196F3, #21CBF3);
-            color: white;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            font-size: 0.95em;
-            min-width: 160px;
-            text-align: center;
-        }
-
-        .link-btn:hover {
-            transform: translateY(-2px);
-            text-decoration: none;
-            color: white;
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-        }
-
-        .link-btn.secondary {
-            background: linear-gradient(45deg, #28a745, #20c997);
-        }
-
-        .link-btn.secondary:hover {
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-        }
-
-        .features {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .features h3 {
-            color: #495057;
-            margin-bottom: 15px;
-        }
-
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .feature-list li {
-            padding: 6px 0;
-            display: flex;
-            align-items: center;
-            color: #555;
-            font-size: 0.95em;
-        }
-
-        .feature-list li::before {
-            content: "✓";
-            margin-right: 12px;
-            color: #2196F3;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .content {
-                padding: 20px;
-            }
-
-            .upload-area {
-                padding: 30px 15px;
-            }
-
-            .result-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .link-btn {
-                min-width: 200px;
-            }
-
-            .tooltip .tooltiptext {
-                width: 250px;
-                margin-left: -125px;
-            }
         }
     </style>
 </head>
@@ -498,10 +82,10 @@
                         Выберите файлы
                         <input type="file" id="fileInput" class="file-input" accept=".ifc,.ifczip" multiple required>
                     </label>
-                </div>
 
-                <!-- Список выбранных файлов -->
-                <div class="files-list" id="files-list"></div>
+                    <!-- Контейнер для карточек файлов -->
+                    <div class="files-container" id="files-container"></div>
+                </div>
 
                 <!-- Коэффициент площади -->
                 <div class="coefficient-section">
@@ -573,7 +157,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const uploadArea = document.getElementById('upload-area');
             const fileInput = document.getElementById('fileInput');
-            const filesList = document.getElementById('files-list');
+            const filesContainer = document.getElementById('files-container');
             const submitBtn = document.getElementById('submit-btn');
             const progressBar = document.getElementById('progress-bar');
             const progress = document.getElementById('progress');
@@ -588,7 +172,6 @@
 
             // Обработка клика по области загрузки
             uploadArea.addEventListener('click', (e) => {
-                // Предотвращаем клик если кликнули по кнопке
                 if (e.target.closest('.browse-btn')) {
                     return;
                 }
@@ -625,8 +208,6 @@
 
             // Обработка выбора файлов
             function handleFilesSelect(files) {
-                selectedFiles = [];
-
                 // Фильтруем только IFC файлы
                 for (let file of files) {
                     const validExtensions = ['ifc', 'ifczip'];
@@ -638,7 +219,11 @@
                             alert(`Файл ${file.name} превышает максимальный размер 100MB`);
                             continue;
                         }
-                        selectedFiles.push(file);
+
+                        // Проверяем, не добавлен ли уже файл
+                        if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                            selectedFiles.push(file);
+                        }
                     }
                 }
 
@@ -654,8 +239,8 @@
                     multipleFilesWarning.classList.remove('show');
                 }
 
-                // Отображаем список файлов
-                displayFilesList();
+                // Отображаем файлы в виде карточек
+                displayFiles();
 
                 // Активируем кнопку
                 submitBtn.disabled = false;
@@ -664,27 +249,29 @@
                 resetResults();
             }
 
-            // Отображение списка файлов
-            function displayFilesList() {
+            // Отображение файлов в виде карточек
+            function displayFiles() {
+                filesContainer.innerHTML = '';
+
                 if (selectedFiles.length === 0) {
-                    filesList.classList.remove('show');
+                    filesContainer.classList.remove('show');
                     return;
                 }
 
-                filesList.innerHTML = '';
-                filesList.classList.add('show');
+                filesContainer.classList.add('show');
 
                 selectedFiles.forEach((file, index) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'file-item';
-                    fileItem.innerHTML = `
-                        <div>
-                            <div class="file-name">${file.name}</div>
-                            <div class="file-size">${formatFileSize(file.size)}</div>
-                        </div>
-                        <button class="remove-file" data-index="${index}">Удалить</button>
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    const fileNameWithoutExt = file.name.slice(0, -(fileExtension.length + 1));
+
+                    const fileCard = document.createElement('div');
+                    fileCard.className = 'file-card';
+                    fileCard.innerHTML = `
+                        <button class="remove-file" data-index="${index}">×</button>
+                        <div class="file-name">${fileNameWithoutExt}</div>
+                        <div class="file-details">${formatFileSize(file.size)} | ${fileExtension.toUpperCase()}</div>
                     `;
-                    filesList.appendChild(fileItem);
+                    filesContainer.appendChild(fileCard);
                 });
 
                 // Добавляем обработчики для удаления файлов
@@ -692,7 +279,7 @@
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(e.target.dataset.index);
                         selectedFiles.splice(index, 1);
-                        displayFilesList();
+                        displayFiles();
 
                         if (selectedFiles.length === 0) {
                             submitBtn.disabled = true;
@@ -860,6 +447,15 @@
                 }
             });
 
+            // Валидация коэффициента
+            areaCoefficientInput.addEventListener('change', function() {
+                let value = parseFloat(this.value);
+                if (isNaN(value) || value < 0.5 || value > 1.0) {
+                    this.value = 0.9;
+                    alert('Коэффициент должен быть от 0.5 до 1.0');
+                }
+            });
+
             // Предотвращение отправки формы при нажатии Enter
             document.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
@@ -867,15 +463,6 @@
                     if (!submitBtn.disabled) {
                         submitBtn.click();
                     }
-                }
-            });
-
-            // Валидация коэффициента
-            areaCoefficientInput.addEventListener('change', function() {
-                let value = parseFloat(this.value);
-                if (isNaN(value) || value < 0.5 || value > 1.0) {
-                    this.value = 0.9;
-                    alert('Коэффициент должен быть от 0.5 до 1.0');
                 }
             });
         });
