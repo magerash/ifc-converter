@@ -472,55 +472,6 @@
                 width: 250px;
                 margin-left: -125px;
             }
-                    /* Новые стили для карточек файлов */
-            .file-card {
-                position: relative;
-                background: rgba(248, 249, 250, 0.8);
-                border: 1px solid #e9ecef;
-                border-radius: 8px;
-                padding: 15px;
-                margin-top: 15px;
-                animation: fadeIn 0.3s ease-in;
-            }
-
-            .file-card .remove-file {
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                background: #dc3545;
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 24px;
-                height: 24px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 16px;
-                line-height: 1;
-            }
-
-            .file-card .file-name {
-                font-weight: 600;
-                color: #2c3e50;
-                margin-bottom: 5px;
-                font-size: 1em;
-            }
-
-            .file-card .file-details {
-                font-size: 0.9em;
-                color: #6c757d;
-            }
-
-            .files-container {
-                margin-top: 15px;
-                display: none;
-            }
-
-            .files-container.show {
-                display: block;
-            }
         }
     </style>
 </head>
@@ -547,10 +498,10 @@
                         Выберите файлы
                         <input type="file" id="fileInput" class="file-input" accept=".ifc,.ifczip" multiple required>
                     </label>
-
-                    <!-- Контейнер для карточек файлов -->
-                    <div class="files-container" id="files-container"></div>
                 </div>
+
+                <!-- Список выбранных файлов -->
+                <div class="files-list" id="files-list"></div>
 
                 <!-- Коэффициент площади -->
                 <div class="coefficient-section">
@@ -622,7 +573,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const uploadArea = document.getElementById('upload-area');
             const fileInput = document.getElementById('fileInput');
-            const filesContainer = document.getElementById('files-container');
+            const filesList = document.getElementById('files-list');
             const submitBtn = document.getElementById('submit-btn');
             const progressBar = document.getElementById('progress-bar');
             const progress = document.getElementById('progress');
@@ -637,6 +588,7 @@
 
             // Обработка клика по области загрузки
             uploadArea.addEventListener('click', (e) => {
+                // Предотвращаем клик если кликнули по кнопке
                 if (e.target.closest('.browse-btn')) {
                     return;
                 }
@@ -673,6 +625,8 @@
 
             // Обработка выбора файлов
             function handleFilesSelect(files) {
+                selectedFiles = [];
+
                 // Фильтруем только IFC файлы
                 for (let file of files) {
                     const validExtensions = ['ifc', 'ifczip'];
@@ -684,11 +638,7 @@
                             alert(`Файл ${file.name} превышает максимальный размер 100MB`);
                             continue;
                         }
-
-                        // Проверяем, не добавлен ли уже файл
-                        if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                            selectedFiles.push(file);
-                        }
+                        selectedFiles.push(file);
                     }
                 }
 
@@ -704,8 +654,8 @@
                     multipleFilesWarning.classList.remove('show');
                 }
 
-                // Отображаем файлы в виде карточек
-                displayFiles();
+                // Отображаем список файлов
+                displayFilesList();
 
                 // Активируем кнопку
                 submitBtn.disabled = false;
@@ -714,29 +664,27 @@
                 resetResults();
             }
 
-            // Отображение файлов в виде карточек
-            function displayFiles() {
-                filesContainer.innerHTML = '';
-
+            // Отображение списка файлов
+            function displayFilesList() {
                 if (selectedFiles.length === 0) {
-                    filesContainer.classList.remove('show');
+                    filesList.classList.remove('show');
                     return;
                 }
 
-                filesContainer.classList.add('show');
+                filesList.innerHTML = '';
+                filesList.classList.add('show');
 
                 selectedFiles.forEach((file, index) => {
-                    const fileExtension = file.name.split('.').pop().toLowerCase();
-                    const fileNameWithoutExt = file.name.slice(0, -(fileExtension.length + 1));
-
-                    const fileCard = document.createElement('div');
-                    fileCard.className = 'file-card';
-                    fileCard.innerHTML = `
-                        <button class="remove-file" data-index="${index}">×</button>
-                        <div class="file-name">${fileNameWithoutExt}</div>
-                        <div class="file-details">${formatFileSize(file.size)} | ${fileExtension.toUpperCase()}</div>
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <div>
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${formatFileSize(file.size)}</div>
+                        </div>
+                        <button class="remove-file" data-index="${index}">Удалить</button>
                     `;
-                    filesContainer.appendChild(fileCard);
+                    filesList.appendChild(fileItem);
                 });
 
                 // Добавляем обработчики для удаления файлов
@@ -744,7 +692,7 @@
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(e.target.dataset.index);
                         selectedFiles.splice(index, 1);
-                        displayFiles();
+                        displayFilesList();
 
                         if (selectedFiles.length === 0) {
                             submitBtn.disabled = true;
@@ -912,15 +860,6 @@
                 }
             });
 
-            // Валидация коэффициента
-            areaCoefficientInput.addEventListener('change', function() {
-                let value = parseFloat(this.value);
-                if (isNaN(value) || value < 0.5 || value > 1.0) {
-                    this.value = 0.9;
-                    alert('Коэффициент должен быть от 0.5 до 1.0');
-                }
-            });
-
             // Предотвращение отправки формы при нажатии Enter
             document.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
@@ -928,6 +867,15 @@
                     if (!submitBtn.disabled) {
                         submitBtn.click();
                     }
+                }
+            });
+
+            // Валидация коэффициента
+            areaCoefficientInput.addEventListener('change', function() {
+                let value = parseFloat(this.value);
+                if (isNaN(value) || value < 0.5 || value > 1.0) {
+                    this.value = 0.9;
+                    alert('Коэффициент должен быть от 0.5 до 1.0');
                 }
             });
         });
