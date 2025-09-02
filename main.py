@@ -80,28 +80,158 @@ def allowed_file(filename):
 @app.route('/')
 def index():
     """Главная страница"""
+    # Если запрошен JSON формат
+    if request.args.get('format') == 'json':
+        return jsonify({
+            "api": "IFC Converter",
+            "version": "1.1.0",
+            "endpoints": {
+                "health": "/health",
+                "upload": "/uploads",
+                "download": "/downloads/<filename>"
+            },
+            "documentation": "See /health for system status"
+        })
+
     if 'user' in session:
         return redirect(url_for('dashboard'))
     return render_template('uploads.html')
 
 
+def check_google_sheets_status():
+    """Проверка статуса Google Sheets API с подробной диагностикой"""
+    try:
+        # Проверяем наличие всех необходимых переменных окружения
+        required_vars = [
+            'GS_SPREADSHEET_ID',
+            'GS_CLIENT_EMAIL',
+            'GS_PRIVATE_KEY',
+            'GS_PROJECT_ID',
+            'GS_TYPE'
+        ]
+
+        missing_vars = []
+        for var in required_vars:
+            value = os.getenv(var)
+            if not value or (var.startswith('your-') if isinstance(value, str) else False):
+                missing_vars.append(var)
+
+        if missing_vars:
+            logger.warning(f"Missing Google Sheets variables: {missing_vars}")
+            return 'not_configured'
+
+        # Пробуем импортировать и инициализировать gsheets модуль
+        try:
+            from gsheets import validate_gs_credentials
+            validate_gs_credentials()
+            logger.info("Google Sheets API credentials validated successfully")
+            return 'configured'
+        except ImportError as e:
+            logger.error(f"Failed to import gsheets module: {e}")
+            return 'error'
+        except Exception as e:
+            logger.error(f"Google Sheets API validation failed: {e}")
+            return 'error'
+
+    except Exception as e:
+        logger.error(f"Error checking Google Sheets status: {e}")
+        return 'error'
+
+
+def format_uptime(start_time):
+    """Форматирует время работы приложения в читаемый формат"""
+    uptime = datetime.now() - start_time
+    days = uptime.days
+    hours, remainder = divmod(uptime.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    if days > 0:
+        return f"{days}д {hours}ч {minutes}м"
+    elif hours > 0:
+        return f"{hours}ч {minutes}м {seconds}с"
+    elif minutes > 0:
+        return f"{minutes}м {seconds}с"
+    else:
+        return f"{seconds}с"
+
 @app.route('/health')
 def health_check():
-    """Проверка состояния приложения"""
-    uptime = datetime.now() - START_TIME
+    """Улучшенная проверка состояния приложения"""
+    try:
+        # Получаем текущее время для Last Check
+        current_time = datetime.now()
+        timestamp_formatted = current_time.strftime('%d.%m.%Y %H:%M:%S')
 
-    if request.args.get('format') == 'json':
-        return jsonify({
-            "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "version": "2.0.0",
-            "uptime": str(uptime)
-        })
+        # Проверяем Google Sheets API
+        gs_status = check_google_sheets_status()
 
-    return render_template('health.html',
-                           status='healthy',
-                           version='2.0.0',
-                           uptime=str(uptime))
+        # Если запрос с заголовком Accept: application/json, возвращаем JSON
+        if request.headers.get('Accept') == 'application/json' or request.args.get('format') == 'json':
+            return jsonify({
+                "status": "healthy",
+                "timestamp": current_time.isoformat(),
+                "version": "1.1.0",
+                "uptime": format_uptime(START_TIME),
+                "google_sheets_status": gs_status,
+                "last_check": timestamp_formatted
+            })
+
+        # Получаем дополнительную информацию для HTML страницы
+        spreadsheet_id = os.getenv('GS_SPREADSHEET_ID', 'НЕ НАСТРОЕН')
+        client_email = os.getenv('GS_CLIENT_EMAIL', 'НЕ НАСТРОЕН')
+
+        # Маскируем чувствительные данные для отображения
+        if spreadsheet_id and spreadsheet_id != 'НЕ НАСТРОЕН':
+            spreadsheet_display = spreadsheet_id[:15] + "..." if len(spreadsheet_id) > 15 else spreadsheet_id
+        else:
+            spreadsheet_display = spreadsheet_id
+
+        if client_email and client_email != 'НЕ НАСТРОЕН':
+            client_email_display = client_email[:30] + "..." if len(client_email) > 30 else client_email
+        else:
+            client_email_display = client_email
+
+        # Данные для HTML шаблона
+        health_data = {
+            'status': 'healthy',
+            'timestamp_formatted': timestamp_formatted,
+            'version': '1.1.0',
+            'uptime': format_uptime(START_TIME),
+            'google_sheets_status': gs_status,
+            'spreadsheet_id': spreadsheet_display,
+            'client_email': client_email_display,
+            'last_check': timestamp_formatted  # Добавляем last_check явно
+        }
+
+        return render_template('health.html', **health_data)
+
+    except Exception as e:
+        logger.error(f"Error in health check: {str(e)}")
+
+        # Возвращаем ошибку, но с базовой информацией
+        error_time = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+
+        if request.headers.get('Accept') == 'application/json' or request.args.get('format') == 'json':
+            return jsonify({
+                "status": "error",
+                "error": str(e),
+                "timestamp": error_time
+            }), 500
+
+        # Для HTML возвращаем упрощенную страницу с ошибкой
+        error_data = {
+            'status': 'error',
+            'timestamp_formatted': error_time,
+            'version': '1.1.0',
+            'uptime': 'N/A',
+            'google_sheets_status': 'error',
+            'spreadsheet_id': 'ERROR',
+            'client_email': 'ERROR',
+            'last_check': error_time,
+            'error_message': str(e)
+        }
+
+        return render_template('health.html', **error_data), 500
 
 
 @app.route('/uploads', methods=['POST'])
@@ -238,7 +368,7 @@ def create_app():
     os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
     os.makedirs('logs', exist_ok=True)
 
-    logger.info("IFC Converter v2.0 initialized")
+    logger.info("IFC Converter v1.1 initialized")
     return app
 
 
@@ -251,9 +381,9 @@ if __name__ == '__main__':
     # Проверяем development режим с ngrok
     ngrok_url = os.getenv('NGROK_URL')
     if ngrok_url:
-        logger.info(f"Starting IFC Converter v2.0 in development mode")
+        logger.info(f"Starting IFC Converter v1.1 in development mode")
         logger.info(f"Ngrok URL: {ngrok_url}")
         app.run(host='0.0.0.0', port=5000, debug=True)
     else:
-        logger.info("Starting IFC Converter v2.0 on port 5000...")
+        logger.info("Starting IFC Converter v1.1 on port 5000...")
         app.run(host='0.0.0.0', port=5000, debug=False)

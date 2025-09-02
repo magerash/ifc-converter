@@ -6,7 +6,6 @@
 
 import os
 import re
-#from pathlib import Path
 
 
 def get_next_indexed_filename(directory, base_filename):

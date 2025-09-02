@@ -1,4 +1,4 @@
-# 🚀 Развертывание IFC Converter v2.0
+# 🚀 Развертывание IFC Converter v1.1
 
 Простая инструкция по развертыванию на Ubuntu/Debian.
 
@@ -37,7 +37,7 @@ cd ifc-converter
 
 ### 3.2 OAuth2 Client ID
 1. APIs & Services > Credentials
-2. Create OAuth 2.0 Client ID
+2. Create OAuth 1.1 Client ID
 3. Web application
 4. Authorized redirect URIs: `http://your-server-ip:5000/auth/callback`
 5. Сохраните Client ID и Client Secret

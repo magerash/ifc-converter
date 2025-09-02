@@ -236,7 +236,7 @@ class OAuth2Tester:
 
         print(f"\n{Fore.YELLOW}Проверьте настройки в Google Console:")
         print(f"{Fore.WHITE}1. Перейдите: https://console.cloud.google.com/apis/credentials")
-        print(f"{Fore.WHITE}2. Выберите ваш OAuth 2.0 Client ID")
+        print(f"{Fore.WHITE}2. Выберите ваш OAuth 1.1 Client ID")
         print(f"{Fore.WHITE}3. Убедитесь что добавлены:")
         print(f"\n   {Fore.GREEN}Authorized JavaScript origins:")
         print(f"   {Fore.CYAN}• {self.ngrok_url}")
