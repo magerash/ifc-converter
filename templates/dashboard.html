@@ -435,12 +435,12 @@
 
         .status-success {
             color: #28a745;
-            font-weight: 500;
+            font-weight: normal; /* Убираем жирность */
         }
 
         .status-error {
             color: #dc3545;
-            font-weight: 500;
+            font-weight: normal; /* Убираем жирность */
         }
 
         .btn {
@@ -575,7 +575,6 @@
 
         <!-- Панель пользователя -->
         <div class="user-header">
-            <h1>Панель управления</h1>
             <div class="user-info">
                 <img src="{{ user.picture }}" alt="{{ user.name }}" class="user-avatar">
                 <div>
@@ -596,10 +595,6 @@
                 <div class="stat-card">
                     <div class="stat-number">{{ stats.total_flats_processed }}</div>
                     <div class="stat-label">Обработано квартир</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{{ stats.recent_conversions }}</div>
-                    <div class="stat-label">За последний месяц</div>
                 </div>
             </div>
 
