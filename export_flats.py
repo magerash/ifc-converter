@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Экспорт квартир из IFC в CSV с улучшенной системой именования файлов
-Обновленная версия с поддержкой числовой индексации
+Экспорт квартир из IFC в CSV с поддержкой множественных файлов
+Версия с исправленной логикой нумерации секций
 """
 
 import sys
@@ -57,16 +57,23 @@ ALLOWED_ZONE_TYPES = {
     "BRU_Zone_4С",
 }
 
+# Обновленный заголовок CSV с новыми столбцами
 CSV_HEADER = [
-    "FlatType",  # без префикса
-    "Area_m2",
-    "Section",  # без префикса
-    "FloorNum",
-    "StoreyName",
-    "FlatNumber",
+    "FlatType",  # A - без префикса
+    "Area_m2",  # B - исходная площадь
+    "Area_m2'",  # C - скорректированная площадь (новый)
+    "Section",  # D - без префикса
+    "Section№",  # E - порядковый номер секции (новый)
+    "FloorNum",  # F
+    "StoreyName",  # G
+    "FlatNumber",  # H
+    "File",  # I - имя файла-источника (новый)
 ]
 
 MILLI_METRE_FACTOR = 1.0  # 0.000001 — если площадь хранится в мм²
+
+# Коэффициент площади по умолчанию
+DEFAULT_AREA_COEFFICIENT = 0.9
 
 
 # ------------------------------------------------------------
@@ -104,26 +111,35 @@ def extract_floor_number(storey_name):
     return int(m.group(1)) if m else ""
 
 
+def extract_section_identifier(storey_name):
+    """
+    Извлечение уникального идентификатора секции из названия этажа
+    Например: из "тб1_с1_э10" извлекаем "тб1_с1"
+    """
+    if not storey_name:
+        return ""
+
+    # Паттерн для извлечения тб<число>_с<число>
+    match = re.match(r"(тб\d+_с\d+)", storey_name, flags=re.IGNORECASE)
+    if match:
+        return match.group(1)
+
+    # Альтернативный паттерн если нет тб
+    match = re.match(r"(с\d+)", storey_name, flags=re.IGNORECASE)
+    if match:
+        return match.group(1)
+
+    return ""
+
+
 def strip_prefix(value, prefix):
     """Удаление префикса из значения"""
     return value[len(prefix):] if value and value.startswith(prefix) else value
 
 
-def sort_rows_by_flat_number(rows):
-    """Сортировка строк по номеру квартиры"""
-
-    def key(row):
-        num = str(row[5])  # FlatNumber теперь последний в списке
-        m = re.match(r"\d+", num)
-        return (int(m.group()) if m else float("inf"), num)
-
-    rows.sort(key=key)
-
-
 def get_area_value(group):
     """
     Получение площади с правильной обработкой единиц измерения
-    Улучшенная версия с обработкой различных форматов
     """
     if not group:
         return ""
@@ -153,29 +169,118 @@ def format_area_with_comma(area_value):
     return str(area_value)
 
 
-def count_csv_rows(csv_path):
-    """Подсчет количества строк данных в CSV файле (исключая заголовок)"""
-    try:
-        with open(csv_path, 'r', encoding='utf-8') as f:
-            # Подсчитываем строки, исключая заголовок
-            return sum(1 for line in f) - 1
-    except Exception as e:
-        logger.warning(f"Failed to count CSV rows: {str(e)}")
-        return 0
-
-
-# ------------------------------------------------------------
-# основная обработка
-# ------------------------------------------------------------
-def export_flats(ifc_path, download_dir, original_filename=None):
+def calculate_corrected_area(area_str, coefficient):
     """
-    Обрабатывает IFC-файл и сохраняет CSV в папке для скачивания
-    Использует улучшенную систему именования с числовой индексацией
+    Расчет скорректированной площади
 
-    :param ifc_path: Путь к входному IFC-файлу в папке uploads
-    :param download_dir: Папка для сохранения CSV (downloads)
-    :param original_filename: Оригинальное имя файла для сохранения структуры
-    :return: Абсолютный путь к созданному CSV-файлу
+    :param area_str: строка с площадью (может содержать запятую)
+    :param coefficient: коэффициент корректировки
+    :return: скорректированная площадь как строка с запятой
+    """
+    if not area_str:
+        return ""
+
+    try:
+        # Заменяем запятую на точку для вычислений
+        area_value = float(area_str.replace(',', '.'))
+        corrected = area_value * coefficient
+        # Возвращаем с запятой для Excel
+        return str(round(corrected, 3)).replace('.', ',')
+    except (ValueError, TypeError):
+        return ""
+
+
+def assign_section_numbers_improved(rows):
+    """
+    Улучшенное присваивание порядковых номеров секциям
+    Сохраняет группировку по файлам, но обеспечивает сквозную нумерацию
+
+    :param rows: список строк данных
+    :return: обновленный список строк с номерами секций
+    """
+    # Собираем уникальные комбинации файл + идентификатор секции
+    sections_order = []
+    sections_map = {}
+    file_sections = {}  # Для хранения секций по файлам
+
+    # Сначала группируем секции по файлам
+    for row in rows:
+        storey_name = row[6]  # Столбец StoreyName
+        file_name = row[8]  # Столбец File
+
+        # Извлекаем идентификатор секции из StoreyName
+        section_id = extract_section_identifier(storey_name)
+
+        if section_id:
+            if file_name not in file_sections:
+                file_sections[file_name] = set()
+            file_sections[file_name].add(section_id)
+
+    # Теперь создаем сквозную нумерацию, но с учетом порядка файлов
+    section_counter = 1
+    for file_name in file_sections:
+        for section_id in sorted(file_sections[file_name]):
+            unique_key = f"{file_name}_{section_id}"
+            sections_map[unique_key] = section_counter
+            section_counter += 1
+
+    # Обновляем строки с номерами секций
+    for row in rows:
+        storey_name = row[6]  # Столбец StoreyName
+        file_name = row[8]  # Столбец File
+
+        section_id = extract_section_identifier(storey_name)
+        if section_id:
+            unique_key = f"{file_name}_{section_id}"
+            if unique_key in sections_map:
+                row[4] = sections_map[unique_key]  # Столбец Section№
+            else:
+                row[4] = ""
+        else:
+            row[4] = ""
+
+    return rows
+
+def sort_rows_complex(rows):
+    """
+    Комплексная сортировка строк:
+    1. Сначала по имени файла (сохраняем исходный порядок файлов)
+    2. Затем по номеру секции
+    3. Затем по этажу
+    4. Затем по номеру квартиры
+    """
+
+    # Создаем mapping для порядка файлов
+    file_order = {}
+    current_order = 0
+    for row in rows:
+        file_name = row[8]  # File
+        if file_name not in file_order:
+            file_order[file_name] = current_order
+            current_order += 1
+
+    def sort_key(row):
+        file_name = row[8]  # File
+        section_num = row[4] if row[4] != "" else 999999  # Section№
+        floor_num = row[5] if row[5] != "" else 999999  # FloorNum
+        flat_number = str(row[7])  # FlatNumber
+
+        # Извлекаем числовую часть из номера квартиры
+        flat_match = re.match(r"(\d+)", flat_number)
+        flat_num = int(flat_match.group(1)) if flat_match else 999999
+
+        return (file_order[file_name], section_num, floor_num, flat_num, flat_number)
+
+    rows.sort(key=sort_key)
+
+
+def process_single_ifc(ifc_path, area_coefficient=DEFAULT_AREA_COEFFICIENT):
+    """
+    Обработка одного IFC файла
+
+    :param ifc_path: путь к IFC файлу
+    :param area_coefficient: коэффициент корректировки площади
+    :return: список строк данных
     """
     try:
         logger.info(f"Processing IFC file: {ifc_path}")
@@ -187,6 +292,9 @@ def export_flats(ifc_path, download_dir, original_filename=None):
 
     rows = []
     processed_zones = 0
+
+    # Получаем имя файла без пути и расширения
+    file_name = Path(ifc_path).stem
 
     # Обработка всех зон в модели
     logger.info("Starting zone processing...")
@@ -208,7 +316,7 @@ def export_flats(ifc_path, download_dir, original_filename=None):
         group = get_flat_main_group(zone)
         area = get_area_value(group)
 
-        # Альтернативный способ получения площади, если основной не сработал
+        # Альтернативный способ получения площади
         if group and not area:
             psets = _get_psets(group)
             if "Pset_ZoneCommon" in psets:
@@ -221,6 +329,9 @@ def export_flats(ifc_path, download_dir, original_filename=None):
                     except (ValueError, TypeError) as e:
                         logger.warning(f"Failed to process area value: {e}")
 
+        # Расчет скорректированной площади
+        corrected_area = calculate_corrected_area(area, area_coefficient)
+
         # Получение информации об этаже
         storey = get_parent_of_type(zone, "IfcBuildingStorey")
         storey_name = storey.Name if storey else ""
@@ -232,51 +343,87 @@ def export_flats(ifc_path, download_dir, original_filename=None):
         if section and section.ObjectType:
             section_clean = strip_prefix(section.ObjectType, "BRU_Секция_")
 
-        # Добавление строки данных
+        # Добавление строки данных с новыми столбцами
         row_data = [
-            flat_type,
-            area,
-            section_clean,
-            floor_num,
-            storey_name,
-            flat_number
+            flat_type,  # A - FlatType
+            area,  # B - Area_m2
+            corrected_area,  # C - Area_m2' (новый)
+            section_clean,  # D - Section
+            "",  # E - Section№ (будет заполнен позже)
+            floor_num,  # F - FloorNum
+            storey_name,  # G - StoreyName
+            flat_number,  # H - FlatNumber
+            file_name,  # I - File (новый)
         ]
 
         rows.append(row_data)
-        logger.debug(f"Processed flat: {flat_number}, type: {flat_type}, area: {area}")
+        logger.debug(f"Processed flat: {flat_number}, type: {flat_type}, area: {area}, storey: {storey_name}")
 
-    logger.info(f"Processed {processed_zones} zones, generated {len(rows)} flat records")
+    logger.info(f"Processed {processed_zones} zones from {file_name}")
+    return rows
 
-    # Сортировка по номеру квартиры
-    sort_rows_by_flat_number(rows)
 
-    # Создание папки для скачивания, если не существует
+def export_flats_multiple(ifc_paths, download_dir, area_coefficient=DEFAULT_AREA_COEFFICIENT,
+                          combined_filename=None):
+    """
+    Обработка нескольких IFC файлов с объединением результатов
+
+    :param ifc_paths: список путей к IFC файлам
+    :param download_dir: папка для сохранения CSV
+    :param area_coefficient: коэффициент корректировки площади
+    :param combined_filename: имя для объединенного файла
+    :return: путь к созданному CSV файлу
+    """
+    if not ifc_paths:
+        raise ValueError("No IFC files provided")
+
+    all_rows = []
+
+    # Обрабатываем каждый файл
+    for ifc_path in ifc_paths:
+        try:
+            rows = process_single_ifc(ifc_path, area_coefficient)
+            all_rows.extend(rows)
+        except Exception as e:
+            logger.error(f"Failed to process {ifc_path}: {str(e)}")
+            # Продолжаем с остальными файлами
+            continue
+
+    if not all_rows:
+        raise ValueError("No data extracted from IFC files")
+
+    # Присваиваем номера секциям с улучшенной логикой
+    all_rows = assign_section_numbers_improved(all_rows)
+
+    # Комплексная сортировка: по файлу, секции, этажу, квартире
+    sort_rows_complex(all_rows)
+
+    # Создание папки для скачивания
     os.makedirs(download_dir, exist_ok=True)
 
-    # Формирование уникального пути для CSV с использованием улучшенной системы именования
-    if original_filename:
-        # Используем оригинальное имя файла как основу
-        base_name = os.path.splitext(original_filename)[0]
+    # Формирование имени файла
+    if combined_filename:
+        csv_base_filename = f"{combined_filename}.csv"
+    elif len(ifc_paths) == 1:
+        base_name = Path(ifc_paths[0]).stem
         csv_base_filename = f"{base_name}.csv"
     else:
-        # Fallback к старому способу
-        base_name = Path(ifc_path).stem
-        csv_base_filename = f"{base_name}.csv"
+        csv_base_filename = "combined_export.csv"
 
-    # Получаем уникальное имя с числовой индексацией
+    # Получаем уникальное имя
     csv_filename = get_next_indexed_filename(download_dir, csv_base_filename)
     csv_path = os.path.join(download_dir, csv_filename)
 
-    # Запись CSV с улучшенной обработкой ошибок
+    # Запись CSV
     try:
         with open(csv_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f, delimiter=";")
             writer.writerow(CSV_HEADER)
-            writer.writerows(rows)
+            writer.writerows(all_rows)
 
-        logger.info(f"Successfully exported {len(rows)} flats to {csv_path}")
+        logger.info(f"Successfully exported {len(all_rows)} flats to {csv_path}")
 
-        # Проверяем, что файл действительно создан и содержит данные
+        # Проверка файла
         if not os.path.exists(csv_path):
             raise Exception("CSV file was not created")
 
@@ -293,163 +440,11 @@ def export_flats(ifc_path, download_dir, original_filename=None):
     return csv_path
 
 
-def export_flats_with_stats(ifc_path, download_dir, original_filename=None):
+# Обратная совместимость - оставляем старую функцию
+def export_flats(ifc_path, download_dir, original_filename=None):
     """
-    Расширенная версия функции экспорта с дополнительной статистикой
-
-    :param ifc_path: Путь к входному IFC-файлу
-    :param download_dir: Папка для сохранения CSV
-    :param original_filename: Оригинальное имя файла
-    :return: Словарь с результатами и статистикой
+    Обрабатывает IFC-файл и сохраняет CSV (обратная совместимость)
     """
-    start_time = time.time()
-
-    try:
-        # Основной экспорт
-        csv_path = export_flats(ifc_path, download_dir, original_filename)
-
-        # Сбор статистики
-        processing_time = time.time() - start_time
-        processed_flats = count_csv_rows(csv_path)
-        file_size = os.path.getsize(csv_path) if os.path.exists(csv_path) else 0
-
-        # Анализ содержимого CSV для дополнительной статистики
-        stats = analyze_csv_content(csv_path)
-
-        return {
-            'success': True,
-            'csv_path': csv_path,
-            'csv_filename': os.path.basename(csv_path),
-            'processing_time': round(processing_time, 2),
-            'processed_flats': processed_flats,
-            'file_size': file_size,
-            'stats': stats
-        }
-
-    except Exception as e:
-        processing_time = time.time() - start_time
-        logger.error(f"Export failed after {processing_time:.2f}s: {str(e)}")
-
-        return {
-            'success': False,
-            'error': str(e),
-            'processing_time': round(processing_time, 2),
-            'processed_flats': 0,
-            'file_size': 0
-        }
-
-
-def analyze_csv_content(csv_path):
-    """
-    Анализ содержимого CSV файла для получения статистики
-
-    :param csv_path: Путь к CSV файлу
-    :return: Словарь со статистикой
-    """
-    stats = {
-        'flat_types': {},
-        'sections': set(),
-        'floors': set(),
-        'total_area': 0.0,
-        'flats_with_area': 0
-    }
-
-    try:
-        with open(csv_path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f, delimiter=';')
-
-            for row in reader:
-                # Статистика по типам квартир
-                flat_type = row.get('FlatType', '')
-                if flat_type:
-                    stats['flat_types'][flat_type] = stats['flat_types'].get(flat_type, 0) + 1
-
-                # Статистика по секциям
-                section = row.get('Section', '')
-                if section:
-                    stats['sections'].add(section)
-
-                # Статистика по этажам
-                floor = row.get('FloorNum', '')
-                if floor:
-                    stats['floors'].add(str(floor))
-
-                # Статистика по площадям
-                area_str = row.get('Area_m2', '').replace(',', '.')
-                if area_str:
-                    try:
-                        area = float(area_str)
-                        stats['total_area'] += area
-                        stats['flats_with_area'] += 1
-                    except ValueError:
-                        pass
-
-        # Преобразуем sets в списки для JSON сериализации
-        stats['sections'] = sorted(list(stats['sections']))
-        stats['floors'] = sorted(list(stats['floors']), key=lambda x: int(x) if x.isdigit() else 0)
-        stats['average_area'] = round(stats['total_area'] / stats['flats_with_area'], 2) if stats[
-                                                                                                'flats_with_area'] > 0 else 0
-
-        logger.info(f"CSV analysis complete: {len(stats['flat_types'])} flat types, {len(stats['sections'])} sections")
-
-    except Exception as e:
-        logger.warning(f"Failed to analyze CSV content: {str(e)}")
-
-    return stats
-
-
-# Импорт для измерения времени
-import time
-
-
-# Функция main для автономного использования
-def main():
-    """Автономный режим работы (для тестирования)"""
-    # Пути, заданные пользователем
-    paths = sys.argv[1:]
-
-    # Если не указаны - ищем в текущей директории
-    if not paths:
-        script_dir = os.path.dirname(os.path.realpath(__file__)) or "."
-        uploads_dir = os.path.join(script_dir, "uploads")
-        paths = sorted(
-            glob.glob(os.path.join(uploads_dir, "*.ifc")) +
-            glob.glob(os.path.join(uploads_dir, "*.ifczip"))
-        )
-        if not paths:
-            print("Файлы *.ifc / *.ifczip не найдены.")
-            return
-
-    # Создаем папку для скачивания в текущей директории
-    script_dir = os.path.dirname(os.path.realpath(__file__)) or "."
-    download_dir = os.path.join(script_dir, "downloads")
-    os.makedirs(download_dir, exist_ok=True)
-
-    # Обработка файлов
-    for ifc_path in paths:
-        if not os.path.isfile(ifc_path):
-            print(f"! Файл не найден: {ifc_path}")
-            continue
-
-        try:
-            print(f"Обработка: {os.path.basename(ifc_path)}")
-            result = export_flats_with_stats(ifc_path, download_dir)
-
-            if result['success']:
-                print(f"✅ Успешно: {result['csv_filename']}")
-                print(f"   Квартир: {result['processed_flats']}")
-                print(f"   Время: {result['processing_time']}с")
-                print(f"   Размер: {result['file_size']} байт")
-                if 'stats' in result:
-                    stats = result['stats']
-                    print(f"   Типы квартир: {', '.join(stats['flat_types'].keys())}")
-                    print(f"   Секций: {len(stats['sections'])}")
-            else:
-                print(f"❌ Ошибка: {result['error']}")
-
-        except Exception as e:
-            print(f"❌ Ошибка обработки {ifc_path}: {str(e)}")
-
-
-if __name__ == "__main__":
-    main()
+    return export_flats_multiple([ifc_path], download_dir,
+                                 DEFAULT_AREA_COEFFICIENT,
+                                 original_filename)
