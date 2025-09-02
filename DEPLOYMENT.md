@@ -1,116 +1,59 @@
-# 🚀 Полная инструкция по развертыванию IFC Converter
+# 🚀 Развертывание IFC Converter v1.1
 
-## Шаг 1: Подготовка сервера
+Простая инструкция по развертыванию на Ubuntu/Debian.
 
-### Минимальные требования:
-- Ubuntu 20.04+ / CentOS 8+ / Debian 10+
-- 2GB RAM
-- 10GB свободного места
-- Доступ root или sudo
+## 1. Подготовка сервера
 
-### Подготовка Ubuntu/Debian:
 ```bash
 # Обновление системы
 sudo apt update && sudo apt upgrade -y
 
-# Установка необходимых пакетов
-sudo apt install -y git curl wget nano ufw
+# Установка базовых пакетов
+sudo apt install -y git curl wget nano
 
-# Настройка firewall
-sudo ufw enable
-sudo ufw allow ssh
-sudo ufw allow 80
-sudo ufw allow 443
+# Открытие порта 5000
+sudo ufw allow 5000
 ```
 
-### Подготовка CentOS/RHEL:
-```bash
-# Обновление системы
-sudo yum update -y
-
-# Установка необходимых пакетов
-sudo yum install -y git curl wget nano firewalld
-
-# Настройка firewall
-sudo systemctl enable firewalld
-sudo systemctl start firewalld
-sudo firewall-cmd --permanent --add-service=http
-sudo firewall-cmd --permanent --add-service=https
-sudo firewall-cmd --reload
-```
-
-## Шаг 2: Загрузка проекта
+## 2. Скачивание проекта
 
 ```bash
-# Перейдите в домашнюю директорию
+# Перейти в домашнюю директорию
 cd ~
 
-# Клонируйте проект
+# Клонировать проект
 git clone <your-repository-url> ifc-converter
 cd ifc-converter
-
-# Или скопируйте файлы вручную
-mkdir ifc-converter
-cd ifc-converter
-# Скопируйте все файлы проекта
 ```
 
-## Шаг 3: Настройка Google API
+## 3. Настройка Google API
 
-### 3.1 Создание проекта в Google Cloud Console
-
+### 3.1 Google Cloud Console
 1. Перейдите в [Google Cloud Console](https://console.cloud.google.com/)
-2. Создайте новый проект или выберите существующий
-3. Запишите **Project ID**
+2. Создайте проект
+3. Включите APIs:
+   - Google Sheets API
+   - Google Drive API
 
-### 3.2 Включение API
+### 3.2 OAuth2 Client ID
+1. APIs & Services > Credentials
+2. Create OAuth 1.1 Client ID
+3. Web application
+4. Authorized redirect URIs: `http://your-server-ip:5000/auth/callback`
+5. Сохраните Client ID и Client Secret
 
-1. В меню слева выберите "APIs & Services" > "Library"
-2. Найдите и включите:
-   - **Google Sheets API**
-   - **Google Drive API**
+### 3.3 Service Account
+1. IAM & Admin > Service Accounts
+2. Create Service Account
+3. Role: Editor
+4. Create JSON key и скачайте
 
-### 3.3 Создание сервисного аккаунта
+### 3.4 Google Sheets
+1. Создайте таблицу в [Google Sheets](https://sheets.google.com/)
+2. Поделитесь с email сервисного аккаунта (права: Редактор)
+3. Скопируйте Spreadsheet ID из URL
 
-1. Перейдите в "IAM & Admin" > "Service Accounts"
-2. Нажмите "Create Service Account"
-3. Заполните:
-   - **Name**: `ifc-converter-service`
-   - **Description**: `Service account for IFC Converter`
-4. Нажмите "Create and Continue"
-5. Назначьте роли:
-   - **Editor** (для доступа к Drive)
-6. Нажмите "Continue" и "Done"
-
-### 3.4 Создание ключа
-
-1. Найдите созданный сервисный аккаунт в списке
-2. Нажмите на него
-3. Перейдите на вкладку "Keys"
-4. Нажмите "Add Key" > "Create New Key"
-5. Выберите тип **JSON** и нажмите "Create"
-6. Сохраните скачанный JSON файл
-
-### 3.5 Создание Google Sheets таблицы
-
-1. Откройте [Google Sheets](https://sheets.google.com/)
-2. Создайте новую таблицу
-3. Назовите ее, например: "IFC Models Database"
-4. Скопируйте **Spreadsheet ID** из URL:
-   ```
-   https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz1234567890/edit
-                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                                      Это ваш Spreadsheet ID
-   ```
-
-### 3.6 Предоставление доступа
-
-1. В созданной таблице нажмите кнопку "Поделиться" (Share)
-2. Добавьте email сервисного аккаунта (из JSON файла, поле `client_email`)
-3. Назначьте права **Редактор** (Editor)
-4. Снимите галочку "Notify people" и нажмите "Share"
-
-## Шаг 4: Настройка переменных окружения
+## 4. Настройка .env файла
 
 Создайте файл `.env`:
 
@@ -118,215 +61,135 @@ cd ifc-converter
 nano .env
 ```
 
-Заполните его данными из JSON ключа:
+Заполните данными из Google API:
 
 ```env
-# Google Sheets API credentials
+# OAuth2
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret
+
+# Flask
+SECRET_KEY=your-super-secret-key-here
+
+# Google Sheets API (из JSON ключа)
 GS_TYPE=service_account
-GS_PROJECT_ID=your-project-id-from-json
-GS_PRIVATE_KEY_ID=your-private-key-id-from-json
-GS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY_HERE_FROM_JSON\n-----END PRIVATE KEY-----\n"
-GS_CLIENT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
-GS_CLIENT_ID=your-client-id-from-json
+GS_PROJECT_ID=your-project-id
+GS_PRIVATE_KEY_ID=your-private-key-id
+GS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY\n-----END PRIVATE KEY-----\n"
+GS_CLIENT_EMAIL=service-account@your-project.iam.gserviceaccount.com
+GS_CLIENT_ID=your-client-id
 GS_AUTH_URI=https://accounts.google.com/o/oauth2/auth
 GS_TOKEN_URI=https://oauth2.googleapis.com/token
 GS_AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
-GS_CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/your-service-account%40your-project.iam.gserviceaccount.com
-
-# ID существующей Google Sheets таблицы
-GS_SPREADSHEET_ID=1AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
+GS_CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/service-account%40your-project.iam.gserviceaccount.com
+GS_SPREADSHEET_ID=your-spreadsheet-id-here
 ```
 
-**⚠️ Важно:** 
-- Замените все значения `your-*` на реальные данные из JSON файла
-- В `GS_PRIVATE_KEY` сохраните переносы строк как `\n`
-- `GS_SPREADSHEET_ID` - это ID вашей Google Sheets таблицы
+⚠️ **Важно**: Замените все `your-*` значения на реальные данные!
 
-## Шаг 5: Развертывание
+## 5. Развертывание
 
-### Автоматическое развертывание:
-
+### Продакшен (Docker)
 ```bash
-# Дайте права на выполнение
+# Дать права на выполнение
 chmod +x deploy.sh
 
-# Запустите развертывание
+# Запустить развертывание
 ./deploy.sh
 ```
 
-### Ручное развертывание:
-
+### Development (с ngrok)
 ```bash
-# Установка Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker $USER
+# Установить ngrok
+wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
+tar -xzf ngrok-v3-stable-linux-amd64.tgz
+sudo mv ngrok /usr/local/bin/
 
-# Установка Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# Добавить в .env ваш ngrok token
+echo "NGROK_AUTH_TOKEN=your-token" >> .env
 
-# Перелогинитесь для применения прав Docker
+# Запустить development с ngrok
+chmod +x start_dev.sh
+./start_dev.sh
+```
+
+При использовании ngrok:
+- Автоматически получает публичный URL
+- Обновляет .env файл
+- Показывает URL для настройки в Google Console
+
+Если нужно перелогиниться после установки Docker, выполните:
+```bash
 exit
 # Зайдите снова по SSH
+cd ~/ifc-converter
+./deploy.sh
+```
 
-# Создание директорий
-mkdir -p uploads downloads logs ssl
+## 6. Проверка
 
-# Запуск сервисов
-docker-compose build
+### Продакшен
+После развертывания приложение доступно по адресу:
+- http://your-server-ip:5000/
+
+### Development (ngrok)
+Приложение доступно по ngrok URL, который показывается при запуске:
+- https://abc123.ngrok.io/
+
+Проверить состояние:
+```bash
+# Статус контейнера
+docker-compose ps
+
+# Логи приложения
+docker-compose logs -f
+
+# Health check
+curl http://localhost:5000/health
+```
+
+## 7. Управление
+
+```bash
+# Просмотр логов
+docker-compose logs -f
+
+# Остановка
+docker-compose down
+
+# Перезапуск
+docker-compose restart
+
+# Пересборка
+docker-compose build --no-cache
 docker-compose up -d
 ```
 
-## Шаг 6: Проверка работоспособности
+## 🔧 Решение проблем
 
+### Контейнер не запускается
 ```bash
-# Проверка статуса контейнеров
-docker-compose ps
+# Проверить логи
+docker-compose logs
 
-# Проверка логов
-docker-compose logs -f ifc-converter
-
-# Проверка health check
-curl http://localhost:5000/health
-
-# Проверка веб-интерфейса
-curl -I http://localhost:5000/
+# Проверить порт
+sudo lsof -i :5000
 ```
 
-## Шаг 7: Настройка SSL (опционально)
+### OAuth2 не работает
+1. Проверьте переменные в .env
+2. Убедитесь что redirect URI правильный в Google Console
+3. Проверьте, что OAuth2 API включен
 
-### Для домена с Let's Encrypt:
+### Google Sheets не работает
+1. Проверьте Service Account email в .env
+2. Убедитесь что таблица расшарена с сервисным аккаунтом
+3. Проверьте права "Редактор" для сервисного аккаунта
 
-```bash
-# Замените на ваш домен
-chmod +x setup-ssl.sh
-./setup-ssl.sh your-domain.com admin@your-domain.com
-```
+## ✅ Готово!
 
-### Для самоподписанного сертификата:
-
-```bash
-# Создание самоподписанного сертификата
-mkdir -p ssl
-openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes -subj "/CN=localhost"
-
-# Обновите nginx.conf для включения HTTPS
-# Раскомментируйте соответствующие секции
-```
-
-## Шаг 8: Настройка мониторинга
-
-### Логи приложения:
-```bash
-# Просмотр логов в реальном времени
-docker-compose logs -f
-
-# Файловые логи
-tail -f logs/app.log
-
-# Логи конкретного сервиса
-docker-compose logs -f ifc-converter
-```
-
-### Проверка состояния:
-```bash
-# Health check
-curl http://your-domain.com/health
-
-# Статус контейнеров
-docker-compose ps
-```
-
-## 🔧 Устранение проблем
-
-### Проблема: Контейнер не запускается
-```bash
-# Проверьте логи
-docker-compose logs ifc-converter
-
-# Проверьте конфигурацию
-docker-compose config
-
-# Пересоберите образ
-docker-compose build --no-cache
-```
-
-### Проблема: Google Sheets не работает
-```bash
-# Проверьте переменные окружения
-docker-compose exec ifc-converter env | grep GS_
-
-# Проверьте логи на ошибки API
-docker-compose logs ifc-converter | grep -i google
-```
-
-### Проблема: Файлы не загружаются
-```bash
-# Проверьте права доступа к папкам
-ls -la uploads downloads
-
-# Проверьте размер диска
-df -h
-
-# Увеличьте лимит в nginx.conf если нужно
-```
-
-## 📊 Мониторинг и обслуживание
-
-### Автоматические задачи:
-```bash
-# Очистка старых файлов (добавьте в crontab)
-echo "0 2 * * * find /home/user/ifc-converter/downloads -mtime +7 -delete" | crontab -
-
-# Перезапуск раз в неделю (для профилактики)
-echo "0 3 * * 0 cd /home/user/ifc-converter && docker-compose restart" | crontab -
-
-# Обновление SSL сертификатов (если используется Let's Encrypt)
-echo "0 12 * * * /usr/bin/certbot renew --quiet && cd /home/user/ifc-converter && docker-compose restart nginx" | crontab -
-```
-
-## 🎯 Готово!
-
-После выполнения всех шагов ваш IFC Converter будет доступен:
-
-- **HTTP**: http://your-server-ip/ или http://your-domain.com/
-- **HTTPS**: https://your-domain.com/ (если настроен SSL)
-
-## 📞 Поддержка
-
-Если возникли проблемы, проверьте:
-1. Логи приложения: `docker-compose logs -f`
-2. Статус сервисов: `docker-compose ps`
-3. Health check: `curl http://localhost:5000/health`
-4. Права доступа к Google Sheets
-5. Корректность .env файла
-
-## Проблема с портами Nginx
-
-### 1. Сначала проверьте, что занимает порты:
-`bash
-sudo lsof -i :80
-sudo lsof -i :443`
-### 2. Остановите все контейнеры и очистите:
-`bash
-docker-compose down
-docker system prune -f`
-
-### 3. Остановить системные веб-серверы
-`sudo systemctl stop nginx || true`
-
-### 4. Остановить все Docker контейнеры
-`docker stop $(docker ps -q) || true
-docker-compose down`
-
-### 5. Рекомендуется начать без nginx:
-
-Замените docker-compose.yml версией без nginx (первый артефакт)
-Запустите: docker-compose up -d
-Приложение будет доступно на` http://your-server-ip:5000
-
-### 6. После успешного запуска основного приложения можете добавить nginx:
-
-Если нужен nginx, используйте версию с альтернативными портами (второй артефакт)
-Доступ будет: http://your-server-ip:8080 и https://your-server-ip:8443
+После успешного развертывания:
+- Приложение работает на порту 5000
+- OAuth2 авторизация через Google
+- Автоматическая загрузка в Google Sheets
+- История конвертаций для авторизованных пользователей

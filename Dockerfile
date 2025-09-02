@@ -9,33 +9,44 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libxslt-dev \
     zlib1g-dev \
+    libssl-dev \
+    sqlite3 \
     && rm -rf /var/lib/apt/lists/*
 
-# Создание рабочей директории
+# Создание пользователя приложения
+RUN useradd --create-home --shell /bin/bash app
+
+# Рабочая директория
 WORKDIR /app
 
-# Копирование файлов зависимостей
-COPY requirements.txt .
-
 # Установка Python зависимостей
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Копирование исходного кода приложения
-COPY . .
+# Копирование кода
+COPY --chown=app:app . .
 
 # Создание необходимых директорий
-RUN mkdir -p uploads downloads logs templates
+RUN mkdir -p uploads downloads logs templates && \
+    chown -R app:app /app && \
+    chmod -R 755 /app
 
-# Устанавливаем права доступа
-RUN chmod -R 755 /app
+# Пользователь приложения
+USER app
 
-# Установка переменных окружения
-ENV FLASK_APP=main.py
-ENV FLASK_ENV=production
-ENV PYTHONUNBUFFERED=1
+# Переменные окружения
+ENV FLASK_APP=main.py \
+    FLASK_ENV=production \
+    PYTHONUNBUFFERED=1 \
+    PORT=5000
 
-# Открытие порта
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/health?format=json || exit 1
+
+# Порт
 EXPOSE 5000
 
-# Запуск приложения через Gunicorn для production
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "300", "main:app"]
+# Запуск через Flask development server для лучшей диагностики
+CMD ["python3", "main.py"]

@@ -7,7 +7,6 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      # Монтируем папки для загрузок и скачиваний
       - ./uploads:/app/uploads
       - ./downloads:/app/downloads
       - ./logs:/app/logs
@@ -18,28 +17,10 @@ services:
       - .env
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
-    networks:
-      - ifc-network
-    deploy:
-      replicas: 3
-
-  # Nginx reverse proxy (опционально)
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "8080:80"      # Используем порт 8080 вместо 80
-#      - "8443:443"     # Используем порт 8443 вместо 443
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl:/etc/nginx/ssl:ro  # Для SSL сертификатов
-    depends_on:
-      - ifc-converter
-    restart: unless-stopped
     networks:
       - ifc-network
 

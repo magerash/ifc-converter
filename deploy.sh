@@ -1,99 +1,82 @@
 #!/bin/bash
 
-# Скрипт для развертывания IFC Converter на сервере
+# Простое развертывание IFC Converter v1.1 на порту 5000
 
 set -e
 
-echo "🚀 Начинаем развертывание IFC Converter..."
+echo "🚀 Развертывание IFC Converter v1.1..."
 
-# Проверяем наличие Docker
+# Установка Docker (если нет)
 if ! command -v docker &> /dev/null; then
-    echo "❌ Docker не установлен. Устанавливаем..."
+    echo "Устанавливаем Docker..."
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh
     sudo usermod -aG docker $USER
-    echo "✅ Docker установлен. Перелогиньтесь для применения изменений."
+    echo "⚠️ Перелогиньтесь после установки Docker"
+    exit 1
 fi
 
-# Проверяем наличие Docker Compose
+# Установка Docker Compose (если нет)
 if ! command -v docker-compose &> /dev/null; then
-    echo "❌ Docker Compose не установлен. Устанавливаем..."
+    echo "Устанавливаем Docker Compose..."
     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
-    echo "✅ Docker Compose установлен."
 fi
 
-# Создаем необходимые директории
-echo "📁 Создаем рабочие директории..."
-mkdir -p uploads downloads logs ssl
+# Создание директорий
+mkdir -p uploads downloads logs
 
-# Создаем .gitkeep файлы для пустых папок
-touch uploads/.gitkeep
-touch downloads/.gitkeep
-touch logs/.gitkeep
-
-# Проверяем наличие .env файла
+# Проверка .env файла
 if [ ! -f .env ]; then
     echo "❌ Файл .env не найден!"
-    echo "📝 Создайте файл .env с настройками Google API."
-    echo "   Пример содержимого:"
-    cat << EOF
-# Google Sheets API credentials
+    echo "Создайте .env файл с настройками Google API:"
+    echo ""
+    cat << 'EOF'
+# OAuth2
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret
+
+# Flask
+SECRET_KEY=your-secret-key
+
+# Google Sheets API
 GS_TYPE=service_account
 GS_PROJECT_ID=your-project-id
-GS_PRIVATE_KEY_ID=your-private-key-id
-GS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\nYOUR_PRIVATE_KEY_HERE\\n-----END PRIVATE KEY-----\\n"
-GS_CLIENT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
+GS_PRIVATE_KEY_ID=your-key-id
+GS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_KEY\n-----END PRIVATE KEY-----\n"
+GS_CLIENT_EMAIL=service@project.iam.gserviceaccount.com
 GS_CLIENT_ID=your-client-id
 GS_AUTH_URI=https://accounts.google.com/o/oauth2/auth
 GS_TOKEN_URI=https://oauth2.googleapis.com/token
 GS_AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
-GS_CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/your-service-account%40your-project.iam.gserviceaccount.com
-GS_SPREADSHEET_ID=your-spreadsheet-id-here
+GS_CLIENT_X509_CERT_URL=your-cert-url
+GS_SPREADSHEET_ID=your-spreadsheet-id
 EOF
     exit 1
 fi
 
-# Останавливаем существующие контейнеры (если есть)
-echo "🛑 Останавливаем существующие контейнеры..."
-docker-compose down || true
+# Остановка старых контейнеров
+docker-compose down 2>/dev/null || true
 
-# Собираем образ
-echo "🔨 Собираем Docker образ..."
-docker-compose build
+# Сборка и запуск
+echo "Собираем образ..."
+docker-compose build --no-cache
 
-# Запускаем сервисы
-echo "🚀 Запускаем сервисы..."
+echo "Запускаем контейнер..."
 docker-compose up -d
 
-# Ждем запуска
-echo "⏳ Ждем запуска сервисов..."
-sleep 10
+# Ожидание запуска
+sleep 5
 
-# Проверяем статус
-echo "🔍 Проверяем статус сервисов..."
-docker-compose ps
-
-# Проверяем доступность приложения
-echo "🌐 Проверяем доступность приложения..."
-if curl -f http://localhost:5000/ > /dev/null 2>&1; then
-    echo "✅ Приложение успешно запущено!"
-    echo "🌐 Доступно по адресу: http://localhost:5000/"
-
-    # Если настроен nginx
-    if docker-compose ps nginx | grep -q "Up"; then
-        echo "🌐 Также доступно через Nginx: http://localhost/"
-    fi
+# Проверка
+if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+    echo "✅ Приложение запущено: http://localhost:5000/"
 else
-    echo "❌ Приложение не отвечает. Проверьте логи:"
-    echo "   docker-compose logs ifc-converter"
+    echo "❌ Ошибка запуска. Проверьте логи: docker-compose logs -f"
 fi
 
 echo ""
-echo "📋 Полезные команды:"
-echo "   Просмотр логов:      docker-compose logs -f"
-echo "   Перезапуск:          docker-compose restart"
-echo "   Остановка:           docker-compose down"
-echo "   Обновление образа:   docker-compose build --no-cache"
-echo ""
-echo "🎉 Развертывание завершено!"
+echo "Команды управления:"
+echo "  Логи:      docker-compose logs -f"
+echo "  Остановка: docker-compose down"
+echo "  Статус:    docker-compose ps"
