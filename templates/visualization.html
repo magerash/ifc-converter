@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFC Converter - Визуализация данных</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 300;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .visualization-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .histogram-image {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .analytics-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .analytics-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .analytics-card h3 {
+            margin-top: 0;
+            color: #2196F3;
+            font-size: 1.1em;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #2196F3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: #2196F3;
+            border-bottom-color: #2196F3;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .analytics-section {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Визуализация данных</h1>
+            <p>Анализ распределения квартир по площадям</p>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('histogram')">Гистограмма</button>
+                <button class="tab" onclick="switchTab('analytics')">Аналитика</button>
+                <button class="tab" onclick="switchTab('data')">Данные</button>
+            </div>
+
+            <!-- Вкладка с гистограммой -->
+            <div id="histogram-tab" class="tab-content active">
+                <div class="visualization-container">
+                    <div id="loading" class="loading">
+                        <div class="spinner"></div>
+                        <p>Генерация гистограммы...</p>
+                    </div>
+                    <img id="histogram" class="histogram-image" style="display: none;" />
+                    <div id="error" class="error-message" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Вкладка с аналитикой -->
+            <div id="analytics-tab" class="tab-content">
+                <div class="analytics-section" id="analytics-cards">
+                    <!-- Карточки аналитики будут добавлены динамически -->
+                </div>
+            </div>
+
+            <!-- Вкладка с данными -->
+            <div id="data-tab" class="tab-content">
+                <div id="data-table-container">
+                    <!-- Таблица с данными будет добавлена динамически -->
+                </div>
+            </div>
+
+            <div class="button-group">
+                <a href="/downloads/{{ csv_filename }}" class="btn btn-secondary">
+                    📥 Скачать CSV
+                </a>
+                <button class="btn" onclick="refreshVisualization()">
+                    🔄 Обновить
+                </button>
+                <a href="/" class="btn">
+                    🏠 На главную
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const csvFilename = '{{ csv_filename }}';
+        let analyticsData = null;
+
+        // Загрузка гистограммы
+        async function loadHistogram() {
+            const loading = document.getElementById('loading');
+            const histogram = document.getElementById('histogram');
+            const error = document.getElementById('error');
+
+            try {
+                const response = await fetch(`/api/visualize/${csvFilename}`);
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    histogram.src = `data:image/png;base64,${data.image}`;
+                    histogram.style.display = 'block';
+                    loading.style.display = 'none';
+                } else {
+                    throw new Error(data.error || 'Ошибка генерации гистограммы');
+                }
+            } catch (err) {
+                loading.style.display = 'none';
+                error.textContent = `Ошибка: ${err.message}`;
+                error.style.display = 'block';
+            }
+        }
+
+        // Загрузка аналитики
+        async function loadAnalytics() {
+            try {
+                const response = await fetch(`/api/analytics/${csvFilename}`);
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    analyticsData = data.analytics;
+                    displayAnalytics(data.analytics);
+                }
+            } catch (err) {
+                console.error('Ошибка загрузки аналитики:', err);
+            }
+        }
+
+        // Отображение аналитики
+        function displayAnalytics(analytics) {
+            const container = document.getElementById('analytics-cards');
+            container.innerHTML = '';
+
+            // Общее количество квартир
+            container.innerHTML += `
+                <div class="analytics-card">
+                    <h3>Всего квартир</h3>
+                    <div class="stat-value">${analytics.total_apartments}</div>
+                    <div class="stat-label">объектов в проекте</div>
+                </div>
+            `;
+
+            // Средняя площадь
+            if (analytics.area_stats) {
+                container.innerHTML += `
+                    <div class="analytics-card">
+                        <h3>Средняя площадь</h3>
+                        <div class="stat-value">${analytics.area_stats.mean.toFixed(1)} м²</div>
+                        <div class="stat-label">среднее значение</div>
+                    </div>
+                `;
+
+                container.innerHTML += `
+                    <div class="analytics-card">
+                        <h3>Медиана площади</h3>
+                        <div class="stat-value">${analytics.area_stats.median.toFixed(1)} м²</div>
+                        <div class="stat-label">медианное значение</div>
+                    </div>
+                `;
+
+                container.innerHTML += `
+                    <div class="analytics-card">
+                        <h3>Диапазон площадей</h3>
+                        <div class="stat-value">${analytics.area_stats.min.toFixed(1)} - ${analytics.area_stats.max.toFixed(1)}</div>
+                        <div class="stat-label">мин - макс (м²)</div>
+                    </div>
+                `;
+            }
+
+            // Распределение по типам
+            if (analytics.by_type) {
+                let typeHTML = '<div class="analytics-card"><h3>По типам квартир</h3><table class="data-table">';
+                for (const [type, count] of Object.entries(analytics.by_type)) {
+                    const percentage = (count / analytics.total_apartments * 100).toFixed(1);
+                    typeHTML += `<tr><td>${type}</td><td>${count} (${percentage}%)</td></tr>`;
+                }
+                typeHTML += '</table></div>';
+                container.innerHTML += typeHTML;
+            }
+
+            // Распределение по секциям
+            if (analytics.by_section && Object.keys(analytics.by_section).length > 0) {
+                let sectionHTML = '<div class="analytics-card"><h3>По секциям</h3><table class="data-table">';
+                for (const [section, count] of Object.entries(analytics.by_section)) {
+                    sectionHTML += `<tr><td>Секция ${section}</td><td>${count}</td></tr>`;
+                }
+                sectionHTML += '</table></div>';
+                container.innerHTML += sectionHTML;
+            }
+
+            // Распределение по этажам
+            if (analytics.by_floor && Object.keys(analytics.by_floor).length > 0) {
+                let floorHTML = '<div class="analytics-card"><h3>По этажам</h3><table class="data-table">';
+                const sortedFloors = Object.entries(analytics.by_floor).sort((a, b) => a[0] - b[0]);
+                for (const [floor, count] of sortedFloors) {
+                    floorHTML += `<tr><td>Этаж ${floor}</td><td>${count}</td></tr>`;
+                }
+                floorHTML += '</table></div>';
+                container.innerHTML += floorHTML;
+            }
+        }
+
+        // Переключение вкладок
+        function switchTab(tabName) {
+            // Скрываем все вкладки
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Убираем активность со всех табов
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Показываем выбранную вкладку
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Делаем активным выбранный таб
+            event.target.classList.add('active');
+
+            // Загружаем данные если нужно
+            if (tabName === 'data' && !document.getElementById('data-table-container').innerHTML) {
+                loadDataTable();
+            }
+        }
+
+        // Загрузка таблицы с данными
+        async function loadDataTable() {
+            const container = document.getElementById('data-table-container');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Загрузка данных...</p></div>';
+
+            try {
+                // Загружаем CSV файл и парсим его
+                const response = await fetch(`/downloads/${csvFilename}`);
+                const text = await response.text();
+
+                // Простой парсер CSV
+                const lines = text.split('\n');
+                const headers = lines[0].split(';');
+
+                let tableHTML = '<table class="data-table"><thead><tr>';
+                headers.forEach(header => {
+                    tableHTML += `<th>${header}</th>`;
+                });
+                tableHTML += '</tr></thead><tbody>';
+
+                // Показываем первые 20 строк
+                const maxRows = Math.min(21, lines.length);
+                for (let i = 1; i < maxRows; i++) {
+                    const values = lines[i].split(';');
+                    if (values.length > 1) {
+                        tableHTML += '<tr>';
+                        values.forEach(value => {
+                            tableHTML += `<td>${value}</td>`;
+                        });
+                        tableHTML += '</tr>';
+                    }
+                }
+
+                if (lines.length > 21) {
+                    tableHTML += `<tr><td colspan="${headers.length}" style="text-align: center; font-style: italic;">...и еще ${lines.length - 21} строк</td></tr>`;
+                }
+
+                tableHTML += '</tbody></table>';
+                container.innerHTML = tableHTML;
+            } catch (err) {
+                container.innerHTML = `<div class="error-message">Ошибка загрузки данных: ${err.message}</div>`;
+            }
+        }
+
+        // Обновление визуализации
+        function refreshVisualization() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('histogram').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            loadHistogram();
+            loadAnalytics();
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHistogram();
+            loadAnalytics();
+        });
+    </script>
+</body>
+</html>

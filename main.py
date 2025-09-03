@@ -10,6 +10,7 @@ import logging
 import time
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for
+from apartment_analytics import ApartmentAnalyzer, process_and_visualize
 
 # Инициализация приложения
 app = Flask(__name__)
@@ -144,7 +145,7 @@ def index():
     if request.args.get('format') == 'json':
         return jsonify({
             "api": "IFC Converter",
-            "version": "3.0.0",
+            "version": "1.2.0",
             "endpoints": {
                 "health": "/health",
                 "upload": "/uploads",
@@ -179,7 +180,7 @@ def health_check():
             return jsonify({
                 "status": "healthy",
                 "timestamp": current_time.isoformat(),
-                "version": "3.0.0",
+                "version": "1.2.0",
                 "uptime": format_uptime(START_TIME),
                 "google_sheets_status": gs_status,
                 "last_check": timestamp_formatted,
@@ -209,7 +210,7 @@ def health_check():
         health_data = {
             'status': 'healthy',
             'timestamp_formatted': timestamp_formatted,
-            'version': '3.0.0',
+            'version': '1.2.0',
             'uptime': format_uptime(START_TIME),
             'google_sheets_status': gs_status,
             'spreadsheet_id': spreadsheet_display,
@@ -236,7 +237,7 @@ def health_check():
         error_data = {
             'status': 'error',
             'timestamp_formatted': error_time,
-            'version': '3.0.0',
+            'version': '1.2.0',
             'uptime': 'N/A',
             'google_sheets_status': 'error',
             'spreadsheet_id': 'ERROR',
@@ -483,6 +484,121 @@ def dashboard_fallback():
                            stats={'total_conversions': 0, 'total_flats_processed': 0, 'recent_conversions': 0},
                            history=[])
 
+@app.route('/api/visualize/<filename>', methods=['GET'])
+def visualize_apartments(filename):
+    """API для генерации гистограммы распределения квартир"""
+    try:
+        # Путь к CSV файлу
+        csv_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
+
+        if not os.path.exists(csv_path):
+            logger.error(f"CSV file not found: {csv_path}")
+            return jsonify({"error": "CSV file not found", "filename": filename}), 404
+
+        logger.info(f"Generating visualization for: {filename}")
+
+        # Импортируем модуль аналитики
+        try:
+            from apartment_analytics import process_and_visualize
+        except ImportError as e:
+            logger.error(f"Failed to import apartment_analytics: {e}")
+            return jsonify({"error": "Analytics module not available"}), 500
+
+        # Генерация визуализации
+        img_base64 = process_and_visualize(csv_path)
+
+        if img_base64:
+            logger.info(f"Visualization generated successfully for {filename}")
+            return jsonify({
+                "status": "success",
+                "image": img_base64,
+                "filename": filename
+            })
+        else:
+            logger.error(f"Failed to generate visualization for {filename}")
+            return jsonify({"error": "Failed to generate visualization"}), 500
+
+    except Exception as e:
+        logger.error(f"Visualization error for {filename}: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/analytics/<filename>', methods=['GET'])
+def get_analytics(filename):
+    """API для получения аналитики по квартирам"""
+    try:
+        csv_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
+
+        if not os.path.exists(csv_path):
+            logger.error(f"CSV file not found for analytics: {csv_path}")
+            return jsonify({"error": "CSV file not found", "filename": filename}), 404
+
+        logger.info(f"Generating analytics for: {filename}")
+
+        # Импортируем модуль аналитики
+        try:
+            from apartment_analytics import ApartmentAnalyzer
+        except ImportError as e:
+            logger.error(f"Failed to import ApartmentAnalyzer: {e}")
+            return jsonify({"error": "Analytics module not available"}), 500
+
+        # Создание анализатора и подготовка данных
+        analyzer = ApartmentAnalyzer()
+        df = analyzer.prepare_histogram_data(csv_path)
+
+        if df is None:
+            logger.error(f"Failed to prepare data for analytics: {filename}")
+            return jsonify({"error": "Failed to prepare data"}), 500
+
+        # Генерация отчета
+        report = analyzer.generate_analytics_report(df)
+
+        logger.info(f"Analytics generated successfully for {filename}")
+        return jsonify({
+            "status": "success",
+            "analytics": report,
+            "filename": filename
+        })
+
+    except Exception as e:
+        logger.error(f"Analytics error for {filename}: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/visualization/<filename>')
+def visualization_page(filename):
+    """Страница с визуализацией данных"""
+    try:
+        # Проверяем существование файла
+        csv_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
+        if not os.path.exists(csv_path):
+            logger.error(f"CSV file not found for visualization page: {filename}")
+            return "Файл не найден", 404
+
+        # Проверяем наличие шаблона
+        template_path = os.path.join(app.template_folder, 'visualization.html')
+        if not os.path.exists(template_path):
+            logger.error(f"Template visualization.html not found")
+            # Возвращаем простую HTML страницу если шаблон отсутствует
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head><title>Визуализация</title></head>
+            <body>
+                <h1>Визуализация для файла: {filename}</h1>
+                <p>Шаблон visualization.html не найден. Создайте файл templates/visualization.html</p>
+                <a href="/">Вернуться на главную</a>
+            </body>
+            </html>
+            """
+
+        logger.info(f"Rendering visualization page for: {filename}")
+        return render_template('visualization.html', csv_filename=filename)
+
+    except Exception as e:
+        logger.error(f"Error rendering visualization page: {str(e)}", exc_info=True)
+        return f"Ошибка: {str(e)}", 500
+
 
 @app.errorhandler(413)
 def too_large(e):
@@ -504,7 +620,7 @@ def create_app():
     os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
     os.makedirs('logs', exist_ok=True)
 
-    logger.info("IFC Converter v3.0 with multiple file support initialized")
+    logger.info("IFC Converter v1.2 with multiple file support initialized")
     return app
 
 
@@ -517,9 +633,9 @@ if __name__ == '__main__':
     # Проверяем development режим с ngrok
     ngrok_url = os.getenv('NGROK_URL')
     if ngrok_url:
-        logger.info(f"Starting IFC Converter v3.0 in development mode")
+        logger.info(f"Starting IFC Converter v1.2 in development mode")
         logger.info(f"Ngrok URL: {ngrok_url}")
         app.run(host='0.0.0.0', port=5000, debug=True)
     else:
-        logger.info("Starting IFC Converter v3.0 on port 5000...")
+        logger.info("Starting IFC Converter v1.2 on port 5000...")
         app.run(host='0.0.0.0', port=5000, debug=False)

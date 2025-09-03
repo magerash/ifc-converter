@@ -472,6 +472,17 @@
                 width: 250px;
                 margin-left: -125px;
             }
+            .link-btn {
+                min-width: 140px;
+            }
+
+            .result-buttons {
+                margin-top: 20px;
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
@@ -804,6 +815,34 @@
                             buttonsHTML += `
                                 <a href="/downloads/${result.csv_path}" class="link-btn secondary" download>
                                     Скачать CSV файл
+                                </a>
+                            `;
+                        }
+
+                        // Кнопки для результатов - размещаем в ряд
+                        let buttonsHTML = '<div class="result-buttons">';
+
+                        // Ссылка на Google Sheets (если доступна)
+                        if (result.sheet_url) {
+                            buttonsHTML += `
+                                <a href="${result.sheet_url}" target="_blank" class="link-btn">
+                                    📋 Google Sheets
+                                </a>
+                            `;
+                        }
+
+                        // Ссылка на скачивание CSV
+                        if (result.csv_path) {
+                            buttonsHTML += `
+                                <a href="/downloads/${result.csv_path}" class="link-btn secondary" download>
+                                    📥 Скачать CSV
+                                </a>
+                            `;
+
+                            // НОВАЯ КНОПКА - Визуализация данных
+                            buttonsHTML += `
+                                <a href="/visualization/${result.csv_path}" class="link-btn" style="background: linear-gradient(45deg, #9c27b0, #673ab7);">
+                                    📊 Визуализация
                                 </a>
                             `;
                         }

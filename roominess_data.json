@@ -1,0 +1,67 @@
+{
+  "roominess_categories": [
+    {"type": "0С", "size": "not valid", "min": 0, "max": 18},
+    {"type": "0С", "size": "XS", "min": 18, "max": 20},
+    {"type": "0С", "size": "S", "min": 20, "max": 25},
+    {"type": "0С", "size": "M", "min": 25, "max": 35},
+    {"type": "0С", "size": "L", "min": 35, "max": 45},
+    {"type": "0С", "size": "XL", "min": 45, "max": 55},
+    {"type": "0С", "size": "Oversize", "min": 55, "max": 150},
+    {"type": "0С", "size": "not valid", "min": 150, "max": 500},
+
+    {"type": "1С", "size": "not valid", "min": 0, "max": 30},
+    {"type": "1С", "size": "XS", "min": 30, "max": 35},
+    {"type": "1С", "size": "S", "min": 35, "max": 45},
+    {"type": "1С", "size": "M", "min": 45, "max": 55},
+    {"type": "1С", "size": "L", "min": 55, "max": 65},
+    {"type": "1С", "size": "XL", "min": 65, "max": 80},
+    {"type": "1С", "size": "Oversize", "min": 80, "max": 150},
+    {"type": "1С", "size": "not valid", "min": 150, "max": 500},
+
+    {"type": "2С", "size": "not valid", "min": 0, "max": 45},
+    {"type": "2С", "size": "XS", "min": 45, "max": 55},
+    {"type": "2С", "size": "S", "min": 55, "max": 65},
+    {"type": "2С", "size": "M", "min": 65, "max": 75},
+    {"type": "2С", "size": "L", "min": 75, "max": 90},
+    {"type": "2С", "size": "XL", "min": 90, "max": 105},
+    {"type": "2С", "size": "Oversize", "min": 105, "max": 150},
+    {"type": "2С", "size": "not valid", "min": 150, "max": 500},
+
+    {"type": "3С", "size": "not valid", "min": 0, "max": 65},
+    {"type": "3С", "size": "XS", "min": 65, "max": 75},
+    {"type": "3С", "size": "S", "min": 75, "max": 85},
+    {"type": "3С", "size": "M", "min": 85, "max": 100},
+    {"type": "3С", "size": "L", "min": 100, "max": 115},
+    {"type": "3С", "size": "XL", "min": 115, "max": 135},
+    {"type": "3С", "size": "Oversize", "min": 135, "max": 150},
+    {"type": "3С", "size": "not valid", "min": 150, "max": 500},
+
+    {"type": "4С", "size": "not valid", "min": 0, "max": 90},
+    {"type": "4С", "size": "XS", "min": 90, "max": 100},
+    {"type": "4С", "size": "S", "min": 100, "max": 115},
+    {"type": "4С", "size": "M", "min": 115, "max": 130},
+    {"type": "4С", "size": "L", "min": 130, "max": 150},
+    {"type": "4С", "size": "not valid", "min": 150, "max": 500}
+  ],
+  "type_mapping": {
+    "СТ": "0С",
+    "0С": "0С",
+    "1С": "1С",
+    "2С": "2С",
+    "3С": "3С",
+    "4С": "4С"
+  },
+  "colors": {
+    "СТ": "#90EE90",
+    "0С": "#90EE90",
+    "1С": "#FFD700",
+    "2С": "#87CEEB",
+    "3С": "#FFB6C1",
+    "4С": "#DDA0DD"
+  },
+  "validation_info": {
+    "description": "Категории 'not valid' означают несоответствие нормативам, 'Oversize' - превышение стандартных размеров",
+    "coverage_check": "Все типы покрывают диапазон от 0 до 500 м²",
+    "note": "0С - студии, 1С-4С - количество комнат"
+  }
+}
