@@ -146,34 +146,127 @@
             box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
         }
 
-        /* Обновленные стили для информации о файле - размещаем под кнопкой */
-        .file-info {
-            margin-top: 15px;
-            padding: 0;
-            text-align: center;
+        .files-list {
+            margin-top: 20px;
+            text-align: left;
             display: none;
-            animation: fadeIn 0.3s ease-in;
         }
 
-        .file-info.show {
+        .files-list.show {
             display: block;
         }
 
-        .file-info .file-name {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1em;
-            margin-bottom: 3px;
+        .file-item {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in;
         }
 
-        .file-info .file-details {
-            font-size: 0.9em;
+        .file-item .file-name {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .file-item .file-size {
             color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .remove-file {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .remove-file:hover {
+            background: #c82333;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .coefficient-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .coefficient-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .coefficient-label {
+            font-weight: 500;
+            color: #495057;
+            cursor: help;
+            position: relative;
+        }
+
+        .coefficient-input {
+            width: 100px;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #555;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .warning-message.show {
+            display: block;
         }
 
         .submit-btn {
@@ -278,7 +371,6 @@
             color: #721c24;
         }
 
-        /* Обновленные стили для кнопок - размещаем в ряд */
         .result-buttons {
             margin-top: 20px;
             display: flex;
@@ -342,7 +434,7 @@
         }
 
         .feature-list li::before {
-            content: "•";
+            content: "✓";
             margin-right: 12px;
             color: #2196F3;
             font-weight: bold;
@@ -375,6 +467,11 @@
             .link-btn {
                 min-width: 200px;
             }
+
+            .tooltip .tooltiptext {
+                width: 250px;
+                margin-left: -125px;
+            }
         }
     </style>
 </head>
@@ -387,19 +484,48 @@
 
         <div class="content">
             <div class="upload-section">
-                <h3>Загрузите IFC файл для конвертации</h3>
+                <h3>Загрузите IFC файлы для конвертации</h3>
+
+                <!-- Предупреждение о множественной загрузке -->
+                <div class="warning-message" id="multiple-files-warning">
+                    <strong>Внимание!</strong> Данные из загруженных моделей будут объединены в один объект.
+                    Если хотите получить показатели по каждому объекту отдельно - загрузите и запустите их по очереди.
+                </div>
 
                 <div class="upload-area" id="upload-area">
-                    <p>Перетащите IFC или IFCZIP файл сюда или</p>
+                    <p>Перетащите IFC или IFCZIP файлы сюда или</p>
                     <label class="browse-btn">
-                        Выберите файл
-                        <input type="file" id="fileInput" class="file-input" accept=".ifc,.ifczip" required>
+                        Выберите файлы
+                        <input type="file" id="fileInput" class="file-input" accept=".ifc,.ifczip" multiple required>
                     </label>
+                </div>
 
-                    <!-- Информация о файле размещена прямо под кнопкой -->
-                    <div class="file-info" id="file-info">
-                        <div class="file-name" id="file-name"></div>
-                        <div class="file-details" id="file-details"></div>
+                <!-- Список выбранных файлов -->
+                <div class="files-list" id="files-list"></div>
+
+                <!-- Коэффициент площади -->
+                <div class="coefficient-section">
+                    <div class="coefficient-group">
+                        <div class="tooltip">
+                            <label class="coefficient-label" for="area-coefficient">
+                                Коэффициент площади:
+                            </label>
+                            <span class="tooltiptext">
+                                Коэффициенты для учета элементов, которых нет в модели:<br>
+                                • Конструктивные элементы: 0,98<br>
+                                • Межквартирных стены: 0,98<br>
+                                • Внешние стены: 0,98<br>
+                                • Внутриквартирные перегородки: 0,96<br>
+                                <strong>Суммарный коэффициент: 0,9</strong>
+                            </span>
+                        </div>
+                        <input type="number"
+                               id="area-coefficient"
+                               class="coefficient-input"
+                               value="0.9"
+                               min="0.5"
+                               max="1.0"
+                               step="0.01">
                     </div>
                 </div>
 
@@ -422,14 +548,16 @@
             <div class="features">
                 <h3>Возможности конвертера:</h3>
                 <ul class="feature-list">
+                    <li>Загрузка нескольких IFC файлов одновременно</li>
+                    <li>Объединение данных из разных моделей</li>
+                    <li>Расчет скорректированной площади с коэффициентом</li>
+                    <li>Автоматическая нумерация секций</li>
                     <li>Извлечение данных о квартирах из IFC моделей</li>
                     <li>Автоматическая загрузка в Google Sheets</li>
                     <li>Поддержка больших файлов до 100MB</li>
                     <li>История конвертаций для авторизованных пользователей</li>
-                    <li>Скачивание CSV файлов</li>
                 </ul>
             </div>
-
 
             <div class="auth-section">
                 <h3>Войдите для сохранения истории</h3>
@@ -445,9 +573,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const uploadArea = document.getElementById('upload-area');
             const fileInput = document.getElementById('fileInput');
-            const fileInfo = document.getElementById('file-info');
-            const fileName = document.getElementById('file-name');
-            const fileDetails = document.getElementById('file-details');
+            const filesList = document.getElementById('files-list');
             const submitBtn = document.getElementById('submit-btn');
             const progressBar = document.getElementById('progress-bar');
             const progress = document.getElementById('progress');
@@ -455,22 +581,24 @@
             const statusText = document.getElementById('status-text');
             const resultArea = document.getElementById('result-area');
             const resultContent = document.getElementById('result-content');
+            const multipleFilesWarning = document.getElementById('multiple-files-warning');
+            const areaCoefficientInput = document.getElementById('area-coefficient');
 
-            let selectedFile = null;
+            let selectedFiles = [];
 
             // Обработка клика по области загрузки
             uploadArea.addEventListener('click', (e) => {
-                // Предотвращаем клик если кликнули по кнопке или информации о файле
-                if (e.target.closest('.browse-btn') || e.target.closest('.file-info')) {
+                // Предотвращаем клик если кликнули по кнопке
+                if (e.target.closest('.browse-btn')) {
                     return;
                 }
                 fileInput.click();
             });
 
-            // Обработка выбора файла
+            // Обработка выбора файлов
             fileInput.addEventListener('change', (e) => {
                 if (e.target.files.length > 0) {
-                    handleFileSelect(e.target.files[0]);
+                    handleFilesSelect(Array.from(e.target.files));
                 }
             });
 
@@ -490,41 +618,90 @@
                 uploadArea.classList.remove('highlight');
 
                 if (e.dataTransfer.files.length > 0) {
-                    const file = e.dataTransfer.files[0];
-                    fileInput.files = e.dataTransfer.files;
-                    handleFileSelect(file);
+                    const files = Array.from(e.dataTransfer.files);
+                    handleFilesSelect(files);
                 }
             });
 
-            // Обработка выбора файла
-            function handleFileSelect(file) {
-                // Проверка расширения
-                const validExtensions = ['ifc', 'ifczip'];
-                const fileExtension = file.name.split('.').pop().toLowerCase();
+            // Обработка выбора файлов
+            function handleFilesSelect(files) {
+                selectedFiles = [];
 
-                if (!validExtensions.includes(fileExtension)) {
-                    alert('Пожалуйста, выберите файл с расширением .ifc или .ifczip');
+                // Фильтруем только IFC файлы
+                for (let file of files) {
+                    const validExtensions = ['ifc', 'ifczip'];
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                    if (validExtensions.includes(fileExtension)) {
+                        // Проверка размера (100MB)
+                        if (file.size > 100 * 1024 * 1024) {
+                            alert(`Файл ${file.name} превышает максимальный размер 100MB`);
+                            continue;
+                        }
+                        selectedFiles.push(file);
+                    }
+                }
+
+                if (selectedFiles.length === 0) {
+                    alert('Пожалуйста, выберите файлы с расширением .ifc или .ifczip');
                     return;
                 }
 
-                // Проверка размера (100MB)
-                if (file.size > 100 * 1024 * 1024) {
-                    alert('Размер файла не должен превышать 100MB');
-                    return;
+                // Показываем предупреждение если выбрано несколько файлов
+                if (selectedFiles.length > 1) {
+                    multipleFilesWarning.classList.add('show');
+                } else {
+                    multipleFilesWarning.classList.remove('show');
                 }
 
-                selectedFile = file;
+                // Отображаем список файлов
+                displayFilesList();
 
-                // Отображение информации о файле
-                fileName.textContent = file.name;
-                fileDetails.textContent = `Размер: ${formatFileSize(file.size)} | Тип: ${fileExtension.toUpperCase()}`;
-                fileInfo.classList.add('show');
-
-                // Активация кнопки
+                // Активируем кнопку
                 submitBtn.disabled = false;
 
                 // Сброс предыдущих результатов
                 resetResults();
+            }
+
+            // Отображение списка файлов
+            function displayFilesList() {
+                if (selectedFiles.length === 0) {
+                    filesList.classList.remove('show');
+                    return;
+                }
+
+                filesList.innerHTML = '';
+                filesList.classList.add('show');
+
+                selectedFiles.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <div>
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${formatFileSize(file.size)}</div>
+                        </div>
+                        <button class="remove-file" data-index="${index}">Удалить</button>
+                    `;
+                    filesList.appendChild(fileItem);
+                });
+
+                // Добавляем обработчики для удаления файлов
+                document.querySelectorAll('.remove-file').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        selectedFiles.splice(index, 1);
+                        displayFilesList();
+
+                        if (selectedFiles.length === 0) {
+                            submitBtn.disabled = true;
+                            multipleFilesWarning.classList.remove('show');
+                        } else if (selectedFiles.length === 1) {
+                            multipleFilesWarning.classList.remove('show');
+                        }
+                    });
+                });
             }
 
             // Форматирование размера файла
@@ -546,23 +723,33 @@
                 resultContent.innerHTML = '';
             }
 
-            // Обработка отправки файла
+            // Обработка отправки файлов
             submitBtn.addEventListener('click', async function() {
-                if (!selectedFile) {
-                    alert('Выберите файл для конвертации');
+                if (selectedFiles.length === 0) {
+                    alert('Выберите файлы для конвертации');
                     return;
                 }
 
-                // Создаем FormData для отправки файла
+                // Получаем коэффициент площади
+                const areaCoefficient = parseFloat(areaCoefficientInput.value) || 0.9;
+
+                // Создаем FormData для отправки файлов
                 const formData = new FormData();
-                formData.append('file', selectedFile);
+
+                // Добавляем все файлы
+                selectedFiles.forEach(file => {
+                    formData.append('files', file);
+                });
+
+                // Добавляем коэффициент
+                formData.append('area_coefficient', areaCoefficient);
 
                 // Отключаем кнопку и показываем прогресс
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Обработка...';
                 progressBar.classList.add('show');
                 spinner.classList.add('show');
-                statusText.textContent = '⏳ Загружаем и обрабатываем файл...';
+                statusText.textContent = '⏳ Загружаем и обрабатываем файлы...';
                 resetResults();
 
                 // Анимация прогресса
@@ -575,7 +762,7 @@
                 }, 500);
 
                 try {
-                    // Отправка файла на сервер
+                    // Отправка файлов на сервер
                     const response = await fetch('/uploads', {
                         method: 'POST',
                         body: formData
@@ -591,18 +778,19 @@
                     if (response.ok && result.status === 'success') {
                         // Успешная обработка
                         spinner.classList.remove('show');
-                        statusText.textContent = 'Файл успешно обработан!';
+                        statusText.textContent = 'Файлы успешно обработаны!';
 
                         // Формирование результата
                         let resultHTML = `
-                            <p><strong>📊 Обработано квартир:</strong> ${result.processed_flats || 0}</p>
-                            <p><strong>⏱️ Время обработки:</strong> ${result.processing_time || 0}с</p>
+                            <p><strong>Обработано квартир:</strong> ${result.processed_flats || 0}</p>
+                            <p><strong>Время обработки:</strong> ${result.processing_time || 0}с</p>
+                            <p><strong>Коэффициент площади:</strong> ${result.area_coefficient}</p>
                         `;
 
-                        // Кнопки для результатов - размещаем в ряд
+                        // Кнопки для результатов
                         let buttonsHTML = '<div class="result-buttons">';
 
-                        // Ссылка на Google Sheets (если доступна)
+                        // Ссылка на Google Sheets
                         if (result.sheet_url) {
                             buttonsHTML += `
                                 <a href="${result.sheet_url}" target="_blank" class="link-btn">
@@ -639,7 +827,7 @@
 
                     } else {
                         // Ошибка обработки
-                        throw new Error(result.error || 'Ошибка обработки файла');
+                        throw new Error(result.error || 'Ошибка обработки файлов');
                     }
 
                 } catch (error) {
@@ -654,7 +842,7 @@
                         <h4>❌ Ошибка обработки</h4>
                         <p>${error.message}</p>
                         <p style="margin-top: 10px; color: #6c757d;">
-                            Попробуйте загрузить файл еще раз или обратитесь в поддержку.
+                            Попробуйте загрузить файлы еще раз или обратитесь в поддержку.
                         </p>
                     `;
                     resultArea.className = 'result-area show error';
@@ -679,6 +867,15 @@
                     if (!submitBtn.disabled) {
                         submitBtn.click();
                     }
+                }
+            });
+
+            // Валидация коэффициента
+            areaCoefficientInput.addEventListener('change', function() {
+                let value = parseFloat(this.value);
+                if (isNaN(value) || value < 0.5 || value > 1.0) {
+                    this.value = 0.9;
+                    alert('Коэффициент должен быть от 0.5 до 1.0');
                 }
             });
         });
