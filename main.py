@@ -144,7 +144,7 @@ def index():
     if request.args.get('format') == 'json':
         return jsonify({
             "api": "IFC Converter",
-            "version": "3.0.0",
+            "version": "1.1.0",
             "endpoints": {
                 "health": "/health",
                 "upload": "/uploads",
@@ -179,7 +179,7 @@ def health_check():
             return jsonify({
                 "status": "healthy",
                 "timestamp": current_time.isoformat(),
-                "version": "3.0.0",
+                "version": "1.1.0",
                 "uptime": format_uptime(START_TIME),
                 "google_sheets_status": gs_status,
                 "last_check": timestamp_formatted,
@@ -209,7 +209,7 @@ def health_check():
         health_data = {
             'status': 'healthy',
             'timestamp_formatted': timestamp_formatted,
-            'version': '3.0.0',
+            'version': '1.1.0',
             'uptime': format_uptime(START_TIME),
             'google_sheets_status': gs_status,
             'spreadsheet_id': spreadsheet_display,
@@ -236,7 +236,7 @@ def health_check():
         error_data = {
             'status': 'error',
             'timestamp_formatted': error_time,
-            'version': '3.0.0',
+            'version': '1.1.0',
             'uptime': 'N/A',
             'google_sheets_status': 'error',
             'spreadsheet_id': 'ERROR',
