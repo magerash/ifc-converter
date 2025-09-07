@@ -8,9 +8,14 @@ Flask приложение для обработки IFC-файлов с под�
 import os
 import logging
 import time
+import pandas as pd
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for
-from apartment_analytics import ApartmentAnalyzer, process_and_visualize
+
+# Устанавливаем non-GUI бэкенд для matplotlib до его импорта
+import matplotlib
+
+matplotlib.use('Agg')  # Используем non-GUI бэкенд
 
 # Инициализация приложения
 app = Flask(__name__)
@@ -34,13 +39,22 @@ logging.basicConfig(
         logging.StreamHandler()  # Только консольный вывод
     ]
 )
-logger = logging.getLogger('ifc-exporter')
+logger = logging.getLogger('ifc-converter')
 
 # Импорт модулей с обработкой ошибок
 try:
-    from export_flats import export_flats, export_flats_multiple, DEFAULT_AREA_COEFFICIENT
+    from export_flats import export_flats
 
     logger.info("✅ export_flats module loaded")
+    # Проверяем наличие функции для множественных файлов
+    try:
+        from export_flats import export_flats_multiple, DEFAULT_AREA_COEFFICIENT
+
+        logger.info("✅ export_flats_multiple function loaded")
+    except ImportError:
+        export_flats_multiple = None
+        DEFAULT_AREA_COEFFICIENT = 0.9
+        logger.info("⚠️ export_flats_multiple not available, using single file mode")
 except ImportError as e:
     logger.error(f"❌ Failed to import export_flats: {e}")
     export_flats = None
@@ -73,6 +87,18 @@ try:
 except ImportError as e:
     logger.error(f"❌ Failed to import auth_system: {e}")
     auth_manager = None
+
+# Флаг доступности модуля аналитики
+ANALYTICS_AVAILABLE = False
+try:
+    from apartment_analytics import ApartmentAnalyzer, process_and_visualize
+
+    ANALYTICS_AVAILABLE = True
+    logger.info("✅ apartment_analytics module loaded")
+except ImportError as e:
+    logger.warning(f"⚠️ apartment_analytics module not available: {e}")
+    ApartmentAnalyzer = None
+    process_and_visualize = None
 
 
 def allowed_file(filename):
@@ -145,21 +171,22 @@ def index():
     if request.args.get('format') == 'json':
         return jsonify({
             "api": "IFC Converter",
-            "version": "1.2.0",
+            "version": "1.2",
             "endpoints": {
                 "health": "/health",
                 "upload": "/uploads",
                 "download": "/downloads/<filename>"
             },
             "features": {
-                "multiple_files": True,
+                "multiple_files": export_flats_multiple is not None,
                 "area_coefficient": True,
-                "oauth2": auth_manager is not None
+                "oauth2": auth_manager is not None,
+                "analytics": ANALYTICS_AVAILABLE
             },
             "documentation": "See /health for system status"
         })
 
-    if 'user' in session:
+    if 'user' in session and auth_manager:
         return redirect(url_for('dashboard'))
     return render_template('uploads.html')
 
@@ -180,14 +207,15 @@ def health_check():
             return jsonify({
                 "status": "healthy",
                 "timestamp": current_time.isoformat(),
-                "version": "1.2.0",
+                "version": "1.2",
                 "uptime": format_uptime(START_TIME),
                 "google_sheets_status": gs_status,
                 "last_check": timestamp_formatted,
                 "features": {
-                    "multiple_files_upload": True,
+                    "multiple_files_upload": export_flats_multiple is not None,
                     "area_coefficient": True,
-                    "oauth2_enabled": auth_manager is not None
+                    "oauth2_enabled": auth_manager is not None,
+                    "analytics_enabled": ANALYTICS_AVAILABLE
                 }
             })
 
@@ -210,7 +238,7 @@ def health_check():
         health_data = {
             'status': 'healthy',
             'timestamp_formatted': timestamp_formatted,
-            'version': '1.2.0',
+            'version': '1.2',
             'uptime': format_uptime(START_TIME),
             'google_sheets_status': gs_status,
             'spreadsheet_id': spreadsheet_display,
@@ -237,7 +265,7 @@ def health_check():
         error_data = {
             'status': 'error',
             'timestamp_formatted': error_time,
-            'version': '1.2.0',
+            'version': '1.2',
             'uptime': 'N/A',
             'google_sheets_status': 'error',
             'spreadsheet_id': 'ERROR',
@@ -251,16 +279,18 @@ def health_check():
 
 @app.route('/uploads', methods=['POST'])
 def upload_files():
-    """API для загрузки и обработки нескольких IFC-файлов (обратная совместимость с одиночной загрузкой)"""
+    """API для загрузки и обработки IFC-файлов (поддержка одиночной и множественной загрузки)"""
     start_time = time.time()
 
     try:
         # Проверка наличия файлов в запросе
-        if 'files' not in request.files and 'file' not in request.files:
-            return jsonify({"error": "No file part"}), 400
+        if 'files' not in request.files:
+            return jsonify({'error': 'Нет файлов для загрузки'})
 
         # Поддержка как одиночной загрузки (для обратной совместимости), так и множественной
-        files = request.files.getlist('files') if 'files' in request.files else []
+        files = request.files.getlist('files')
+        if not files or all(file.filename == '' for file in files):
+            return jsonify({'error': 'Нет выбранных файлов'})
 
         # Если использовался старый API с одним файлом
         if not files and 'file' in request.files:
@@ -317,7 +347,7 @@ def upload_files():
             return jsonify({"error": "No valid IFC files were uploaded"}), 400
 
         # Проверка наличия модуля обработки
-        if not export_flats_multiple and not export_flats:
+        if not export_flats:
             return jsonify({"error": "IFC processing module not available"}), 500
 
         # Определяем имя для объединенного файла
@@ -327,23 +357,34 @@ def upload_files():
             combined_name = f"combined_{len(uploaded_paths)}_files"
 
         # Обработка IFC файлов
+        csv_path = None
         if export_flats_multiple and len(uploaded_paths) > 1:
             # Используем новую функцию для множественной обработки
-            csv_path = export_flats_multiple(
-                uploaded_paths,
-                app.config['DOWNLOAD_FOLDER'],
-                area_coefficient,
-                combined_name
-            )
-        elif export_flats:
-            # Fallback к старой функции для одного файла
+            try:
+                csv_path = export_flats_multiple(
+                    uploaded_paths,
+                    app.config['DOWNLOAD_FOLDER'],
+                    area_coefficient,
+                    combined_name
+                )
+            except Exception as e:
+                logger.error(f"Error in export_flats_multiple: {e}")
+                # Fallback к обработке первого файла
+                csv_path = export_flats(
+                    uploaded_paths[0],
+                    app.config['DOWNLOAD_FOLDER'],
+                    original_names[0]
+                )
+        else:
+            # Для одного файла используем обычную функцию
             csv_path = export_flats(
                 uploaded_paths[0],
                 app.config['DOWNLOAD_FOLDER'],
                 original_names[0]
             )
-        else:
-            return jsonify({"error": "IFC processing module not available"}), 500
+
+        if not csv_path:
+            return jsonify({"error": "Failed to process IFC files"}), 500
 
         csv_filename = os.path.basename(csv_path)
         logger.info(f"CSV generated: {csv_path}")
@@ -393,7 +434,7 @@ def upload_files():
         response_data = {
             "status": "success",
             "csv_path": csv_filename,
-            "original_filename": original_names[0] if len(original_names) == 1 else None,  # Для обратной совместимости
+            "original_filename": original_names[0] if len(original_names) == 1 else None,
             "original_filenames": original_names,
             "files_processed": len(uploaded_paths),
             "processed_flats": processed_flats,
@@ -455,38 +496,12 @@ def download_file(filename):
         return jsonify({"error": str(e)}), 500
 
 
-# Простые fallback маршруты если OAuth2 не загружен
-@app.route('/login')
-def login_fallback():
-    """Fallback для входа"""
-    if auth_manager:
-        # Если auth_manager загружен, перенаправляем на правильный маршрут
-        return redirect(url_for('login'))
-    return jsonify({"error": "OAuth2 system not available"}), 503
-
-
-@app.route('/dashboard')
-def dashboard_fallback():
-    """Fallback для dashboard"""
-    if auth_manager and 'user' in session:
-        # Если пользователь авторизован, показываем полноценный dashboard
-        user_id = session['user']['id']
-        stats = auth_manager.get_user_stats(user_id)
-        history = auth_manager.get_user_history(user_id, limit=20)
-
-        return render_template('dashboard.html',
-                               user=session['user'],
-                               stats=stats,
-                               history=history)
-    # Если не авторизован - показываем гостевой dashboard
-    return render_template('dashboard.html',
-                           user={'name': 'Guest', 'email': 'guest@example.com'},
-                           stats={'total_conversions': 0, 'total_flats_processed': 0, 'recent_conversions': 0},
-                           history=[])
-
 @app.route('/api/visualize/<filename>', methods=['GET'])
 def visualize_apartments(filename):
     """API для генерации гистограммы распределения квартир"""
+    if not ANALYTICS_AVAILABLE:
+        return jsonify({"error": "Analytics module not available"}), 503
+
     try:
         # Путь к CSV файлу
         csv_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
@@ -497,12 +512,57 @@ def visualize_apartments(filename):
 
         logger.info(f"Generating visualization for: {filename}")
 
-        # Импортируем модуль аналитики
+        # Проверяем, что файл не пустой
+        file_size = os.path.getsize(csv_path)
+        if file_size == 0:
+            logger.error(f"CSV file is empty: {csv_path}")
+            return jsonify({"error": "CSV file is empty"}), 400
+
+        # Проверяем, что файл содержит данные
         try:
-            from apartment_analytics import process_and_visualize
-        except ImportError as e:
-            logger.error(f"Failed to import apartment_analytics: {e}")
-            return jsonify({"error": "Analytics module not available"}), 500
+            # Читаем CSV с правильными параметрами (разделитель ;)
+            df = pd.read_csv(csv_path, sep=';')
+            if df.empty:
+                logger.error(f"CSV file contains no data: {csv_path}")
+                return jsonify({"error": "CSV file contains no data"}), 400
+
+            # Логируем все доступные колонки для диагностики
+            logger.info(f"Available columns in CSV: {list(df.columns)}")
+
+            # Проверяем наличие необходимых колонок (используем английские названия)
+            type_column = None
+            area_column = None
+
+            # Возможные варианты названий для типа квартиры (английские)
+            type_possible_names = ['FlatType', 'Apartment Type', 'Type', 'apartment_type', 'type']
+            for col_name in type_possible_names:
+                if col_name in df.columns:
+                    type_column = col_name
+                    break
+
+            # Возможные варианты названий для площади (английские)
+            area_possible_names = ['Area_m2', 'Area', 'area', 'square', 'square_meters']
+            for col_name in area_possible_names:
+                if col_name in df.columns:
+                    area_column = col_name
+                    break
+
+            if not type_column or not area_column:
+                missing = []
+                if not type_column:
+                    missing.append('FlatType')
+                if not area_column:
+                    missing.append('Area_m2')
+
+                logger.error(f"CSV file missing required columns: {missing}. Available: {list(df.columns)}")
+                return jsonify({
+                    "error": f"CSV file missing required columns: {missing}",
+                    "available_columns": list(df.columns)
+                }), 400
+
+        except Exception as e:
+            logger.error(f"Error reading CSV file: {str(e)}")
+            return jsonify({"error": f"Error reading CSV file: {str(e)}"}), 400
 
         # Генерация визуализации
         img_base64 = process_and_visualize(csv_path)
@@ -526,6 +586,9 @@ def visualize_apartments(filename):
 @app.route('/api/analytics/<filename>', methods=['GET'])
 def get_analytics(filename):
     """API для получения аналитики по квартирам"""
+    if not ANALYTICS_AVAILABLE:
+        return jsonify({"error": "Analytics module not available"}), 503
+
     try:
         csv_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
 
@@ -535,15 +598,51 @@ def get_analytics(filename):
 
         logger.info(f"Generating analytics for: {filename}")
 
-        # Импортируем модуль аналитики
-        try:
-            from apartment_analytics import ApartmentAnalyzer
-        except ImportError as e:
-            logger.error(f"Failed to import ApartmentAnalyzer: {e}")
-            return jsonify({"error": "Analytics module not available"}), 500
-
         # Создание анализатора и подготовка данных
         analyzer = ApartmentAnalyzer()
+
+        # Проверяем и переименовываем колонки перед подготовкой данных
+        try:
+            # Читаем CSV с правильными параметрами (разделитель ;)
+            df = pd.read_csv(csv_path, sep=';')
+
+            # Проверяем наличие необходимых колонок (используем английские названия)
+            type_column = None
+            area_column = None
+
+            # Возможные варианты названий для типа квартиры (английские)
+            type_possible_names = ['FlatType', 'Apartment Type', 'Type', 'apartment_type', 'type']
+            for col_name in type_possible_names:
+                if col_name in df.columns:
+                    type_column = col_name
+                    break
+
+            # Возможные варианты названий для площади (английские)
+            area_possible_names = ['Area_m2', 'Area', 'area', 'square', 'square_meters']
+            for col_name in area_possible_names:
+                if col_name in df.columns:
+                    area_column = col_name
+                    break
+
+            if not type_column or not area_column:
+                missing = []
+                if not type_column:
+                    missing.append('FlatType')
+                if not area_column:
+                    missing.append('Area_m2')
+
+                logger.error(
+                    f"CSV file missing required columns for analytics: {missing}. Available: {list(df.columns)}")
+                return jsonify({
+                    "error": f"CSV file missing required columns: {missing}",
+                    "available_columns": list(df.columns)
+                }), 400
+
+        except Exception as e:
+            logger.error(f"Error reading CSV file for analytics: {str(e)}")
+            return jsonify({"error": f"Error reading CSV file: {str(e)}"}), 400
+
+        # Подготавливаем данные для гистограммы
         df = analyzer.prepare_histogram_data(csv_path)
 
         if df is None:
@@ -598,6 +697,36 @@ def visualization_page(filename):
     except Exception as e:
         logger.error(f"Error rendering visualization page: {str(e)}", exc_info=True)
         return f"Ошибка: {str(e)}", 500
+
+
+# Простые fallback маршруты если OAuth2 не загружен
+@app.route('/login')
+def login_fallback():
+    """Fallback для входа"""
+    if auth_manager:
+        # Если auth_manager загружен, перенаправляем на правильный маршрут
+        return redirect(url_for('login'))
+    return jsonify({"error": "OAuth2 system not available"}), 503
+
+
+@app.route('/dashboard')
+def dashboard_fallback():
+    """Fallback для dashboard"""
+    if auth_manager and 'user' in session:
+        # Если пользователь авторизован, показываем полноценный dashboard
+        user_id = session['user']['id']
+        stats = auth_manager.get_user_stats(user_id)
+        history = auth_manager.get_user_history(user_id, limit=20)
+
+        return render_template('dashboard.html',
+                               user=session['user'],
+                               stats=stats,
+                               history=history)
+    # Если не авторизован - показываем гостевой dashboard
+    return render_template('dashboard.html',
+                           user={'name': 'Guest', 'email': 'guest@example.com'},
+                           stats={'total_conversions': 0, 'total_flats_processed': 0, 'recent_conversions': 0},
+                           history=[])
 
 
 @app.errorhandler(413)

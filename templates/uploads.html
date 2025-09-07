@@ -798,27 +798,6 @@
                             <p><strong>Коэффициент площади:</strong> ${result.area_coefficient}</p>
                         `;
 
-                        // Кнопки для результатов
-                        let buttonsHTML = '<div class="result-buttons">';
-
-                        // Ссылка на Google Sheets
-                        if (result.sheet_url) {
-                            buttonsHTML += `
-                                <a href="${result.sheet_url}" target="_blank" class="link-btn">
-                                    Открыть в Google Sheets
-                                </a>
-                            `;
-                        }
-
-                        // Ссылка на скачивание CSV
-                        if (result.csv_path) {
-                            buttonsHTML += `
-                                <a href="/downloads/${result.csv_path}" class="link-btn secondary" download>
-                                    Скачать CSV файл
-                                </a>
-                            `;
-                        }
-
                         // Кнопки для результатов - размещаем в ряд
                         let buttonsHTML = '<div class="result-buttons">';
 
