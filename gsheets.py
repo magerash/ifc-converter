@@ -45,7 +45,7 @@ def upload_to_google_sheets(csv_path, original_filename):
     с правильным форматированием столбцов
 
     :param csv_path: путь к CSV файлу
-    :param original_filename: оригинальное имя IFC файла
+    :param original_filename: оригинальное имя IFC файла ИЛИ уже сформированное имя для объединенных файлов
     :return: URL таблицы
     """
 
@@ -91,9 +91,17 @@ def upload_to_google_sheets(csv_path, original_filename):
                     f"No access to spreadsheet {spreadsheet_id}. Check sharing permissions for service account email: {creds_dict['client_email']}")
             raise
 
-        # Получаем уникальное имя для новой вкладки
-        sheet_name = get_unique_sheet_name(spreadsheet, original_filename)
-        logger.info(f"Generated unique sheet name: {sheet_name}")
+        # ВАЖНОЕ ИЗМЕНЕНИЕ: Используем original_filename напрямую, так как он уже правильно сформирован
+        # в main.py через generate_combined_filename()
+        logger.info(f"Received original_filename for sheet: {original_filename}")
+
+        # Просто санитизируем его для Google Sheets (убираем недопустимые символы)
+        base_sheet_name = sanitize_sheet_name(original_filename)
+        logger.info(f"After sanitization: {base_sheet_name}")
+
+        # Получаем уникальное имя для новой вкладки (добавит индекс если такое имя уже есть)
+        sheet_name = get_unique_sheet_name(spreadsheet, base_sheet_name)
+        logger.info(f"Final sheet name: {sheet_name}")
 
         # Создаем новую вкладку
         try:
