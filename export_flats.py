@@ -190,6 +190,54 @@ def calculate_corrected_area(area_str, coefficient):
         return ""
 
 
+def format_data_for_csv(row):
+    """
+    Форматирование данных строки для правильного отображения в CSV/Excel
+
+    :param row: список значений строки
+    :return: отформатированная строка
+
+    Индексы столбцов:
+    0: FlatType (A) - текст
+    1: Area_m2 (B) - число
+    2: Area_m2' (C) - число
+    3: Section (D) - текст
+    4: Section№ (E) - число
+    5: FloorNum (F) - текст
+    6: StoreyName (G) - текст
+    7: FlatNumber (H) - текст
+    8: File (I) - текст
+    """
+    formatted_row = []
+
+    for index, value in enumerate(row):
+        # Очищаем значение от апострофов
+        if value and isinstance(value, str) and value.startswith("'"):
+            value = value[1:]
+
+        if index in [1, 2]:  # Area_m2, Area_m2' - числа с запятой
+            # Уже должны быть с запятой, но проверяем
+            if value and '.' in str(value):
+                formatted_value = str(value).replace('.', ',')
+            else:
+                formatted_value = str(value) if value else ""
+
+        elif index in [4, 5]:  # Section№, FloorNum - целые числа
+            # Преобразуем в строку, если это число
+            if value != "":
+                formatted_value = str(value)
+            else:
+                formatted_value = ""
+
+        else:  # Текстовые поля
+            # Просто возвращаем значение без добавления апострофов
+            formatted_value = str(value) if value else ""
+
+        formatted_row.append(formatted_value)
+
+    return formatted_row
+
+
 def assign_section_numbers_improved(rows):
     """
     Улучшенное присваивание порядковых номеров секциям
@@ -240,6 +288,7 @@ def assign_section_numbers_improved(rows):
             row[4] = ""
 
     return rows
+
 
 def sort_rows_complex(rows):
     """
@@ -414,12 +463,18 @@ def export_flats_multiple(ifc_paths, download_dir, area_coefficient=DEFAULT_AREA
     csv_filename = get_next_indexed_filename(download_dir, csv_base_filename)
     csv_path = os.path.join(download_dir, csv_filename)
 
-    # Запись CSV
+    # Запись CSV с правильным форматированием
     try:
         with open(csv_path, "w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f, delimiter=";")
+            writer = csv.writer(f, delimiter=";", quoting=csv.QUOTE_MINIMAL)
+
+            # Записываем заголовок
             writer.writerow(CSV_HEADER)
-            writer.writerows(all_rows)
+
+            # Записываем данные с форматированием
+            for row in all_rows:
+                formatted_row = format_data_for_csv(row)
+                writer.writerow(formatted_row)
 
         logger.info(f"Successfully exported {len(all_rows)} flats to {csv_path}")
 

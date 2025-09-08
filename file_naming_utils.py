@@ -57,8 +57,9 @@ def get_unique_sheet_name(spreadsheet, base_name):
     :param base_name: базовое имя листа
     :return: уникальное имя листа
     """
-    # Очищаем имя листа
-    clean_name = sanitize_sheet_name(base_name)
+    # НЕ САНИТИЗИРУЕМ ИМЯ ЗДЕСЬ - оно уже правильное!
+    # base_name уже содержит правильное имя типа "ДЕП01-2_ДЕП01-1"
+    clean_name = base_name
 
     # Получаем список существующих листов
     existing_sheets = [worksheet.title for worksheet in spreadsheet.worksheets()]
@@ -94,19 +95,23 @@ def get_unique_sheet_name(spreadsheet, base_name):
 def sanitize_sheet_name(name):
     """
     Очищает имя листа от недопустимых символов для Google Sheets
+    ВАЖНО: Эта функция НЕ должна изменять структуру имени типа "ДЕП01-2_ДЕП01-1"
     """
-    # Удаляем расширение файла
-    name = os.path.splitext(name)[0]
+    # НЕ удаляем расширение если имя не содержит точку с расширением
+    # (наши имена типа "ДЕП01-2_ДЕП01-1" не содержат расширений)
+    if '.' in name and name.split('.')[-1].lower() in ['csv', 'ifc', 'ifczip', 'xlsx', 'xls']:
+        name = os.path.splitext(name)[0]
 
     # Google Sheets не разрешает некоторые символы в названиях листов
-    # Заменяем недопустимые символы на underscore
-    sanitized = re.sub(r'[^\w\-\.\s]', '_', name)
+    # НО мы сохраняем дефисы и подчеркивания!
+    # Заменяем только действительно недопустимые символы
+    sanitized = re.sub(r'[<>:"/\\|?*\[\]]', '', name)
 
-    # Убираем множественные подчеркивания
-    sanitized = re.sub(r'_{2,}', '_', sanitized)
+    # Убираем множественные подчеркивания (но не одиночные!)
+    sanitized = re.sub(r'_{3,}', '__', sanitized)
 
-    # Убираем подчеркивания в начале и конце
-    sanitized = sanitized.strip('_')
+    # Убираем пробелы в начале и конце
+    sanitized = sanitized.strip()
 
     # Ограничиваем длину (максимум 100 символов в Google Sheets)
     if len(sanitized) > 100:

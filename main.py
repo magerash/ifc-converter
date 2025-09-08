@@ -8,6 +8,7 @@ Flask приложение для обработки IFC-файлов с под�
 import os
 import logging
 import time
+import re
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for
 
@@ -72,6 +73,76 @@ try:
 except ImportError as e:
     logger.error(f"❌ Failed to import auth_system: {e}")
     auth_manager = None
+
+
+def extract_model_name(filename):
+    """
+    Извлекает короткое имя модели из имени файла
+    Примеры:
+    'ДЕП01 - ЦТЗ 1.ifczip' -> 'ДЕП01-1'
+    'ПМА01 - ЦТЗ 9.ifczip' -> 'ПМА01-9'
+    'ДЕП01 - ЦТЗ 2.ifczip' -> 'ДЕП01-2'
+    'ДЕП01 - ЦТЗ 1_2.ifczip' -> 'ДЕП01-1' (убирает индексы)
+    """
+    # Убираем расширение
+    name_without_ext = os.path.splitext(filename)[0]
+    # Убираем суффиксы индексации если есть (например _8, _9)
+    name_without_ext = re.sub(r'_\d+$', '', name_without_ext)
+
+    # Паттерн для извлечения префикса и номера
+    # Ищем паттерн типа "БУКВЫ+ЦИФРЫ - ЦТЗ ЦИФРА"
+    match = re.match(r'([А-Яа-яA-Za-z]+\d+)\s*-\s*ЦТЗ\s*(\d+)', name_without_ext)
+    if match:
+        prefix = match.group(1).upper()  # Приводим к верхнему регистру для единообразия
+        number = match.group(2)
+        return f"{prefix}-{number}"
+
+    # Если не подходит под паттерн, пытаемся другие варианты
+    # Паттерн для "ПРЕФИКС ЦИФРА"
+    match = re.match(r'([А-Яа-яA-Za-z]+\d+)\s+(\d+)', name_without_ext)
+    if match:
+        prefix = match.group(1).upper()
+        number = match.group(2)
+        return f"{prefix}-{number}"
+
+    # Если ничего не подошло, возвращаем очищенное имя
+    # Убираем специальные символы и пробелы
+    clean_name = re.sub(r'[^\w\-]', '_', name_without_ext)
+    return clean_name[:20]  # Ограничиваем длину
+
+
+def generate_combined_filename(original_names):
+    """
+    Генерирует имя для объединенного файла на основе имен исходных файлов
+    Примеры:
+    ['ДЕП01 - ЦТЗ 1.ifczip', 'ДЕП01 - ЦТЗ 2.ifczip'] -> 'ДЕП01-1_ДЕП01-2'
+    ['ПМА01 - ЦТЗ 9.ifczip', 'ДЕП01 - ЦТЗ 2.ifczip'] -> 'ПМА01-9_ДЕП01-2'
+    """
+    if not original_names:
+        return "combined"
+
+    if len(original_names) == 1:
+        # Для одного файла возвращаем его короткое имя
+        return extract_model_name(original_names[0])
+
+    # Для нескольких файлов объединяем короткие имена через подчеркивание
+    model_names = []
+    for name in original_names:
+        model_name = extract_model_name(name)
+        model_names.append(model_name)
+
+    # Объединяем имена через подчеркивание
+    combined = "_".join(model_names)
+
+    # Ограничиваем длину результата (максимум 100 символов для имени файла)
+    if len(combined) > 100:
+        # Если слишком длинное, берем первые и последние модели
+        if len(model_names) > 2:
+            combined = f"{model_names[0]}_and_{len(model_names) - 1}_more"
+        else:
+            combined = combined[:100]
+
+    return combined
 
 
 def allowed_file(filename):
@@ -144,7 +215,7 @@ def index():
     if request.args.get('format') == 'json':
         return jsonify({
             "api": "IFC Converter",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "endpoints": {
                 "health": "/health",
                 "upload": "/uploads",
@@ -179,7 +250,7 @@ def health_check():
             return jsonify({
                 "status": "healthy",
                 "timestamp": current_time.isoformat(),
-                "version": "1.1.0",
+                "version": "1.1.1",
                 "uptime": format_uptime(START_TIME),
                 "google_sheets_status": gs_status,
                 "last_check": timestamp_formatted,
@@ -209,7 +280,7 @@ def health_check():
         health_data = {
             'status': 'healthy',
             'timestamp_formatted': timestamp_formatted,
-            'version': '1.1.0',
+            'version': '1.1.1',
             'uptime': format_uptime(START_TIME),
             'google_sheets_status': gs_status,
             'spreadsheet_id': spreadsheet_display,
@@ -236,7 +307,7 @@ def health_check():
         error_data = {
             'status': 'error',
             'timestamp_formatted': error_time,
-            'version': '1.1.0',
+            'version': '1.1.1',
             'uptime': 'N/A',
             'google_sheets_status': 'error',
             'spreadsheet_id': 'ERROR',
@@ -319,11 +390,9 @@ def upload_files():
         if not export_flats_multiple and not export_flats:
             return jsonify({"error": "IFC processing module not available"}), 500
 
-        # Определяем имя для объединенного файла
-        if len(uploaded_paths) == 1:
-            combined_name = os.path.splitext(original_names[0])[0]
-        else:
-            combined_name = f"combined_{len(uploaded_paths)}_files"
+        # ИСПРАВЛЕНИЕ: Генерируем правильное имя для объединенного файла
+        combined_name = generate_combined_filename(original_names)
+        logger.info(f"Generated combined filename: {combined_name}")
 
         # Обработка IFC файлов
         if export_flats_multiple and len(uploaded_paths) > 1:
@@ -339,7 +408,7 @@ def upload_files():
             csv_path = export_flats(
                 uploaded_paths[0],
                 app.config['DOWNLOAD_FOLDER'],
-                original_names[0]
+                combined_name  # Используем сгенерированное имя
             )
         else:
             return jsonify({"error": "IFC processing module not available"}), 500
@@ -361,7 +430,8 @@ def upload_files():
 
         if upload_to_google_sheets:
             try:
-                sheet_url = upload_to_google_sheets(csv_path, combined_name)
+                # Передаем правильное имя для листа в Google Sheets И коэффициент площади
+                sheet_url = upload_to_google_sheets(csv_path, combined_name, area_coefficient)
                 logger.info(f"Uploaded to Google Sheets: {sheet_url}")
             except Exception as gs_error:
                 gs_error_message = str(gs_error)
