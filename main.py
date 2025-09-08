@@ -430,8 +430,8 @@ def upload_files():
 
         if upload_to_google_sheets:
             try:
-                # Передаем правильное имя для листа в Google Sheets
-                sheet_url = upload_to_google_sheets(csv_path, combined_name)
+                # Передаем правильное имя для листа в Google Sheets И коэффициент площади
+                sheet_url = upload_to_google_sheets(csv_path, combined_name, area_coefficient)
                 logger.info(f"Uploaded to Google Sheets: {sheet_url}")
             except Exception as gs_error:
                 gs_error_message = str(gs_error)
