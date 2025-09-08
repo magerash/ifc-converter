@@ -203,7 +203,7 @@ def format_data_for_csv(row):
     2: Area_m2' (C) - число
     3: Section (D) - текст
     4: Section№ (E) - число
-    5: FloorNum (F) - число
+    5: FloorNum (F) - текст
     6: StoreyName (G) - текст
     7: FlatNumber (H) - текст
     8: File (I) - текст
@@ -211,6 +211,10 @@ def format_data_for_csv(row):
     formatted_row = []
 
     for index, value in enumerate(row):
+        # Очищаем значение от апострофов
+        if value and isinstance(value, str) and value.startswith("'"):
+            value = value[1:]
+
         if index in [1, 2]:  # Area_m2, Area_m2' - числа с запятой
             # Уже должны быть с запятой, но проверяем
             if value and '.' in str(value):
@@ -226,21 +230,8 @@ def format_data_for_csv(row):
                 formatted_value = ""
 
         else:  # Текстовые поля
-            # Добавляем префикс '=' для предотвращения автоматического преобразования в Excel
-            # но только если значение похоже на число
-            str_value = str(value) if value else ""
-
-            formatted_value = str_value
-            # Проверяем, нужно ли добавить префикс для защиты от интерпретации как формулы
-            # if str_value and not str_value.startswith("'"):
-            #     # Если строка начинается с цифры и содержит только цифры - оставляем как есть
-            #     # Это позволит Excel правильно интерпретировать номера квартир
-            #     if index == 7 and str_value.isdigit():  # FlatNumber
-            #         formatted_value = str_value
-            #     else:
-            #         formatted_value = str_value
-            # else:
-            #     formatted_value = str_value
+            # Просто возвращаем значение без добавления апострофов
+            formatted_value = str(value) if value else ""
 
         formatted_row.append(formatted_value)
 

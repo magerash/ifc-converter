@@ -37,7 +37,6 @@ def clean_numeric_value(value):
 
     return value
 
-
 def validate_gs_credentials():
     """Проверка наличия всех необходимых переменных окружения"""
     required_vars = [
@@ -131,17 +130,18 @@ def upload_to_google_sheets(csv_path, original_filename, area_coefficient=0.9):
         data = []
         with open(csv_path, 'r', encoding='utf-8') as f:
             csv_reader = csv.reader(f, delimiter=';')
-            for row in csv_reader:
-                # Очищаем числовые значения от апострофов
-                cleaned_row = []
-                for i, value in enumerate(row):
-                    # Для числовых столбцов (B, C, E, F) применяем очистку
-                    if i in [1, 2, 4, 5]:  # Индексы столбцов B, C, E, F (начиная с 0)
-                        cleaned_value = clean_numeric_value(value)
-                        cleaned_row.append(cleaned_value)
-                    else:
-                        cleaned_row.append(value)
+            for i, row in enumerate(csv_reader):
+                # Очищаем все значения от апострофов, а не только числовые
+                cleaned_row = [clean_numeric_value(value) for value in row]
                 data.append(cleaned_row)
+
+        # После загрузки данных, но до отправки в Google Sheets, обрабатываем столбец H (индекс 7)
+        # Добавляем апостроф к каждому значению в столбце H, чтобы Google Sheets воспринимал их как текст
+        for i in range(1, len(data)):  # пропускаем заголовок (первая строка)
+            if len(data[i]) > 7:  # проверяем, что есть столбец H
+                # Если значение не пустое и не начинается с апострофа, добавляем апостроф
+                if data[i][7] and not data[i][7].startswith("'"):
+                    data[i][7] = "'" + data[i][7]
 
         if data:
             # Определяем размер данных
@@ -154,7 +154,8 @@ def upload_to_google_sheets(csv_path, original_filename, area_coefficient=0.9):
                 end_col = chr(65 + num_cols - 1)  # Для 9 столбцов это будет 'I'
                 range_name = f'A1:{end_col}{num_rows}'
 
-                worksheet.update(range_name, data)
+                # worksheet.update(range_name, data)
+                worksheet.update(range_name, data, value_input_option='USER_ENTERED')
                 logger.info(f"Data uploaded to worksheet '{sheet_name}': {num_rows - 1} data rows, {num_cols} columns")
 
         # Устанавливаем ширину всех столбцов в 103 пикселя
@@ -232,32 +233,6 @@ def upload_to_google_sheets(csv_path, original_filename, area_coefficient=0.9):
 
         except Exception as e:
             logger.warning(f"Failed to format headers: {str(e)}")
-
-        # Форматирование типов данных для столбцов
-        try:
-            if num_rows > 1:  # Если есть данные помимо заголовка
-                # Текстовые столбцы: A, D, G, H, I
-                text_columns = ['A', 'D', 'G', 'H', 'I']
-                for col in text_columns:
-                    range_str = f'{col}2:{col}{num_rows}'
-                    worksheet.format(range_str, {
-                        'numberFormat': {'type': 'TEXT'},
-                        'horizontalAlignment': 'LEFT'
-                    })
-
-                # Числовые столбцы: B, C, E, F
-                number_columns = ['B', 'C', 'E', 'F']
-                for col in number_columns:
-                    range_str = f'{col}2:{col}{num_rows}'
-                    worksheet.format(range_str, {
-                        'numberFormat': {'type': 'NUMBER', 'pattern': '#,##0.00'},
-                        'horizontalAlignment': 'LEFT'
-                    })
-
-                logger.info("Column data types formatted")
-
-        except Exception as e:
-            logger.warning(f"Failed to format column data types: {str(e)}")
 
         # Выравнивание всех данных по левой стороне
         try:
